@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      ModeloLogico-ControlDeBloqueos.dm1
 --
--- Date Created : Thursday, June 25, 2015 14:30:52
+-- Date Created : Thursday, June 25, 2015 18:51:49
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -79,7 +79,7 @@ CREATE TABLE rcb_domi_valo(
 --
 
 CREATE TABLE rcb_dota_lcbl(
-    lcbl_id           numeric(18, 0)    NOT NULL,
+    lcbl_id           varchar(20)       NOT NULL,
     blde_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE rcb_empr(
 --
 
 CREATE TABLE rcb_enrg_lcbl(
-    lcbl_id         numeric(18, 0)    NOT NULL,
+    lcbl_id         varchar(20)       NOT NULL,
     dval_id_item    numeric(14, 0)    NOT NULL,
     CONSTRAINT enlc_pk PRIMARY KEY (lcbl_id, dval_id_item) USING INDEX TABLESPACE recob_ind 
 )
@@ -131,8 +131,7 @@ CREATE TABLE rcb_enrg_lcbl(
 CREATE TABLE rcb_eqpo(
     eqpo_id           numeric(14, 0)    NOT NULL,
     eqpo_codi         varchar(20)       NOT NULL,
-    eqpo_vige         numeric(1, 0)     NOT NULL
-                      CHECK (eqpo_vige IN (0)),
+    eqpo_vige         numeric(1, 0)     NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
@@ -147,7 +146,7 @@ CREATE TABLE rcb_eqpo(
 --
 
 CREATE TABLE rcb_eqpo_lcbl(
-    lcbl_id           numeric(18, 0)    NOT NULL,
+    lcbl_id           varchar(20)       NOT NULL,
     eqpo_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, eqpo_id) USING INDEX TABLESPACE recob_ind 
@@ -177,7 +176,7 @@ CREATE TABLE rcb_estc(
 --
 
 CREATE TABLE rcb_libr_ctrl_bloq(
-    lcbl_id           numeric(18, 0)    NOT NULL,
+    lcbl_id           varchar(20)       NOT NULL,
     lcbl_fech         timestamp         NOT NULL,
     lcbl_cerr         numeric(1, 0)     NOT NULL,
     lcbl_fech_cerr    timestamp,
@@ -211,7 +210,7 @@ CREATE TABLE rcb_pers(
 --
 
 CREATE TABLE rcb_resp_lcbl(
-    lcbl_id           numeric(18, 0)    NOT NULL,
+    lcbl_id           varchar(20)       NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     relc_fech_ingr    timestamp         NOT NULL,
