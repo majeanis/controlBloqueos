@@ -6,6 +6,11 @@ CREATE TABLESPACE recob_dat
     LOCATION '/data/pgdata/tbs/recob_dat'
 ;
 
+CREATE TABLESPACE recob_ind
+    OWNER recob 
+    LOCATION '/data/pgdata/tbs/recob_ind'
+;
+
 CREATE DATABASE bd_recob WITH
     OWNER=recob 
     ENCODING='UTF8' 
