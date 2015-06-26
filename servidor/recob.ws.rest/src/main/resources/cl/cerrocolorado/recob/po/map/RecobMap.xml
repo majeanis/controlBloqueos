@@ -15,7 +15,7 @@
         <result property="vigente" column="ubic_vige" />
         <association property="estacion" resultMap="estacionMap" />
     </resultMap>
-    
+
     <resultMap id="cajaBloqueoMap" type="CajaBloqueoTO" >
         <id property="id" column="cabl_id" />
         <result property="numero" column="cabl_nume" />
@@ -23,8 +23,8 @@
         <result property="vigente" column="cabl_vige" />
         <association property="ubicacion" resultMap="ubicacionMap" />
     </resultMap> 
-    
-    <select id="selectCajaBloqueo" parameterType="map" resultType="CajaBloqueoTO" resultMap="cajaBloqueoMap" >
+
+    <select id="selectCajasBloqueos" parameterType="map" resultType="CajaBloqueoTO" resultMap="cajaBloqueoMap" >
         select a.cabl_id
               ,a.cabl_nomb
               ,a.cabl_nume
@@ -39,7 +39,22 @@
         from   rcb_caja_bloq a inner join rcb_ubic b
            on (a.ubic_id = b.ubic_id) inner join rcb_estc c
            on (b.estc_id = c.estc_id)
-        where  a.cabl_id = #{cajaId}
+        <where>
+            <if test = "idUbicacion != null" >
+                b.ubic_id = #{idUbicacion}
+            </if>
+
+            <if test = "numeroCaja != null" >
+                and a.cabl_nume = #{numeroCaja}
+            </if>     
+
+            <if test = "idCaja != null" >
+                and a.cabl_id = #{idCaja}            
+            </if>
+        </where>
+        
+        order by b.ubic_nomb
+                ,a.cabl_nume
     </select>
     
     <insert id="insertCajaBloqueo" parameterType="CajaBloqueoTO" >

@@ -1,4 +1,4 @@
-package cl.zofri.zutils.comunes;
+package cl.cerrocolorado.recob.utils;
 
 import java.time.Instant;
 import java.time.LocalDate;

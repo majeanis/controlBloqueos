@@ -1,6 +1,8 @@
 package cl.cerrocolorado.recob.po.map;
 
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -8,6 +10,11 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
  */
 public interface RecobMap
 {
+    /**
+     * Manipulación de Cajas de Bloqueo
+     **/ 
     public void insertCajaBloqueo(CajaBloqueoTO caja);
     public void updateCajaBloqueo(CajaBloqueoTO caja);
+    public List<CajaBloqueoTO> selectCajasBloqueos( Map<String,Object> params );
+    /**/
 }

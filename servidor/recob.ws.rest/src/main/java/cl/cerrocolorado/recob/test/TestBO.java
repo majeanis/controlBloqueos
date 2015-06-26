@@ -3,8 +3,8 @@ package cl.cerrocolorado.recob.test;
 import cl.cerrocolorado.recob.bo.CajaBloqueoBO;
 import cl.cerrocolorado.recob.bo.FactoryBO;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.EstacionTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import java.util.List;
 
 /**
  *
@@ -17,15 +17,18 @@ public class TestBO
         CajaBloqueoTO caja = new CajaBloqueoTO();
         CajaBloqueoBO bo = FactoryBO.getCajaBloqueoBO();
 
-        caja.setNumero(1);
-        caja.setNombre("CAJA N° 1");
+//        caja.setNumero(2);
+//        caja.setNombre("CAJA N° " + caja.getNumero() );
         caja.setUbicacion( new UbicacionTO() );
-        caja.setVigente(Boolean.TRUE);
-        
+//        caja.setVigente(Boolean.TRUE);
+//        
         caja.getUbicacion().setId(2);
-        caja.getUbicacion().setEstacion(new EstacionTO() );
-        caja.getUbicacion().getEstacion().setId(1);
+//        caja.getUbicacion().setEstacion(new EstacionTO() );
+//        caja.getUbicacion().getEstacion().setId(1);
+//        
+//        bo.guardarCajaBloqueo(caja);
         
-        bo.guardarCajaBloqueo(caja);
+        List<CajaBloqueoTO> cajas = bo.getCajasBloqueos(caja.getUbicacion().getId());
+        System.out.println("retorno:" + cajas);
     }
 }

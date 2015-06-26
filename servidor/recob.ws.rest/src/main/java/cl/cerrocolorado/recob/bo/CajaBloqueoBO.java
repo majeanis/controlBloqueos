@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.bo;
 
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import java.util.List;
 
 /**
  *
@@ -8,5 +9,11 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
  */
 public interface CajaBloqueoBO
 {
-    public CajaBloqueoTO guardarCajaBloqueo(CajaBloqueoTO cajaBloqueo);    
+    public CajaBloqueoTO guardarCajaBloqueo(CajaBloqueoTO cajaBloqueo);
+
+    public CajaBloqueoTO getCajaBloqueo(int idCaja);
+
+    public CajaBloqueoTO getCajaBloqueo(int idUbicacion, int numeroCaja);
+
+    public List<CajaBloqueoTO> getCajasBloqueos(int idUbicacion);
 }

@@ -13,7 +13,8 @@ public class Configuracion
     private static final String             properties = "recob.properties";
     private static PropertiesConfiguration  config;
 
-    private static Configuration getConfiguracion() throws ConfigurationException
+    @SuppressWarnings("unused")
+	private static Configuration getConfiguracion() throws ConfigurationException
     {
         logger.trace("getConfiguracion[INI]");
         
