@@ -4,18 +4,18 @@ public class MensajeError extends Mensaje
 {
     private static final long serialVersionUID = 1L;
 
-    protected MensajeError(String codigo, String texto)
+    public MensajeError(Class<?> clazz, String textoBase, String...valores)
     {
-        super(codigo, texto, Severidad.ERROR);
+        super(Severidad.ERROR, clazz.getSimpleName(), textoBase, valores );
     }
 
-    protected MensajeError(String codigo, String texto, Exception exception)
+    public MensajeError(Exception exception, Class<?> clazz)
     {
-        super(codigo, texto, exception);
+        super(exception, clazz.getSimpleName());
     }
 
-    protected MensajeError(Mensaje another)
+    public MensajeError(Mensaje another)
     {
-        super(another.getCodigo(), another.getTexto(), Severidad.ERROR);
+        super(Severidad.ERROR, another.getCodigo(), another.getTexto() );
     }
 }

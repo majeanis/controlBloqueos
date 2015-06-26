@@ -9,28 +9,28 @@ public class Mensaje extends Throwable
     private final Severidad   severidad;
     private final Exception   exception;
 
-    protected Mensaje(String codigo, String texto, Severidad severidad)
+    protected Mensaje(Severidad severidad, String codigo, String textoBase, String...valores)
     {
-        this.codigo = codigo;
-        this.texto = texto;
         this.severidad = severidad;
         this.exception = null;
+        this.codigo = codigo;
+        this.texto = ToStringUtils.toString(textoBase, valores);
     }
 
-    protected Mensaje(String codigo, String texto, Exception exception)
+    protected Mensaje(Exception exception, String codigo)
     {
-        this.codigo = codigo;
-        this.texto = texto;
         this.severidad = Severidad.ERROR;
         this.exception = exception;
+        this.codigo = codigo;
+        this.texto = ToStringUtils.toString("Error no controlado. Consulte con el Administrador [#{1}]", String.valueOf(this.hashCode()) );
     }
 
     protected Mensaje(Mensaje another)
     {
-        this.codigo = another.codigo;
-        this.texto = another.texto;
         this.severidad = another.severidad;
         this.exception = another.exception;
+        this.codigo = another.codigo;
+        this.texto = another.texto;
     }
 
     public String getCodigo()
@@ -57,9 +57,9 @@ public class Mensaje extends Throwable
     public String toString()
     {
         return this.getClass().getSimpleName() + 
-                "[codigo=" + codigo + 
+                "[severidad=" + severidad +
+                ",codigo=" + codigo + 
                 ",texto=" + texto + 
-                ",severidad=" + severidad + 
                 ",exception=" + exception + "]";
     }
 }

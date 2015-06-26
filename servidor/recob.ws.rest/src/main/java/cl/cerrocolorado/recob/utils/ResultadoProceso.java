@@ -64,4 +64,22 @@ public class ResultadoProceso
     public String toString() {
         return ToStringUtils.toString(this);
     }
+
+    @Override
+    public Mensaje addException(Exception exception, Class<?> clazz)
+    {
+        return this.addMensaje( new MensajeError(exception, clazz) );
+    }
+
+    @Override
+    public Mensaje addError(Class<?> clazz, String textoBase, String... valores)
+    {
+        return this.addMensaje( new MensajeError( clazz, textoBase, valores) );
+    }
+
+    @Override
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, String... valores)
+    {
+        return this.addMensaje( new MensajeInfo( clazz, textoBase, valores) );
+    }
 }

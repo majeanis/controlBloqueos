@@ -17,10 +17,11 @@ public interface Resultado extends Serializable
 
     public List<Mensaje> getMensajes();
 
-    default Mensaje addMensaje(Exception exception)
-    {
-        return addMensaje(MensajeFactory.of(exception));
-    }
+    public Mensaje addException(Exception exception, Class<?> clazz);
+    
+    public Mensaje addError(Class<?> clazz, String textoBase, String...valores);
+    
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, String...valores);
 
     public Mensaje addMensaje(Mensaje mensaje);
 

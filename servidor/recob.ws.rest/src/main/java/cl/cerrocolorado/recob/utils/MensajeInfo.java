@@ -4,13 +4,13 @@ public class MensajeInfo extends Mensaje
 {
     private static final long serialVersionUID = 1L;
 
-    protected MensajeInfo(String codigo, String texto)
+    public MensajeInfo(Class<?> clazz, String textoBase, String...valores)
     {
-        super(codigo, texto, Severidad.INFO);
+        super(Severidad.INFO, clazz.getSimpleName(), textoBase, valores);
     }
 
-    protected MensajeInfo(Mensaje another)
+    public MensajeInfo(Mensaje another)
     {
-        super(another.getCodigo(), another.getTexto(), Severidad.INFO);
+        super(Severidad.INFO, another.getCodigo(), another.getTexto() );
     }
 }

@@ -59,12 +59,6 @@ public class ResultadoMap extends HashMap<String, Object> implements Resultado
     }
 
     @Override
-    public Mensaje addMensaje(Exception exception)
-    {
-        return resultado.addMensaje(exception);
-    }
-
-    @Override
     public Mensaje addMensaje(Mensaje mensaje)
     {
         return resultado.addMensaje(mensaje);
@@ -80,5 +74,23 @@ public class ResultadoMap extends HashMap<String, Object> implements Resultado
     public String toString()
     {
         return ToStringUtils.toString(this);
+    }
+
+    @Override
+    public Mensaje addException(Exception exception, Class<?> clazz)
+    {
+        return resultado.addException(exception, clazz);
+    }
+
+    @Override
+    public Mensaje addError(Class<?> clazz, String textoBase, String... valores)
+    {
+        return resultado.addError(clazz, textoBase, valores);
+    }
+
+    @Override
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, String... valores)
+    {
+        return resultado.addMensaje(clazz, textoBase, valores);
     }
 }
