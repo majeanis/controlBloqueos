@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Properties>
+		<property name="nombreSistema">recob</property>
+		<property name="homeLog">/apps/configs/${nombreSistema}</property>
+		<property name="layout">%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n</property> 
+	</Properties>
+
+	<Appenders>
+		<Console name="consola" target="SYSTEM_OUT" >
+			<PatternLayout pattern="${layout}" />
+		</Console>
+		
+		<RollingFile name="archivo" fileName="${homeLog}/${nombreSistema}.log" append="true" >
+			<FilePattern>${homeLog}/${nombreSistema}.%d{yyyyMMdd}.%i.log.zip</FilePattern>
+			<PatternLayout pattern="${layout}" />
+			<Policies>
+ 				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="200 MB" />
+				<TimeBasedTriggeringPolicy />				
+			</Policies>
+			<DefaultRolloverStrategy max="30"/>
+		</RollingFile>
+
+		<Async name="archivoAsincrono" bufferSize="256" >
+			<AppenderRef ref="archivo" />
+		</Async>
+	</Appenders>
+
+	<Loggers>
+		<Root level="debug">
+			<AppenderRef ref="consola" />
+			<AppenderRef ref="archivoAsincrono" />
+		</Root>
+	</Loggers>
+</Configuration>

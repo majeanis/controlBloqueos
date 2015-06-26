@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"	
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+	    http://www.springframework.org/schema/context 
+	    http://www.springframework.org/schema/context/spring-context.xsd 
+		http://mybatis.org/schema/mybatis-spring 
+		http://mybatis.org/schema/mybatis-spring.xsd" >
+
+  	<!-- DATA SOURCE CUYO ORIGEN ES UNA CONEXIÓN JDBC LOCAL-->
+	<bean id="dsJdbcRecob" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://192.168.56.13:5432/bd_recob" />
+		<property name="username" value="recob" />
+		<property name="password" value="recob" />
+	</bean>
+ 
+ 	<!-- DEFINICION DE LOS DATA SOURCES QUE SERAN UTILIZADOS -->
+ 	<alias name="dsJdbcRecob"  alias="dsRecob" />
+ 	
+	<!-- ADMINISTRADOR DE LAS TRANSACCIONES -->
+	<bean id="txManagerRecob" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+   		<property name="dataSource" ref="dsRecob" />
+	</bean>
+
+    <tx:annotation-driven transaction-manager="txManagerRecob" />
+
+	<!-- SE DEFINEN LOS SQL SESSION FACTORY -->
+	<bean id="sqlSessionFactoryRecob" class="org.mybatis.spring.SqlSessionFactoryBean">
+  		<property name="dataSource" ref="dsRecob" />
+ 		<property name="configLocation" value="cl/cerrocolorado/recob/po/config/myBatis.xml" />
+	</bean>	 
+  
+	<!-- AUTODETECCION DE CLASES MAPPERS -->
+	<mybatis:scan base-package="cl.cerrocolorado.recob.po.map" factory-ref="sqlSessionFactoryRecob" />	
+
+	<!-- AUTODETECCION DE BEANS DAO -->
+	<context:component-scan base-package="cl.cerrocolorado.recob.po" >
+		<context:include-filter type="regex" expression=".*PO$" />
+	</context:component-scan>
+
+</beans>

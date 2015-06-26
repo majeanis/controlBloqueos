@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      ModeloLogico-ControlDeBloqueos.dm1
 --
--- Date Created : Thursday, June 25, 2015 18:51:49
+-- Date Created : Friday, June 26, 2015 01:20:35
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -14,7 +14,7 @@ CREATE TABLE rcb_bloq_depa(
     blde_id           numeric(14, 0)    NOT NULL,
     blde_nomb         varchar(40)       NOT NULL,
     blde_maxi         numeric(2, 0),
-    blde_vige         numeric(1, 0)     NOT NULL,
+    blde_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
     CONSTRAINT blde_pk PRIMARY KEY (blde_id) USING INDEX TABLESPACE recob_ind 
@@ -31,7 +31,7 @@ CREATE TABLE rcb_caja_bloq(
     cabl_id           numeric(14, 0)    NOT NULL,
     cabl_nume         numeric(3, 0)     NOT NULL,
     cabl_nomb         varchar(40)       NOT NULL,
-    cabl_vige         numeric(1, 0)     NOT NULL,
+    cabl_vige         boolean           NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
@@ -48,7 +48,7 @@ CREATE TABLE rcb_caja_bloq(
 CREATE TABLE rcb_cand(
     cand_id           numeric(14, 0)    NOT NULL,
     cand_nume         numeric(3, 0)     NOT NULL,
-    cand_vige         numeric(1, 0)     NOT NULL,
+    cand_vige         boolean           NOT NULL,
     cabl_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
@@ -66,7 +66,7 @@ CREATE TABLE rcb_domi_valo(
     dval_id      numeric(14, 0)    NOT NULL,
     dval_codi    varchar(40),
     dval_nomb    varchar(60)       NOT NULL,
-    dval_vige    numeric(1, 0)     NOT NULL,
+    dval_vige    boolean           NOT NULL,
     dval_domi    varchar(40)       NOT NULL,
     CONSTRAINT dval_id PRIMARY KEY (dval_id) USING INDEX TABLESPACE recob_ind 
 )
@@ -102,7 +102,7 @@ CREATE TABLE rcb_empr(
     empr_id           numeric(14, 0)    NOT NULL,
     empr_rut          varchar(11)       NOT NULL,
     empr_nomb         varchar(60)       NOT NULL,
-    empr_vige         numeric(1, 0)     NOT NULL,
+    empr_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
     CONSTRAINT empr_pk PRIMARY KEY (empr_id) USING INDEX TABLESPACE recob_ind 
@@ -131,7 +131,7 @@ CREATE TABLE rcb_enrg_lcbl(
 CREATE TABLE rcb_eqpo(
     eqpo_id           numeric(14, 0)    NOT NULL,
     eqpo_codi         varchar(20)       NOT NULL,
-    eqpo_vige         numeric(1, 0)     NOT NULL,
+    eqpo_vige         boolean           NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
@@ -162,7 +162,7 @@ CREATE TABLE rcb_eqpo_lcbl(
 CREATE TABLE rcb_estc(
     estc_id           numeric(14, 0)    NOT NULL,
     estc_nomb         varchar(60)       NOT NULL,
-    estc_vige         numeric(1, 0)     NOT NULL,
+    estc_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
     CONSTRAINT estc_pk PRIMARY KEY (estc_id) USING INDEX TABLESPACE recob_ind 
@@ -178,7 +178,7 @@ CREATE TABLE rcb_estc(
 CREATE TABLE rcb_libr_ctrl_bloq(
     lcbl_id           varchar(20)       NOT NULL,
     lcbl_fech         timestamp         NOT NULL,
-    lcbl_cerr         numeric(1, 0)     NOT NULL,
+    lcbl_cerr         boolean           NOT NULL,
     lcbl_fech_cerr    timestamp,
     cabl_id           numeric(14, 0),
     audi_fech_crea    timestamp         NOT NULL,
@@ -230,8 +230,8 @@ CREATE TABLE rcb_tags_eqpo(
     taeq_nume         numeric(4, 0)     NOT NULL,
     taeq_nomb         varchar(40)       NOT NULL,
     taeq_desc         varchar(150),
-    taeq_enrg_cero    numeric(1, 0)     NOT NULL,
-    taeq_vige         numeric(1, 0)     NOT NULL,
+    taeq_enrg_cero    boolean           NOT NULL,
+    taeq_vige         boolean           NOT NULL,
     eqpo_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
@@ -249,8 +249,8 @@ CREATE TABLE rcb_trab(
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     trab_cargo        varchar(60)       NOT NULL,
-    trab_curs_bloq    numeric(1, 0)     NOT NULL,
-    trab_vige         numeric(1, 0)     NOT NULL,
+    trab_curs_bloq    boolean           NOT NULL,
+    trab_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
     CONSTRAINT trab_pk PRIMARY KEY (pers_id, empr_id) USING INDEX TABLESPACE recob_ind 
@@ -267,7 +267,7 @@ CREATE TABLE rcb_ubic(
     ubic_id           numeric(14, 0)    NOT NULL,
     ubic_nomb         varchar(40)       NOT NULL,
     ubic_desc         varchar(150),
-    ubic_vige         numeric(1, 0)     NOT NULL,
+    ubic_vige         boolean           NOT NULL,
     estc_id           numeric(14, 0),
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
