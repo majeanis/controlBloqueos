@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      ModeloLogico-ControlDeBloqueos.dm1
 --
--- Date Created : Friday, June 26, 2015 01:20:35
+-- Date Created : Friday, June 26, 2015 22:20:29
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -47,9 +47,11 @@ CREATE TABLE rcb_caja_bloq(
 
 CREATE TABLE rcb_cand(
     cand_id           numeric(14, 0)    NOT NULL,
-    cand_nume         numeric(3, 0)     NOT NULL,
+    cand_serie        varchar(30)       NOT NULL,
     cand_vige         boolean           NOT NULL,
-    cabl_id           numeric(14, 0)    NOT NULL,
+    dval_id_uso       numeric(14, 0)    NOT NULL,
+    pers_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp,
     CONSTRAINT cand_pk PRIMARY KEY (cand_id) USING INDEX TABLESPACE recob_ind 
@@ -242,6 +244,20 @@ CREATE TABLE rcb_tags_eqpo(
 
 
 -- 
+-- TABLE: rcb_tokn 
+--
+
+CREATE TABLE rcb_tokn(
+    tokn_id           varchar(40)       NOT NULL,
+    ubic_id           numeric(14, 0)    NOT NULL,
+    audi_fech_crea    timestamp         NOT NULL,
+    CONSTRAINT tokn_pk PRIMARY KEY (tokn_id)
+)
+;
+
+
+
+-- 
 -- TABLE: rcb_trab 
 --
 
@@ -278,6 +294,48 @@ CREATE TABLE rcb_ubic(
 
 
 -- 
+-- INDEX: cabl_uk 
+--
+
+CREATE UNIQUE INDEX cabl_uk ON rcb_caja_bloq(ubic_id, cabl_nume)
+;
+-- 
+-- INDEX: cand_uk 
+--
+
+CREATE UNIQUE INDEX cand_uk ON rcb_cand(cand_serie)
+;
+-- 
+-- INDEX: dval_uk 
+--
+
+CREATE UNIQUE INDEX dval_uk ON rcb_domi_valo(dval_domi, dval_codi)
+;
+-- 
+-- INDEX: empr_uk 
+--
+
+CREATE UNIQUE INDEX empr_uk ON rcb_empr(empr_rut)
+;
+-- 
+-- INDEX: eqpo_uk 
+--
+
+CREATE UNIQUE INDEX eqpo_uk ON rcb_eqpo(ubic_id, eqpo_codi)
+;
+-- 
+-- INDEX: pers_uk 
+--
+
+CREATE UNIQUE INDEX pers_uk ON rcb_pers(pers_rut)
+;
+-- 
+-- INDEX: taeq_uk 
+--
+
+CREATE UNIQUE INDEX taeq_uk ON rcb_tags_eqpo(eqpo_id, taeq_nume)
+;
+-- 
 -- TABLE: rcb_caja_bloq 
 --
 
@@ -291,9 +349,19 @@ ALTER TABLE rcb_caja_bloq ADD CONSTRAINT cabl_ubic_fk
 -- TABLE: rcb_cand 
 --
 
-ALTER TABLE rcb_cand ADD CONSTRAINT cand_cabl_fk 
-    FOREIGN KEY (cabl_id)
-    REFERENCES rcb_caja_bloq(cabl_id)
+ALTER TABLE rcb_cand ADD CONSTRAINT cand_pers_fk 
+    FOREIGN KEY (pers_id)
+    REFERENCES rcb_pers(pers_id)
+;
+
+ALTER TABLE rcb_cand ADD CONSTRAINT cand_ubic_fk 
+    FOREIGN KEY (ubic_id)
+    REFERENCES rcb_ubic(ubic_id)
+;
+
+ALTER TABLE rcb_cand ADD CONSTRAINT cand_usoc_fk 
+    FOREIGN KEY (dval_id_uso)
+    REFERENCES rcb_domi_valo(dval_id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 
 
@@ -404,6 +472,16 @@ ALTER TABLE rcb_resp_lcbl ADD CONSTRAINT relc_trab_fk
 ALTER TABLE rcb_tags_eqpo ADD CONSTRAINT taeq_eqpo_fk 
     FOREIGN KEY (eqpo_id)
     REFERENCES rcb_eqpo(eqpo_id)
+;
+
+
+-- 
+-- TABLE: rcb_tokn 
+--
+
+ALTER TABLE rcb_tokn ADD CONSTRAINT tokn_ubic_fk 
+    FOREIGN KEY (ubic_id)
+    REFERENCES rcb_ubic(ubic_id)
 ;
 
 

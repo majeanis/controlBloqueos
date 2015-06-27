@@ -1,11 +1,25 @@
 CREATE OR REPLACE
-FUNCTION init_bd( i_FechaInit timestamp )
+FUNCTION init_bd()
   RETURNS void AS $$
 DECLARE
     l_EstacionId    rcb_estc.estc_id%type;
     l_UbicacionId   rcb_ubic.ubic_id%type;
 BEGIN
+    -- Bloqueos Departamentales
+    --
+    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+      values(1, 'RESP. DEPTO. ELECTRICO', 1, true, localtimestamp );
 
+    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+      values(2, 'RESP. DEPTO. OPERACIONES', 1, true, localtimestamp );
+
+    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+      values(3, 'RESP. DEPTO. EJECUTOR', 1, true, localtimestamp );
+
+    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+      values(4, 'EJECUTOR TRABAJO', null, true, localtimestamp );
+    ---
+    
     delete from rcb_ubic;
     delete from rcb_estc;
 
@@ -15,7 +29,7 @@ BEGIN
        values ( l_EstacionId
               ,'CHANCADOR SECUNDARIO PLANTA 2'
               ,true
-              ,i_FechaInit )
+              ,localtimestamp )
     ;
 
     select nextval( 'SEQ_ID' ) into l_UbicacionId;
@@ -26,7 +40,7 @@ BEGIN
               ,'CHANCADOR SECUNDARIO PLANTA 2'
               ,true
               ,l_EstacionId
-              ,i_FechaInit )
+              ,localtimestamp )
     ;
 
     insert into rcb_tokn (tokn_id, ubic_id, audi_fech_crea)
