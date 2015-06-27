@@ -3,10 +3,15 @@
 <configuration>
     <typeAliases>
         <typeAlias alias="Rut" type="cl.cerrocolorado.recob.utils.Rut" />
+        <typeAlias alias="RutTypeHandler" type="cl.cerrocolorado.recob.utils.RutTypeHandler" />
         <package name="cl.cerrocolorado.recob.to" />
     </typeAliases>
+    
+    <typeHandlers>
+        <package name="cl.cerrocolorado.recob.utils" />
+    </typeHandlers>
 
     <mappers>
-        <mapper resource="cl/cerrocolorado/recob/po/map/RecobMap.xml" />
+        <package name="cl.cerrocolorado.recob.po.map" />
     </mappers>
 </configuration>
