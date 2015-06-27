@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.utils;
 
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
