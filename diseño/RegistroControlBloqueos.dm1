@@ -70,7 +70,7 @@ DiagramId,ModelId,EntityId,AttributeId,Attribute_ID,Entity_ID,UserDatatypeId,Rul
 1,2,16,93,291,49,0,0,0,0,181,181,0,0,0,0,36,0,-2,-1,N,0,0,3,0,0,1,0,0,0,0,0,0,8,0,0,0,0,0,0,3170,0
 1,2,16,94,292,49,0,0,0,0,120,120,0,0,0,0,31,0,-2,-1,N,1,1,4,0,0,1,0,0,0,0,0,0,8,0,0,0,0,0,0,3172,0
 1,2,16,95,293,49,0,0,0,0,122,122,0,0,0,0,31,1,-2,-1,N,1,1,5,0,0,1,0,0,0,0,0,0,8,0,0,0,0,0,0,3174,0
-1,2,3,23,307,36,0,0,0,0,330,330,0,0,0,0,28,0,30,-1,N,0,0,2,0,0,1,0,0,0,0,0,0,34,0,0,0,0,0,0,3402,0
+1,2,3,23,307,36,0,0,0,0,330,334,0,0,0,0,28,0,30,-1,N,0,0,2,0,0,1,0,0,0,0,0,0,34,0,0,0,0,0,0,3402,0
 1,2,3,24,308,36,0,0,0,0,140,332,0,0,332,332,36,0,14,0,N,0,0,4,0,0,1,1,1,0,0,0,0,14,0,0,0,0,0,0,3403,0
 1,2,3,25,309,36,0,0,0,0,153,153,0,0,153,153,36,0,14,0,N,0,0,5,0,0,1,0,0,0,0,0,0,14,0,0,0,0,0,0,3405,0
 1,1,12,65,65,12,0,0,0,0,153,153,0,0,0,0,36,0,14,0,N,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,955,0
@@ -183,7 +183,7 @@ DiagramId,ModelId,EntityId,AttributeId,Attribute_ID,Entity_ID,UserDatatypeId,Rul
 1,2,7,40,238,40,0,0,0,0,149,149,0,0,149,0,28,0,20,-1,N,0,0,1,0,0,1,0,0,0,0,0,0,16,0,0,0,0,0,0,2988,0
 1,2,7,41,239,40,0,0,0,0,140,169,0,0,169,169,36,0,14,0,N,0,0,2,0,0,1,1,1,0,0,0,0,14,0,0,0,0,0,0,2990,0
 1,1,3,14,14,3,0,0,0,0,134,134,0,0,0,0,36,0,14,0,N,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,557,0
-1,1,3,15,15,3,0,0,0,0,330,330,0,0,0,0,28,0,30,-1,N,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,565,0
+1,1,3,15,15,3,0,0,0,0,334,334,0,0,0,0,28,0,30,-1,N,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,565,0
 1,1,3,16,16,3,0,0,0,0,138,138,0,0,0,0,36,0,-2,-1,N,0,0,3,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,571,0
 1,1,16,91,91,16,0,0,0,0,132,132,0,0,0,0,36,0,14,0,N,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1153,0
 1,1,3,18,18,3,0,0,0,0,120,120,0,0,0,0,31,0,-2,-1,N,1,1,7,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,588,0
@@ -570,12 +570,12 @@ Data_Dictionary_ID,Name_ID,Description_ID,Flags,SignatureGUID,Global_User_ID
 
 Diagram
 DiagramId,Version_ID,VersionId,LastUpdate,CreateDate,ActiveModel,ActiveSubmodel,VSplitterPosition,X,Y,Width,Height,DiagramNameId,AuthorId,CompanyId,VersionNoId,CopyrightStringId,DefinitionId,UnificationOptionId,FileNameId,CopyrightYearStringId,DiagramName,CodePage,SignatureGUID,ReleaseName,Flags,Global_User_ID,Row_Time_Stamp
-1,1,950,06/26/2015 22:36:23G,06/24/2015 23:09:38G,2,1,180,0,0,0,0,226,0,0,0,0,0,265,228,0,ModeloLogico-ControlDeBloqueos.dm1,1252,"","",8,31,0
+1,1,950,06/26/2015 23:06:08G,06/24/2015 23:09:38G,2,1,180,0,0,0,0,226,0,0,0,0,0,265,228,0,ModeloLogico-ControlDeBloqueos.dm1,1252,"","",8,31,0
 
 DiagramDisplay
 DiagramId,ModelId,SubmodelId,DiagramDisplay_ID,Submodel_ID,PlatformId,Animate,ZoomFactor,HviewSize,VviewSize,HorizontalScrollPosition,VerticalScrollPosition,PageOrientation,PageSize,DisplayFormat,EntityDisplayInfo,ViewDisplayFormat,ViewDisplayInfo,Shadow,CompleteRoleName,ShowVerbs,ShowCardinality,MethodologyId,StraightRelLine,PageBoundary,ShowViewRelationship,ShowView,HideTrigger,Global_User_ID,Row_Time_Stamp,ShowSchemaObjEdge,ShowSchemaObj,SchemaObjDisplayFormat,ShowRelationshipName,ShowLogicalRelationshipName,ShowTriggerLabel,ShowShape,ShowShapeEdge,ShowShapeName,ShowShapeEdgeName,ShowShapeEdgeVerbs,TransformationDisplayFormat
 1,2,1,4,4,0,0,3210,0,0,-408,1423,1,1,9,21,1,0,0,0,1,0,0,0,0,0,0,1,2758,0,1,6,7,0,1,0,0,0,1,0,0,0
-1,1,1,1,1,0,0,8868,0,0,302,577,1,1,9,21,1,0,1,0,1,0,0,0,0,0,0,0,1283,0,1,6,7,0,1,0,0,0,1,0,0,0
+1,1,1,1,1,0,0,8868,0,0,1240,599,1,1,9,21,1,0,1,0,1,0,0,0,0,0,0,0,1283,0,1,6,7,0,1,0,0,0,1,0,0,0
 
 Dictionary_Object
 Dictionary_Object_ID,Data_Dictionary_ID,Dictionary_Object_Type_ID,Property_Value_Data_Type,Global_User_ID
@@ -943,7 +943,7 @@ Identity_Value_ID,Table_Name,Column_Name,Next_Valid_Value,Global_User_ID,Row_Tim
 13,Bound_Dictionary_Object,Bound_Dictionary_Object_ID,331,0,0
 14,CheckConstraints,CheckConstraints_ID,161,0,0
 15,Circular_Layout,Circular_Layout_ID,5,0,0
-16,ColorDefault,ColorDefault_ID,583,0,0
+16,ColorDefault,ColorDefault_ID,587,0,0
 17,Column_Usage,Column_Usage_ID,1,0,0
 18,Components_Layout,Components_Layout_ID,5,0,0
 19,Configuration_Option,Configuration_Option_ID,1,0,0
@@ -1117,8 +1117,8 @@ Identity_Value_ID,Table_Name,Column_Name,Next_Valid_Value,Global_User_ID,Row_Tim
 187,Valid_Attachment_Type,Valid_Attachment_Type_ID,5,0,0
 188,Valid_Group,Valid_Group_ID,1,0,0
 189,Valid_MetaClass,Valid_MetaClass_ID,18,0,0
-190,Valid_Property,Valid_Property_ID,274,0,0
-191,Valid_Property_Value,Valid_Property_Value_ID,300,0,0
+190,Valid_Property,Valid_Property_ID,295,0,0
+191,Valid_Property_Value,Valid_Property_Value_ID,323,0,0
 192,View_Column,View_Column_ID,1,0,0
 193,View_Component,View_Component_ID,1,0,0
 194,View_Display,View_Display_ID,1,0,0
@@ -2523,99 +2523,99 @@ SmallString
 String_Id,Data,Overflow,ConstantString,Row_Time_Stamp
 1,CH,0,0,0
 2,Y,0,0,0
-3,N,0,0,0
 249,rcb_bloq_depa,0,0,0
-4,S,0,0,0
+3,N,0,0,0
 250,rcb_caja_bloq,0,0,0
-5,I,0,0,0
+4,S,0,0,0
 251,rcb_cand,0,0,0
-6,N,0,0,0
+5,I,0,0,0
 252,rcb_domi_valo,0,0,0
-7,P,0,0,0
+6,N,0,0,0
 253,rcb_dota_lcbl,0,0,0
-8,O,0,0,0
+7,P,0,0,0
 254,rcb_empr,0,0,0
-9,Z,0,0,0
+8,O,0,0,0
 255,rcb_enrg_lcbl,0,0,0
-10,M,0,0,0
+9,Z,0,0,0
 256,rcb_eqpo,0,0,0
-11,N,0,0,0
+10,M,0,0,0
 257,rcb_eqpo_lcbl,0,0,0
-12,N,0,0,0
+11,N,0,0,0
 258,rcb_estc,0,0,0
-13,C,0,0,0
+12,N,0,0,0
 259,rcb_libr_ctrl_bloq,0,0,0
-14,R,0,0,0
+13,C,0,0,0
 260,rcb_pers,0,0,0
-15,S,0,0,0
+14,R,0,0,0
 261,rcb_resp_lcbl,0,0,0
-16,D,0,0,0
+15,S,0,0,0
 262,rcb_tags_eqpo,0,0,0
+16,D,0,0,0
 263,rcb_ubic,0,0,0
-18,Diagram specific data dictionary.,0,0,0
 264,rcb_trab,0,0,0
+18,Diagram specific data dictionary.,0,0,0
 265,NameAndDatatype,0,0,0
-20,ValidationRule,0,0,0
 266,blde_pk,0,0,0
-21,"""0""",0,0,0
+20,ValidationRule,0,0,0
 267,cabl_pk,0,0,0
-22,Booleano,0,0,0
+21,"""0""",0,0,0
 268,cand_pk,0,0,0
+22,Booleano,0,0,0
 269,dblq_pk,0,0,0
-24,SI,0,0,0
 270,empr_pk,0,0,0
-25,@var IN (0),0,0,0
+24,SI,0,0,0
 271,enlc_pk,0,0,0
-26,Descripcion Corta,0,0,0
+25,@var IN (0),0,0,0
 272,eqlc_pk,0,0,0
-27,DESCRIPCION_CORTA,0,0,0
+26,Descripcion Corta,0,0,0
 273,eqpo_pk,0,0,0
-28,VAR,0,0,0
+27,DESCRIPCION_CORTA,0,0,0
 274,estc_pk,0,0,0
+28,VAR,0,0,0
 275,lcbl_pk,0,0,0
 276,pers_pk,0,0,0
-31,TS,0,0,0
 277,relc_pk,0,0,0
-32,Fecha Hora,0,0,0
+31,TS,0,0,0
 278,taeq_pk,0,0,0
-33,FECHA_HORA,0,0,0
+32,Fecha Hora,0,0,0
 279,trab_pk,0,0,0
-34,Id,0,0,0
+33,FECHA_HORA,0,0,0
 280,ubic_pk,0,0,0
-35,ID,0,0,0
+34,Id,0,0,0
 281,cabl_ubic_fk,0,0,0
-36,NUM,0,0,0
+35,ID,0,0,0
 282,cand_cabl_fk,0,0,0
-37,Id Global,0,0,0
+36,NUM,0,0,0
 283,dolc_blde_fk,0,0,0
-38,ID_GLOBAL,0,0,0
+37,Id Global,0,0,0
 284,dolc_cand_fk,0,0,0
-39,Nombre Entidad,0,0,0
+38,ID_GLOBAL,0,0,0
 285,dolc_lcbl_fk,0,0,0
-40,NOMBRE_ENTIDAD,0,0,0
+39,Nombre Entidad,0,0,0
 286,dolc_pers_fk,0,0,0
-41,Nombre Parametro,0,0,0
+40,NOMBRE_ENTIDAD,0,0,0
 287,dolc_trab_fk,0,0,0
-42,NOMBRE_PARAMETRO,0,0,0
+41,Nombre Parametro,0,0,0
 288,enlc_item_fk,0,0,0
-43,RUT,0,0,0
+42,NOMBRE_PARAMETRO,0,0,0
 289,enlc_lcbl_fk,0,0,0
-44,Logical,0,0,0
+43,RUT,0,0,0
 290,eqlc_eqpo_fk,0,0,0
+44,Logical,0,0,0
 291,eqlc_lcbl_fk,0,0,0
-46,Bloqueos Departamentales,0,0,0
 292,eqpo_ubic_fk,0,0,0
+46,Bloqueos Departamentales,0,0,0
 293,lcbl_cabl_fk,0,0,0
 294,relc_lcbl_fk,0,0,0
-49,Cajas de Bloqueo,0,0,0
 295,relc_trab_fk,0,0,0
+49,Cajas de Bloqueo,0,0,0
 296,taeq_eqpo_fk,0,0,0
 297,trab_empr_fk,0,0,0
-52,Candados,0,0,0
 298,trab_pers_fk,0,0,0
+52,Candados,0,0,0
 299,ubic_estc_fk,0,0,0
-55,Dominio de Valores,0,0,0
 301,aud_fech_crea,0,0,0
+55,Dominio de Valores,0,0,0
 302,Fecha de creación del registro en la tabla,0,0,0
 303,DT,0,0,0
 58,Dotación registrada en el Libro de Control de Bloqueos,0,0,0
@@ -2626,33 +2626,34 @@ String_Id,Data,Overflow,ConstantString,Row_Time_Stamp
 309,Fecha Modificacion,0,0,0
 310,FisicoPg,0,0,0
 311,recob,0,0,0
-66,Equipos,0,0,0
 312,BIT,0,0,0
+66,Equipos,0,0,0
 313,cabl_uk,0,0,0
 314,dval_uk,0,0,0
-69,Equipos registrados en el Libro de Control de Bloqueos,0,0,0
 315,cand_uk,0,0,0
+69,Equipos registrados en el Libro de Control de Bloqueos,0,0,0
 316,empr_uk,0,0,0
 317,eqpo_uk,0,0,0
-72,Estación,0,0,0
 318,pers_uk,0,0,0
+72,Estación,0,0,0
 319,taeq_uk,0,0,0
 75,Libros de Control de Bloqueos,0,0,0
 323,Toke para identificación de Ubicaciones,0,0,0
-78,Personas,0,0,0
 324,tokn_id,0,0,0
+78,Personas,0,0,0
 325,PK18,0,0,0
 326,tokn_ubic_fk,0,0,0
-81,Responsables asociados al Libro de Control de Bloqueos,0,0,0
 327,rcb_tokn,0,0,0
+81,Responsables asociados al Libro de Control de Bloqueos,0,0,0
 328,tokn_pk,0,0,0
 329,cand_ubic_fk,0,0,0
-84,TAGs de los Equipos,0,0,0
 330,cand_serie,0,0,0
+84,TAGs de los Equipos,0,0,0
 331,cand_usoc_fk,0,0,0
 332,dval_id_uso,0,0,0
-87,Trabajadores,0,0,0
 333,cand_pers_fk,0,0,0
+334,cand_seri,0,0,0
+87,Trabajadores,0,0,0
 92,CABL_ESTA_FK,0,0,0
 104,EQPO_ESTA_FK,0,0,0
 105,ESTA_UBIC_FK,0,0,0
@@ -3005,9 +3006,9 @@ StringUsage_Id,UniqueObject_Id,StringUsageType_Id,String_Id,Row_Time_Stamp
 1160,3168,15,177,0
 149,557,15,134,0
 1161,3168,14,177,0
-150,565,14,330,0
+150,565,14,334,0
 1162,3170,15,181,0
-151,565,15,330,0
+151,565,15,334,0
 1163,3170,14,181,0
 152,571,14,138,0
 1164,3172,15,120,0
@@ -3230,7 +3231,7 @@ StringUsage_Id,UniqueObject_Id,StringUsageType_Id,String_Id,Row_Time_Stamp
 281,910,15,185,0
 1293,3402,14,330,0
 282,918,14,187,0
-1294,3402,15,330,0
+1294,3402,15,334,0
 283,918,15,187,0
 1295,3403,14,140,0
 284,926,14,189,0
@@ -3732,7 +3733,7 @@ TableStorage
 DiagramId,ModelId,EntityId,TableStorage_ID,Entity_ID,Location,FillfactorPercent,MaximumRowsPerPage,PercentFree,PercentUsed,MinimumExtents,MaximumExtents,InitialExtentSize,NextExtentSize,ExtentGrowthFactor,MinimumTransactions,MaximumTransactions,LockModeSetting,RowCount,DataGrowth,GrowthRate,GrowthType,GrowthPeriod,MaximumSize,Global_User_ID,Row_Time_Stamp
 1,2,1,34,34,"",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,"",0,0,0,"","",0,2864,0
 1,2,2,35,35,recob_dat,-1,-1,-1,-1,-1,-1,-2,-2,-1,-1,-1,"",0,0,0,"","",0,2883,0
-1,2,3,36,36,recob_dat,-1,-1,-1,-1,-1,-1,-2,-2,-1,-1,-1,"",0,0,0,"","",0,2904,0
+1,2,3,36,36,recob_dat,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,"",0,0,0,"","",0,2904,0
 1,2,4,37,37,recob_dat,-1,-1,-1,-1,-1,-1,-2,-2,-1,-1,-1,"",0,0,0,"","",0,2923,0
 1,2,5,38,38,recob_dat,-1,-1,-1,-1,-1,-1,-2,-2,-1,-1,-1,"",0,0,0,"","",0,2940,0
 1,2,6,39,39,recob_dat,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,"",0,0,0,"","",0,2967,0
