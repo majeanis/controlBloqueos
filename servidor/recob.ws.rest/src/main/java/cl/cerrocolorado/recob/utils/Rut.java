@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.utils;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -151,6 +152,25 @@ public class Rut implements Serializable, Comparable<Rut>
         return n + g + d;
     }
 
+    /**
+     * Revisa si el objeto RUT está vacío, en base a los siguientes criterios:
+     *    rut == null : true
+     *    numero == null || digito == null : true
+     *    digito == "" || digito == " " : true
+     * @param rut       Objeto Rut que será evaluado
+     * @return          true si el objeto Rut está vacío
+     */
+    public static boolean isBlank(Rut rut)
+    {
+        if( rut == null )
+            return true;
+        
+        if( rut.numero == null || rut.digito == null )
+            return true;
+        
+        return StringUtils.isBlank(rut.digito);
+    }
+    
     public Rut(Rut another)
     {
         if (another == null)
@@ -184,6 +204,7 @@ public class Rut implements Serializable, Comparable<Rut>
         return toText(this);
     }
 
+    @Override
     public String toString()
     {
         return "[numero=" + numero + ",digito=" + digito + "]";
@@ -200,7 +221,7 @@ public class Rut implements Serializable, Comparable<Rut>
         String d1 = (this.digito == null ? "" : this.digito);
         String d2 = (another.digito == null ? "" : another.digito);
 
-        if (n1 == n2 && d1.equalsIgnoreCase(d2))
+        if (Objects.equals(n1, n2) && d1.equalsIgnoreCase(d2))
             return 0;
         else if (n2 < n1)
             return -1;
@@ -214,6 +235,7 @@ public class Rut implements Serializable, Comparable<Rut>
         return compareTo(rut);
     }
 
+    @Override
     public boolean equals(Object anObject)
     {
         if (this == anObject)
@@ -227,18 +249,22 @@ public class Rut implements Serializable, Comparable<Rut>
         return false;
     }
 
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 11 * hash + Objects.hashCode(this.numero);
+        hash = 11 * hash + Objects.hashCode(this.digito);
+        return hash;
+    }
+
     public boolean isValid()
     {
         return isValid(this);
     }
 
-    /**
-     * Determina si el objeto tiene alguna de sus propiedades en NULL (número o dígito)
-     * 
-     * @return  true si el número o el dígito están en NULL
-     */
-    public boolean isEmpty()
+    public boolean isBlank()
     {
-        return numero == null || digito == null;
+        return isBlank(this);
     }
 }
