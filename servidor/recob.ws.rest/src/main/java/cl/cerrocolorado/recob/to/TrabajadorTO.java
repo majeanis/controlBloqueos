@@ -1,16 +1,24 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.BaseTO;
-import cl.cerrocolorado.recob.utils.Rut;
 
 public class TrabajadorTO extends BaseTO
 {
-    private Rut rut;
-    private String nombre;
+    private PersonaTO persona;
     private String  cargo;
     private Boolean tieneCursoBloqueo;
     private Boolean vigente;
     private EmpresaTO empresa;
+
+    public PersonaTO getPersona()
+    {
+        return persona;
+    }
+
+    public void setPersona(PersonaTO persona)
+    {
+        this.persona = persona;
+    }
 
     public String getCargo() {
         return cargo;
@@ -34,22 +42,6 @@ public class TrabajadorTO extends BaseTO
 
     public void setEmpresa(EmpresaTO empresa) {
         this.empresa = empresa;
-    }
-    
-    public Rut getRut() {
-        return rut;
-    }
-
-    public void setRut(Rut rut) {
-        this.rut = rut;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public Boolean getVigente() {

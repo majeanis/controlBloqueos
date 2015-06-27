@@ -5,20 +5,17 @@
  */
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
-
 /**
  *
  * @author mauricio.camara
  */
-public class UbicacionTO extends BaseTO
+public class ValorDominioTO
 {
     private Integer id;
-    private String nombre;
-    private String descripcion;
+    private String  codigo;
+    private String  nombre;
     private Boolean vigente;
-    private String token;
-    private EstacionTO estacion;
+    private String  dominio;
 
     public Integer getId()
     {
@@ -28,6 +25,16 @@ public class UbicacionTO extends BaseTO
     public void setId(Integer id)
     {
         this.id = id;
+    }
+
+    public String getCodigo()
+    {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo)
+    {
+        this.codigo = codigo;
     }
 
     public String getNombre()
@@ -50,33 +57,14 @@ public class UbicacionTO extends BaseTO
         this.vigente = vigente;
     }
 
-    public String getDescripcion()
+    public String getDominio()
     {
-        return descripcion;
+        return dominio;
     }
 
-    public void setDescripcion(String descripcion)
+    public void setDominio(String dominio)
     {
-        this.descripcion = descripcion;
+        this.dominio = dominio;
     }
 
-    public EstacionTO getEstacion()
-    {
-        return estacion;
-    }
-
-    public void setEstacion(EstacionTO estacion)
-    {
-        this.estacion = estacion;
-    }
-
-    public String getToken()
-    {
-        return token;
-    }
-
-    public void setToken(String token)
-    {
-        this.token = token;
-    }
 }
