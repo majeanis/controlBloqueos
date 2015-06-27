@@ -2,6 +2,7 @@ package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,87 +18,70 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CajaBloqueoPO
 {
-    private static Logger logger = LogManager.getLogger( CajaBloqueoPO.class );
+    private static final Logger logger = LogManager.getLogger( CajaBloqueoPO.class );
     
     @Autowired
     private RecobMap mapper;
     
-    public CajaBloqueoTO guardarCajaBloqueo(CajaBloqueoTO caja)
+    public CajaBloqueoTO guardar(CajaBloqueoTO caja)
     {
-        logger.info ("guardarCajaBloqueo[INI] caja: {}", caja);
+        logger.info ("guardar[INI] caja: {}", caja);
         
         if( caja.getId() == null )
         {
             mapper.insertCajaBloqueo( caja );
-            logger.debug("guardarCajaBloqueo[001] despues de insertar la caja: {}", caja);
+            logger.debug("guardar[001] despues de insertar la caja: {}", caja);
         } else
         {
             mapper.updateCajaBloqueo( caja );
-            logger.debug("guardarCajaBloqueo[002] despues de actualizar la caja: {}", caja);
+            logger.debug("guardar[002] despues de actualizar la caja: {}", caja);
         }
         
-        logger.info ("guardarCajaBloqueo[FIN] caja: {}", caja);
-        return caja;
-    }
-    
-    public CajaBloqueoTO getCajaBloqueo(int idCaja)
-    {
-        logger.info ("getCajaBloqueo[INI] idCaja: {}", idCaja);
-        
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("idCaja", idCaja);
-        logger.debug ("getCajaBloqueo[001] parametros: {}", params);
-        
-        List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
-        logger.debug ("getCajaBloqueo[002] despues de ejecutar el select: {}", cajas.size() );
-        
-        if(cajas.size() == 0)
-        {
-            logger.info ("getCajaBloqueo[FIN] no se encontró registro para Caja: {}", idCaja);
-            return null;
-        }
-        
-        CajaBloqueoTO caja = cajas.get(0);
-        logger.info ("getCajaBloqueo[FIN] caja encontrada: {}", caja );
+        logger.info ("guardar[FIN] caja: {}", caja);
         return caja;
     }
 
-    public CajaBloqueoTO getCajaBloqueo(int idUbicacion, int numeroCaja)
+    public void eliminar(CajaBloqueoTO caja)
     {
-        logger.info ("getCajaBloqueo[INI] idUbicacion: {}", idUbicacion);
-        logger.info ("getCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("eliminar[INI] caja: {}", caja );
+        mapper.deleteCajaBloqueo(caja);
+        logger.info ("eliminar[FIN] despues de eliminar a la caja: {}", caja );
+    }
+
+    public CajaBloqueoTO get(CajaBloqueoTO caja)
+    {
+        logger.info ("get[INI] caja: {}", caja );
         
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("idUbicacion", idUbicacion);
-        params.put("numeroCaja", numeroCaja);
-        logger.debug ("getCajaBloqueo[001] parametros: {}", params);
+        Map<String, Object> params = new HashMap<>();
+        params.put( "ubicacion", caja.getUbicacion() );
+        params.put( "caja", caja );
+        logger.debug("get[001] parametros: {}", params);
         
         List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
-        logger.debug ("getCajaBloqueo[002] despues de ejecutar el select: {}", cajas.size() );
+        logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
         
-        if(cajas.size() == 0)
+        if(cajas.isEmpty())
         {
-            logger.info ("getCajaBloqueo[FIN] no se encontró registro para Caja: Ubicacion[{}] - Caja[{}]", idUbicacion, numeroCaja);
+            logger.info ("get[FIN] no se encontró registro de la caja: {}", params );
             return null;
         }
         
-        CajaBloqueoTO caja = cajas.get(0);
-        logger.info ("getCajaBloqueo[FIN] caja encontrada: {}", caja );
-        return caja;
+        logger.info ("get[FIN] caja encontrada: {}", cajas.get(0) );
+        return cajas.get(0);
     }
     
-    public List<CajaBloqueoTO> getCajasBloqueos(int idUbicacion)
+    public List<CajaBloqueoTO> get(UbicacionTO ubicacion)
     {
-        logger.info ("getCajasBloqueos[INI] idUbicacion: {}", idUbicacion);
+        logger.info ("get[INI] ubicacion: {}", ubicacion);
         
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("idUbicacion", idUbicacion);
-        logger.debug("getCajasBloqueos[001] parametros: {}", params);
-        
-        List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
-        logger.debug("getCajaBloqueo[002] despues de ejecutar el select: {}", cajas.size() );
+        Map<String, Object> params = new HashMap<>();
+        params.put("ubicacion", ubicacion);
+        logger.debug("get[001] parametros: {}", params);
 
-        logger.info ("getCajaBloqueo[FIN] cajas: {}", cajas );
+        List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
+        logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
+
+        logger.info ("get[FIN] cajas: {}", cajas );
         return cajas;
     }
 }

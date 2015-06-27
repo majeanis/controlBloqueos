@@ -1,6 +1,9 @@
 package cl.cerrocolorado.recob.bo;
 
+import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.utils.MensajeError;
 import java.util.List;
 
 /**
@@ -9,11 +12,11 @@ import java.util.List;
  */
 public interface CajaBloqueoBO
 {
-    public CajaBloqueoTO guardarCajaBloqueo(CajaBloqueoTO cajaBloqueo);
+    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws MensajeError;
 
-    public CajaBloqueoTO getCajaBloqueo(int idCaja);
+    public Respuesta<CajaBloqueoTO> eliminar(CajaBloqueoTO key) throws MensajeError;
 
-    public CajaBloqueoTO getCajaBloqueo(int idUbicacion, int numeroCaja);
+    public CajaBloqueoTO get(CajaBloqueoTO key);
 
-    public List<CajaBloqueoTO> getCajasBloqueos(int idUbicacion);
+    public List<CajaBloqueoTO> get(UbicacionTO ubicacion);
 }
