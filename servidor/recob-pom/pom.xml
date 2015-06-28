@@ -10,11 +10,6 @@
 		<name>CERRO COLORADO</name>
 	</organization>
     
-    <modules>
-        <module>../recob-rest</module>
-        <module>../recob-ear</module>
-    </modules>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release>1.0.0</release>
@@ -196,4 +191,8 @@
 			</plugin>			
 		</plugins>
     </build>
+    <modules>
+    	<module>../recob-ear</module>
+    	<module>../recob-rest</module>
+    </modules>
 </project>
