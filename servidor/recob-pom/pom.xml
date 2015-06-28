@@ -107,6 +107,12 @@
 				<artifactId>gson</artifactId>
 				<version>2.3.1</version>
 			</dependency>
+            <dependency>
+            	<groupId>cl.cerrocolorado.recob</groupId>
+            	<artifactId>recob-rest</artifactId>
+            	<version>1.0.0</version>
+            	<type>war</type>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 

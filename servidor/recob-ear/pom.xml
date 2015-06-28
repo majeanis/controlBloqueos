@@ -11,4 +11,35 @@
         <version>1.0.0</version>
     </parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>cl.cerrocolorado.recob</groupId>
+			<artifactId>recob-rest</artifactId>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>recop-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<modules>
+						<webModule>
+							<groupId>cl.cerrocolorado.recob</groupId>
+							<artifactId>recob-rest</artifactId>
+							<contextRoot>/recobWS/rest</contextRoot>
+						</webModule>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
