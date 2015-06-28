@@ -1,0 +1,51 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cl.cerrocolorado.recob.to;
+
+import cl.cerrocolorado.recob.utils.BaseTO;
+
+/**
+ *
+ * @author mauricio.camara
+ */
+public class EstacionTO extends BaseTO
+{
+	private static final long serialVersionUID = 1L;
+	
+    private Integer id;
+    private String nombre;
+    private Boolean vigente;
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
+
+    public String getNombre()
+    {
+        return nombre;
+    }
+
+    public void setNombre(String nombre)
+    {
+        this.nombre = nombre;
+    }
+
+    public Boolean getVigente()
+    {
+        return vigente;
+    }
+
+    public void setVigente(Boolean vigente)
+    {
+        this.vigente = vigente;
+    }
+}
