@@ -42,7 +42,7 @@ public class TestBO
         
         bo.guardar(caja);
         
-        List<CajaBloqueoTO> cajas = bo.get(caja.getUbicacion());
+        List<CajaBloqueoTO> cajas = bo.getVigentes(caja.getUbicacion());
         System.out.println("retorno:" + cajas);
         
         

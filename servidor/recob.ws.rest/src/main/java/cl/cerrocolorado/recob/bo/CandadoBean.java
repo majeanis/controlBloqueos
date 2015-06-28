@@ -8,7 +8,6 @@ import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.utils.MensajeError;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
@@ -41,7 +40,7 @@ public class CandadoBean implements CandadoBO
 
     @Transaccional
     @Override
-    public Respuesta<CandadoTO> guardar(CandadoTO candado) throws MensajeError
+    public Respuesta<CandadoTO> guardar(CandadoTO candado)
     {
         logger.info ("guardar[INI] candadoo: {}", candado);
         
@@ -115,7 +114,7 @@ public class CandadoBean implements CandadoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CandadoTO pkCandado) throws MensajeError
+    public Resultado eliminar(CandadoTO pkCandado)
     {
         logger.info ("eliminar[INI] candado: {}", pkCandado );
         Resultado rtdo = new ResultadoProceso();
@@ -142,10 +141,10 @@ public class CandadoBean implements CandadoBO
         }
         
         // Si llegamos a este punto, entonces es posible la eliminación
-        candadoPO.eliminar(pkCandado);
-        logger.debug("eliminar[001] despues de eliminar el candado: {}", pkCandado );
+        candadoPO.eliminar(candado);
+        logger.debug("eliminar[001] despues de eliminar el candado: {}", candado );
         
-        rtdo.addMensaje(CandadoBean.class, "Candado con número de serie #{1} eliminado con éxito", pkCandado.getSerie() );
+        rtdo.addMensaje(CandadoBean.class, "Candado con número de serie #{1} eliminado con éxito", candado.getSerie() );
         logger.info ("eliminar[FIN] candado eliminado con exito: {} {}", rtdo, candado );
         return rtdo;
     }
@@ -162,36 +161,36 @@ public class CandadoBean implements CandadoBO
     }
 
     @Override
-    public List<CandadoTO> get(UbicacionTO pkUbicacion)
+    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion)
     {
-        logger.info ("get[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
 
         List<CandadoTO> candados = candadoPO.get(pkUbicacion, true);
         
-        logger.info ("get[FIN] cantidad registros encontrados: {}", candados.size() );
+        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
     }
 
     @Override
-    public List<CandadoTO> get(UbicacionTO pkUbicacion, PersonaTO pkPersona)
+    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona)
     {
-        logger.info ("get[INI] ubicacion: {}", pkUbicacion );
-        logger.info ("get[INI] persona: {}", pkPersona );
+        logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getVigentes[INI] persona: {}", pkPersona );
         
         List<CandadoTO> candados = candadoPO.get(pkUbicacion, pkPersona);
         
-        logger.info ("get[FIN] cantidad registros encontrados: {}", candados.size() );
+        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
     }
 
     @Override
-    public List<CandadoTO> getAll(UbicacionTO pkUbicacion)
+    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion)
     {
-        logger.info ("getAll[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
 
         List<CandadoTO> candados = candadoPO.get(pkUbicacion, (Boolean) null);
         
-        logger.info ("getAll[FIN] cantidad registros encontrados: {}", candados.size() );
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
     }
 }

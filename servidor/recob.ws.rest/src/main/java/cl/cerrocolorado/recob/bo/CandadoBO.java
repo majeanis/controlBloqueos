@@ -4,7 +4,6 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.utils.MensajeError;
 import cl.cerrocolorado.recob.utils.Resultado;
 import java.util.List;
 
@@ -14,15 +13,15 @@ import java.util.List;
  */
 public interface CandadoBO
 {
-    public Respuesta<CandadoTO> guardar(CandadoTO candado) throws MensajeError;
+    public Respuesta<CandadoTO> guardar(CandadoTO candado);
 
-    public Resultado eliminar(CandadoTO pkCandado) throws MensajeError;
+    public Resultado eliminar(CandadoTO pkCandado);
 
     public CandadoTO get(CandadoTO pkCandado);
 
-    public List<CandadoTO> get(UbicacionTO pkUbicacion);
+    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion);
     
-    public List<CandadoTO> get(UbicacionTO pkUbicacion, PersonaTO pkPersona);
+    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
     
-    public List<CandadoTO> getAll(UbicacionTO pkUbicacion);
+    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion);
 }

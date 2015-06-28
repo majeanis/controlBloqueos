@@ -1,21 +1,18 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.CandadoTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author mauricio.camara
  */
+@Scope("singleton")
 @Repository
 public class UbicacionPO
 {

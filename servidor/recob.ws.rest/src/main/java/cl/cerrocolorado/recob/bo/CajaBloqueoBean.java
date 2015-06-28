@@ -6,7 +6,6 @@ import cl.cerrocolorado.recob.po.CajaBloqueoPO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.utils.MensajeError;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import java.util.List;
@@ -34,7 +33,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
     @Transaccional
     @Override
-    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws MensajeError
+    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo)
     {
         logger.info ("guardar[INI] cajaBloqueo: {}", cajaBloqueo);
         
@@ -75,7 +74,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return new Respuesta<>(rtdo);
         }
         
-        // Buscamoa la preexistencia de la caja
+        // Buscamos la preexistencia de la caja
         CajaBloqueoTO otraCaja = cajaPO.get( cajaBloqueo );
         if( otraCaja != null ) 
         {
@@ -91,7 +90,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CajaBloqueoTO pkCaja) throws MensajeError
+    public Resultado eliminar(CajaBloqueoTO pkCaja)
     {
         logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
@@ -137,24 +136,24 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     }
 
     @Override
-    public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion)
+    public List<CajaBloqueoTO> getVigentes(UbicacionTO pkUbicacion)
     {
-        logger.info ("get[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
 
         List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, true);
         
-        logger.info ("get[FIN] cantidad registros encontrados: {}", cajas.size() );
+        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;
     }
 
     @Override
-    public List<CajaBloqueoTO> getAll(UbicacionTO pkUbicacion)
+    public List<CajaBloqueoTO> getTodos(UbicacionTO pkUbicacion)
     {
-        logger.info ("getAll[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
 
         List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, null);
         
-        logger.info ("getAll[FIN] cantidad registros encontrados: {}", cajas.size() );
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;
     }
 }
