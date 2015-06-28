@@ -41,23 +41,23 @@ public class CajaBloqueoPO
         return caja;
     }
 
-    public void eliminar(CajaBloqueoTO caja)
+    public void eliminar(CajaBloqueoTO pkCaja)
     {
-        logger.info ("eliminar[INI] caja: {}", caja );
-        mapper.deleteCajaBloqueo(caja);
-        logger.info ("eliminar[FIN] despues de eliminar a la caja: {}", caja );
+        logger.info ("eliminar[INI] pkCaja: {}", pkCaja );
+        mapper.deleteCajaBloqueo(pkCaja);
+        logger.info ("eliminar[FIN] despues de eliminar a la caja: {}", pkCaja );
     }
 
-    public CajaBloqueoTO get(CajaBloqueoTO caja)
+    public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
     {
-        logger.info ("get[INI] caja: {}", caja );
+        logger.info ("get[INI] pkCaja: {}", pkCaja );
         
         Map<String, Object> params = new HashMap<>();
-        params.put( "ubicacion", caja.getUbicacion() );
-        params.put( "caja", caja );
+        params.put( "ubicacion", pkCaja.getUbicacion() );
+        params.put( "caja", pkCaja );
         logger.debug("get[001] parametros: {}", params);
         
-        List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
+        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( params );
         logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
         
         if(cajas.isEmpty())
@@ -70,15 +70,15 @@ public class CajaBloqueoPO
         return cajas.get(0);
     }
     
-    public List<CajaBloqueoTO> get(UbicacionTO ubicacion)
+    public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion)
     {
-        logger.info ("get[INI] ubicacion: {}", ubicacion);
+        logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
         
         Map<String, Object> params = new HashMap<>();
-        params.put("ubicacion", ubicacion);
+        params.put("ubicacion", pkUbicacion);
         logger.debug("get[001] parametros: {}", params);
 
-        List<CajaBloqueoTO> cajas = (List<CajaBloqueoTO>) mapper.selectCajasBloqueos( params );
+        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( params );
         logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
 
         logger.info ("get[FIN] cajas: {}", cajas );

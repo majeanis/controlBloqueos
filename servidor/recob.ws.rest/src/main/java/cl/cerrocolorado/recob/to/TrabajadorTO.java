@@ -1,24 +1,11 @@
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
-
-public class TrabajadorTO extends BaseTO
+public class TrabajadorTO extends PersonaTO
 {
-    private PersonaTO persona;
     private String  cargo;
     private Boolean tieneCursoBloqueo;
     private Boolean vigente;
     private EmpresaTO empresa;
-
-    public PersonaTO getPersona()
-    {
-        return persona;
-    }
-
-    public void setPersona(PersonaTO persona)
-    {
-        this.persona = persona;
-    }
 
     public String getCargo() {
         return cargo;

@@ -13,6 +13,7 @@
         <result property="nombre" column="ubic_nomb" />
         <result property="descripcion" column="ubic_desc" />
         <result property="vigente" column="ubic_vige" />
+        <result property="token" column="tokn_id" />
         <association property="estacion" resultMap="estacionMap" />
     </resultMap>
 
@@ -24,7 +25,65 @@
         <association property="ubicacion" resultMap="ubicacionMap" />
     </resultMap> 
 
-    <select id="selectCajasBloqueos" parameterType="map" resultType="CajaBloqueoTO" resultMap="cajaBloqueoMap" >
+    <resultMap id="usoCandadoMap" type="ValorDominioTO" >
+        <id property="id" column="dval_id" />
+        <result property="codigo" column="dval_codi" />
+        <result property="nombre" column="dval_nomb" />
+        <result property="vigente" column="dval_vige" />
+        <result property="dominio" column="dval_domi" />
+    </resultMap>
+    
+    <resultMap id="personaMap" type="PersonaTO" >
+        <id property="id" column="pers_id" />
+        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" />
+        <result property="nombre" column="pers_nomb" />
+    </resultMap>
+
+    <resultMap id="empresaMap" type="EmpresaTO" >
+        <id property="id" column="empr_id" />
+        <result property="rut" column="empr_rut" typeHandler="RutTypeHandler" />
+        <result property="nombre" column="empr_nomb" />
+        <result property="vigente" column="empr_vige" />
+    </resultMap>
+
+    <resultMap id="trabajadorMap" type="TrabajadorTO" >
+        <id property="id" column="pers_id" />
+        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" />
+        <result property="nombre" column="pers_nomb" />
+        <result property="cargo" column="trab_cargo" />
+        <result property="tieneCursoBloqueo" column="trab_curs_bloq" />
+        <result property="vigente" column="trab_vige" />
+        <association property="empresa" resultMap="empresaMap" />
+    </resultMap>
+    
+    <resultMap id="candadoMap" type="CandadoTO" >
+        <id property="id" column="cand_id" />
+        <result property="serie" column="cand_serie" />
+        <result property="vigente" column="cand_vige" />
+        <association property="uso" resultMap="usoCandadoMap" />
+        <association property="persona" resultMap="personaMap" />
+        <association property="ubicacion" resultMap="ubicacionMap" />
+    </resultMap>
+
+    <select id="selectUbicacion" parameterType="UbicacionTO" resultMap="ubicacionMap" >
+        select a.ubic_id
+              ,a.ubic_nomb
+              ,a.ubic_desc
+              ,a.ubic_vige
+              ,b.tokn_id
+        from   rcb_ubic a inner join rcb_tokn b
+           on (a.ubic_id = b.ubic_id)
+        where  a.ubic_vige = true
+        
+        <if test="ubicacion.token != null" >
+            and b.tokn_id = #{ubicacion.token}
+        </if>
+        <if test="ubicacion.id != null" >
+            and a.ubic_id = #{ubicacion.id}
+        </if>
+    </select>
+    
+    <select id="selectCajasBloqueos" parameterType="map" resultMap="cajaBloqueoMap" >
         select a.cabl_id
               ,a.cabl_nomb
               ,a.cabl_nume
@@ -38,19 +97,21 @@
               ,c.estc_vige
         from   rcb_caja_bloq a inner join rcb_ubic b
            on (a.ubic_id = b.ubic_id) inner join rcb_estc c
-           on (b.estc_id = c.estc_id)
+           on (b.estc_id = c.estc_id) 
         <where>
-            <if test = "idUbicacion != null" >
-                b.ubic_id = #{idUbicacion}
-            </if>
-
-            <if test = "numeroCaja != null" >
-                and a.cabl_nume = #{numeroCaja}
-            </if>     
-
-            <if test = "idCaja != null" >
-                and a.cabl_id = #{idCaja}            
-            </if>
+            <choose>
+                <when test="caja.id != null" >
+                    and a.cabl_id = #{caja.id}
+                </when>
+                <when test="caja.numero != null and ubicacion.id != null" >
+                    and a.cabl_nume = #{caja.numero}
+                    and a.ubic_id   = #{ubicacion.id}
+                </when>
+                <when test="ubicacion.id != null" >
+                    and a.ubic_id   = #{ubicacion.id}
+                    and a.cabl_vige = true
+                </when>
+            </choose>            
         </where>
         
         order by b.ubic_nomb
@@ -73,5 +134,175 @@
               ,ubic_id   = #{ubicacion.id}
               ,audi_fech_modi = localtimestamp
         where  cabl_id = #{id}
+    </update>
+
+    <delete id="deleteCajaBloqueo" parameterType="CajaBloqueoTO" >
+        delete from rcb_caja_bloq
+        where cabl_id   = #{id}
+    </delete>
+    
+    <select id="selectCandados" parameterType="map" resultMap="candadoMap" >
+        select a.cand_id
+              ,a.cand_seri
+              ,a.cand_vige
+              ,b.dval_id
+              ,b.dval_codi
+              ,b.dval_nomb
+              ,b.dval_vige
+              ,b.dval_domi
+              ,c.pers_id
+              ,c.pers_rut
+              ,c.pers_nomb
+              ,d.ubic_id
+              ,d.ubic_nomb
+              ,d.ubic_desc
+              ,d.ubic_vige
+              ,e.tokn_id
+        from   rcb_cand a inner join rcb_domi_valo b
+           on (a.dval_id_uso = b.dval_id) left join rcb_pers c
+           on (a.pers_id = c.pers_id) inner join rcb_ubic d
+           on (a.ubic_id = d.ubic_id) inner join rcb_tokn e
+           on (d.tokn_id = e.tokn_id)
+        
+        <where>
+            <choose>
+                <when test="candado.id != null" >
+                    a.cand_id = #{candado.id}
+                </when>
+                <when test="candado.serie != null and ubicacion.serie != null" >
+                    and a.cand_serie = #{candado.serie}
+                    and a.ubic_id    = #{ubicacion.id}
+                </when>
+                <when test="persona.rut != null" >
+                    and c.pers_rut  = #{persona.rut}
+                    and a.cand_vige = true
+                </when>
+                <when test="ubicacion.id != null" >
+                    and a.ubic_id    = #{ubicacion.id}
+                    and a.cand_vige  = true
+                </when>
+            </choose>
+        </where>
+        
+        order by a.ubic_id
+                ,a.cand_seri
+    </select>    
+    
+    <insert id="insertCandado" parameterType="CandadoTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_cand(cand_id, cand_seri, cand_vige, dval_id_uso, pers_id, ubic_id, audi_fech_crea)
+            values(#{id},#{serie},#{vigente},#{uso.id},#{persona.id},#{ubicacion.id},localtimestamp)
+    </insert>
+
+    <update id="updateCandado" parameterType="CandadoTO" >
+        update rcb_cand set
+               cand_seri   = #{serie}
+              ,cand_vige   = #{vigente}
+              ,dval_id_uso = #{uso.id}
+              ,pers_id     = #{persona.id}
+              ,ubic_id     = #{ubicacion.id}
+              ,audi_fech_modi = localtimestamp
+        where  cand_id = #{id}
+    </update>
+
+    <delete id="deleteCandado" parameterType="CandadoTO" >
+        delete from rcb_cand
+        where cand_id = #{id}
+    </delete>
+    
+    <select id="selectUbicacion" parameterType="map" resultMap="ubicacionMap" >
+        select a.ubic_id
+              ,a.ubic_nomb
+              ,a.ubic_desc
+              ,a.ubic_vige
+              ,b.estc_id
+              ,b.estc_nomb
+              ,b.estc_vige
+        from   rcb_ubic a inner join rcb_estc b
+           on (a.estc_id = b.estc_id)
+        where  a.ubic_id = #{ubicacion.id}
+    </select>
+    
+    <select id="selectPersona" parameterType="map" resultMap="personaMap" >
+        select a.pers_id
+              ,a.pers_rut
+              ,a.pers_nomb
+        from   rcb_pers a
+        <where>
+            <choose>
+                <when test = "persona.id != null" >
+                    a.pers_id  = #{persona.id}
+                </when>
+                <when test = "persona.rut != null" >
+                    a.pers_rut = #{persona.rut}
+                </when>
+            </choose>
+        </where>
+        order by a.pers_rut
+    </select>
+    
+    <insert id="insertPersona" parameterType="PersonaTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_pers(pers_id, pers_rut, pers_nomb, audi_fech_crea)
+            values(#{id},#{rut},#{nombre},localtimestamp)
+    </insert>
+    
+    <update id="updatePersona" parameterType="PersonaTO" >
+        update rcb_pers set
+               pers_rut       = #{rut}
+              ,pers_nomb      = #{nombre} 
+              ,audi_fech_modi = localtimestamp
+        where  pers_id = #{id}
+    </update>
+    
+    <select id="selectTrabajador" parameterType="map" resultMap="trabajadorMap" >
+        select b.pers_id
+              ,b.pers_rut
+              ,b.pers_nomb
+              ,a.trab_carg
+              ,a.trab_curs_bloq
+              ,a.trab_vige
+              ,c.empr_id
+              ,c.empr_rut
+              ,c.empr_vige
+        from   rcb_trab a inner join rcb_pers b
+           on (a.pers_id = b.pers_id) inner join rcb_empr c
+           on (a.empr_id = c.empr_id)
+        <where>
+            <choose test = "trabajador.id != null" >
+                b.pers_id = #{trabajador.id}
+            </choose>
+            <choose test = "trabajador.rut != null" >
+                and b.pers_rut = #{trabajador.rut}
+            </choose>
+            <choose test = "empresa.id != null" >
+                and c.empr_id   = #{empresa.id}
+                and a.trab_vige = true
+            </choose>
+            <choose test = "empresa.rut != null" >
+                and c.empr_rut  = #{empresa.rut}
+                and a.trab_vige = true
+            </choose>
+        </where>
+        order by c.empr_rut
+                ,b.pers_rut
+    </select>
+    
+    <insert id="insertTrabajador" parameterType="TrabajadorTO" >
+        insert into rcb_trab(pers_id, empr_id, trab_carg, trab_curs_bloq, trab_vige, audi_fech_crea)
+            values(#{id},#{empresa.id},#{cargo},#{tieneCursoBloqueo},#{vigente},localtimestamp)
+    </insert>
+    
+    <update id="updateTrabajador" parameterType="TrabajadorTO" >
+        update rcb_trab set
+               trab_carg      = #{cargo}
+              ,trab_curs_bloq = #{tieneCursoBloqueo}
+              ,trab_vige      = #{vigente}
+        where  pers_id = #{id}
+          and  empr_id = #{empresa.id}
     </update>
 </mapper>

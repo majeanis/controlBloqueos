@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.bo;
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.po.CajaBloqueoPO;
+import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.MensajeError;
@@ -27,6 +28,9 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     
     @Autowired
     private CajaBloqueoPO cajaPO;
+
+    @Autowired
+    private UbicacionPO ubicacionPO;
 
     @Transaccional
     @Override
@@ -59,6 +63,12 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             rtdo.addError( CajaBloqueoBean.class, "Caja debe estar asociada a una Ubicación" );
         }
 
+        UbicacionTO ubicacion = ubicacionPO.get(cajaBloqueo.getUbicacion());
+        if( ubicacion == null )
+        {
+            rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
+        }
+
         if( !rtdo.esExitoso() )
         {
             logger.info ("guardar[FIN] saliendo del método por campos en NULL: {}", rtdo );
@@ -81,30 +91,30 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     
     @Transaccional
     @Override
-    public Respuesta<CajaBloqueoTO> eliminar(CajaBloqueoTO key) throws MensajeError
+    public Resultado eliminar(CajaBloqueoTO pkCaja) throws MensajeError
     {
-        logger.info ("eliminar[INI] caja: {}", key );
+        logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
         
-        if( key.getNumero() == null )
+        if( pkCaja.getNumero() == null )
         {
             rtdo.addError(CajaBloqueoBean.class, "Debe informar el N° de la Caja" );
         }
-        if( key.getUbicacion() == null )
+        if( pkCaja.getUbicacion() == null )
         {
             rtdo.addError(CajaBloqueoBean.class, "Debe informar la Ubicación de la Caja" );
-        } else if( key.getUbicacion().getId() == null )
+        } else if( pkCaja.getUbicacion().getId() == null )
         {
             rtdo.addError(CajaBloqueoBean.class, "Debe informar la Ubicación de la Caja" );
         }
         
-        CajaBloqueoTO caja = cajaPO.get(key);
+        CajaBloqueoTO caja = cajaPO.get(pkCaja);
         
         if( caja == null )
         {
-            rtdo.addError(CajaBloqueoBean.class, "No existe Caja N° #{1}", String.valueOf( key.getNumero() ) );
-            logger.info ("eliminar[FIN] no existe caja: {}", key );
-            return new Respuesta<>(rtdo);
+            rtdo.addError(CajaBloqueoBean.class, "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
+            logger.info ("eliminar[FIN] no existe caja: {}", pkCaja );
+            return rtdo;
         }
         
         cajaPO.eliminar(caja);
@@ -112,26 +122,26 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         
         rtdo.addMensaje(CajaBloqueoBean.class, "Caja N° #{1} eliminada con éxito", String.valueOf( caja.getNumero() ) );
         logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, caja );
-        return new Respuesta<>(rtdo);
+        return rtdo;
     }
     
     @Override
-    public CajaBloqueoTO get(CajaBloqueoTO key)
+    public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
     {
-        logger.info ("get[INI] caja: {}", key );
+        logger.info ("get[INI] caja: {}", pkCaja );
 
-        CajaBloqueoTO caja = cajaPO.get(key);
+        CajaBloqueoTO caja = cajaPO.get(pkCaja);
         
         logger.info ("get[FIN] resultado busqueda: {}", caja );
         return caja;
     }
 
     @Override
-    public List<CajaBloqueoTO> get(UbicacionTO ubicacion)
+    public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion)
     {
-        logger.info ("get[INI] ubicacion: {}", ubicacion );
+        logger.info ("get[INI] ubicacion: {}", pkUbicacion );
 
-        List<CajaBloqueoTO> cajas = cajaPO.get(ubicacion);
+        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion);
         
         logger.info ("get[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;
