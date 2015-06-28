@@ -5,7 +5,6 @@
 <Workspace>
 	<Local Expanded="Yes" Name="Registro y Control de Bloqueos">
 		<Model Expanded="Yes" ID="{20249158-662D-45B4-B7B3-0C5C82B21115}" Name="Modelo Logico" Type="{5F45F978-C4F3-4E35-A3FC-AF3318663A0F}" URL="ModeloLogico-ControlDeBloqueos.ldm"/>
-		<Model Expanded="Yes" ID="{51368684-B1F0-421D-8F1D-2AEBD05B0333}" Loaded="No" Name="Modelo en PostgreSql" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="Modelo en PostgreSql.pdm"/>
-		<Model ID="{748462D6-7E3E-4B37-BEBA-002ADDF8BEFF}" Loaded="No" Name="Casos de Uso Control de Bloqueos" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="CasosDeUso.oom"/>
+		<Model ID="{748462D6-7E3E-4B37-BEBA-002ADDF8BEFF}" Name="Casos de Uso Control de Bloqueos" Selected="Yes" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="CasosDeUso.oom"/>
 	</Local>
 </Workspace>
