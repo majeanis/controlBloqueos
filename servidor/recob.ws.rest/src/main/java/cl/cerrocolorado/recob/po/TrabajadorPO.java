@@ -98,15 +98,17 @@ public class TrabajadorPO
         return lista.get(0);
     }
     
-    public List<TrabajadorTO> get(EmpresaTO pkEmpresa)
+    public List<TrabajadorTO> get(EmpresaTO pkEmpresa, Boolean vigencia)
     {
         logger.info ("get[INI] pkEmpresa: {}", pkEmpresa);
+        logger.info ("get[INI] vigencia: {}", vigencia);
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("empresa", pkEmpresa);
+        parms.put("vigencia", vigencia);
+        logger.debug("get[001] parametros: {}", parms);
         
-        Map<String, Object> params = new HashMap<>();
-        params.put("empresa", pkEmpresa);
-        logger.debug("get[001] parametros: {}", params);
-        
-        List<TrabajadorTO> lista = mapper.selectTrabajadores( params );
+        List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );
         logger.debug("get[002] despues de ejecutar el select: {}", lista.size() );
 
         logger.info ("get[FIN] cantidad de registros encontrados: {}", lista.size() );

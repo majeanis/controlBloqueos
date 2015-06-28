@@ -70,18 +70,20 @@ public class CajaBloqueoPO
         return cajas.get(0);
     }
     
-    public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion)
+    public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
+        logger.info ("get[INI] vigencia: {}", vigencia );
         
-        Map<String, Object> params = new HashMap<>();
-        params.put("ubicacion", pkUbicacion);
-        logger.debug("get[001] parametros: {}", params);
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("ubicacion", pkUbicacion);
+        parms.put("vigencia", vigencia);
+        logger.debug("get[001] parametros: {}", parms);
 
-        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( params );
+        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( parms );
         logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
 
-        logger.info ("get[FIN] cajas: {}", cajas );
+        logger.info ("get[FIN] registros encontrados: {}", cajas.size() );
         return cajas;
     }
 }

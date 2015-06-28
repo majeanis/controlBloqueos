@@ -19,4 +19,9 @@ public class FactoryBO
     public static CajaBloqueoBO getCajaBloqueoBO() {
         return (CajaBloqueoBO) beanFactory.getBean( "cajaBloqueoBO" );
     }
+    
+    public static CandadoBO getCandadoBO()
+    {
+        return (CandadoBO) beanFactory.getBean("candadoBO");
+    }
 }

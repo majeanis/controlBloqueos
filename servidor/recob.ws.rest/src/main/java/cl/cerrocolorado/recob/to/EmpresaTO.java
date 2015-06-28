@@ -5,9 +5,20 @@ import cl.cerrocolorado.recob.utils.Rut;
 
 public class EmpresaTO extends BaseTO
 {
+    private Integer id;
     private Rut     rut;
     private String  nombre;
     private Boolean vigente;
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
 
     public Rut getRut() {
         return rut;

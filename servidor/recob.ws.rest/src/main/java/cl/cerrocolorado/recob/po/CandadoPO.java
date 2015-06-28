@@ -71,15 +71,17 @@ public class CandadoPO
         return candados.get(0);
     }
     
-    public List<CandadoTO> get(UbicacionTO pkUbicacion)
+    public List<CandadoTO> get(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
+        logger.info ("get[INI] vigencia: {}", vigencia);
         
-        Map<String, Object> params = new HashMap<>();
-        params.put("ubicacion", pkUbicacion);
-        logger.debug("get[001] parametros: {}", params);
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("ubicacion", pkUbicacion);
+        parms.put("vigencia", vigencia);
+        logger.debug("get[001] parametros: {}", parms);
         
-        List<CandadoTO> candados = mapper.selectCandados( params );
+        List<CandadoTO> candados = mapper.selectCandados( parms );
         logger.debug("get[002] despues de ejecutar el select: {}", candados.size() );
 
         logger.info ("get[FIN] candados: {}", candados );
@@ -91,16 +93,16 @@ public class CandadoPO
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
         logger.info ("get[INI] pkPersona: {}", pkPersona);
         
-        Map<String, Object> params = new HashMap<>();
-        params.put("ubicacion", pkUbicacion);
-        params.put("persona", pkPersona);
-        logger.debug("get[001] parametros: {}", params);
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("ubicacion", pkUbicacion);
+        parms.put("persona", pkPersona);
+        parms.put("vigencia", true);
+        logger.debug("get[001] parametros: {}", parms);
 
-        List<CandadoTO> candados = mapper.selectCandados( params );
+        List<CandadoTO> candados = mapper.selectCandados( parms );
         logger.debug("get[002] despues de ejecutar el select: {}", candados.size() );
         
         logger.info ("get[FIN] candado encontrado: {}", candados.size() );
         return candados;
     }
-    
 }

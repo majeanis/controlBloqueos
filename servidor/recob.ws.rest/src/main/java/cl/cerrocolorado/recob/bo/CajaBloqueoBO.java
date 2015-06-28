@@ -20,4 +20,6 @@ public interface CajaBloqueoBO
     public CajaBloqueoTO get(CajaBloqueoTO pkCaja);
 
     public List<CajaBloqueoTO> get(UbicacionTO pkUbicacion);
+    
+    public List<CajaBloqueoTO> getAll(UbicacionTO pkUbicacion);
 }

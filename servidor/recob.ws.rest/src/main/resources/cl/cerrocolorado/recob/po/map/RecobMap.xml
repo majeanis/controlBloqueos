@@ -109,9 +109,11 @@
                 </when>
                 <when test="ubicacion.id != null" >
                     and a.ubic_id   = #{ubicacion.id}
-                    and a.cabl_vige = true
                 </when>
-            </choose>            
+            </choose>
+            <if test="vigencia != null" >
+                and a.cabl_vige = #{vigencia}
+            </if>
         </where>
         
         order by b.ubic_nomb
@@ -174,14 +176,15 @@
                     and a.ubic_id    = #{ubicacion.id}
                 </when>
                 <when test="persona.rut != null" >
-                    and c.pers_rut  = #{persona.rut}
-                    and a.cand_vige = true
+                    and c.pers_rut = #{persona.rut}
                 </when>
                 <when test="ubicacion.id != null" >
-                    and a.ubic_id    = #{ubicacion.id}
-                    and a.cand_vige  = true
+                    and a.ubic_id = #{ubicacion.id}
                 </when>
             </choose>
+            <if test="vigencia != null" >
+                and a.cand_vige = #{vigencia}
+            </if>
         </where>
         
         order by a.ubic_id
@@ -259,7 +262,7 @@
         where  pers_id = #{id}
     </update>
     
-    <select id="selectTrabajador" parameterType="map" resultMap="trabajadorMap" >
+    <select id="selectTrabajadores" parameterType="map" resultMap="trabajadorMap" >
         select b.pers_id
               ,b.pers_rut
               ,b.pers_nomb
@@ -281,12 +284,13 @@
             </choose>
             <choose test = "empresa.id != null" >
                 and c.empr_id   = #{empresa.id}
-                and a.trab_vige = true
             </choose>
             <choose test = "empresa.rut != null" >
                 and c.empr_rut  = #{empresa.rut}
-                and a.trab_vige = true
             </choose>
+            <if test="vigencia != null" >
+                and a.trab_vige = #{vigencia}
+            </if>
         </where>
         order by c.empr_rut
                 ,b.pers_rut
@@ -305,4 +309,48 @@
         where  pers_id = #{id}
           and  empr_id = #{empresa.id}
     </update>
+    
+    <select id="selectEmpresas" parameterType="map" >
+        select a.empr_id
+              ,a.empr_rut
+              ,a.empr_nomb
+              ,a.empr_vige
+        from   rcb_empr a
+        <where>
+            <choose>
+                <when test="empresa.id != null" >
+                    a.empr_id = #{empresa.id}
+                </when>
+                <when test="empresa.rut != null" >
+                    a.empr_rut = #{empresa.rut}
+                </when>
+                <when test="vigencia != null" >
+                    a.empr_vige = #{vigencia}
+                </when>
+            </choose>
+        </where>
+        order by a.empr_rut
+    </select>
+    
+    <insert id="insertEmpresa" parameterType="EmpresaTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_empr(empr_id, empr_rut, empr_nomb, empr_vige, audi_fech_crea)
+            values(#{id},#{rut},#{nombre},#{vigencia},localtimestamp)
+    </insert>
+    
+    <update id="updateEmpresa" parameterType="EmpresaTO" >
+        update rcb_empr set
+               empr_rut  = #{rut}
+              ,empr_nomb = #{nombre}
+              ,empr_vige = #{vigencia}
+              ,audi_fech_crea = localtimestamp
+        where  empr_id = #{id}
+    </update>
+    
+    <delete id="deleteEmpresa" parameterType="EmpresaTO" >
+        delete from rcb_empr
+        where  empr_id = #{id}
+    </delete>
 </mapper>

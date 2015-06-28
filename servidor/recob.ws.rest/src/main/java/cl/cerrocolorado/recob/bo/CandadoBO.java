@@ -23,4 +23,6 @@ public interface CandadoBO
     public List<CandadoTO> get(UbicacionTO pkUbicacion);
     
     public List<CandadoTO> get(UbicacionTO pkUbicacion, PersonaTO pkPersona);
+    
+    public List<CandadoTO> getAll(UbicacionTO pkUbicacion);
 }

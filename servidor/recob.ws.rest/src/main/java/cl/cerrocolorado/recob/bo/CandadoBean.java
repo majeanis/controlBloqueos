@@ -166,7 +166,7 @@ public class CandadoBean implements CandadoBO
     {
         logger.info ("get[INI] ubicacion: {}", pkUbicacion );
 
-        List<CandadoTO> candados = candadoPO.get(pkUbicacion);
+        List<CandadoTO> candados = candadoPO.get(pkUbicacion, true);
         
         logger.info ("get[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
@@ -181,6 +181,17 @@ public class CandadoBean implements CandadoBO
         List<CandadoTO> candados = candadoPO.get(pkUbicacion, pkPersona);
         
         logger.info ("get[FIN] cantidad registros encontrados: {}", candados.size() );
+        return candados;
+    }
+
+    @Override
+    public List<CandadoTO> getAll(UbicacionTO pkUbicacion)
+    {
+        logger.info ("getAll[INI] ubicacion: {}", pkUbicacion );
+
+        List<CandadoTO> candados = candadoPO.get(pkUbicacion, (Boolean) null);
+        
+        logger.info ("getAll[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
     }
 }

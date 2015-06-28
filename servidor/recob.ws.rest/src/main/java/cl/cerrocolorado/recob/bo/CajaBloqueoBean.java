@@ -141,9 +141,20 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     {
         logger.info ("get[INI] ubicacion: {}", pkUbicacion );
 
-        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion);
+        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, true);
         
         logger.info ("get[FIN] cantidad registros encontrados: {}", cajas.size() );
+        return cajas;
+    }
+
+    @Override
+    public List<CajaBloqueoTO> getAll(UbicacionTO pkUbicacion)
+    {
+        logger.info ("getAll[INI] ubicacion: {}", pkUbicacion );
+
+        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, null);
+        
+        logger.info ("getAll[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;
     }
 }

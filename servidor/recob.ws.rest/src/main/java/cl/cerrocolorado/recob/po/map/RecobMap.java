@@ -2,6 +2,7 @@ package cl.cerrocolorado.recob.po.map;
 
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.CandadoTO;
+import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
@@ -53,5 +54,14 @@ public interface RecobMap
     public void updateTrabajador(TrabajadorTO trabajador);
     public void deleteTrabajador(TrabajadorTO trabajador);
     public List<TrabajadorTO> selectTrabajadores( Map<String,Object> params );
+    /**/
+
+    /*
+     * Manipulación de Empresas
+     */
+    public void insertEmpresa(EmpresaTO trabajador);
+    public void updateEmpresa(EmpresaTO trabajador);
+    public void deleteEmpresa(EmpresaTO trabajador);
+    public List<EmpresaTO> selectEmpresas( Map<String,Object> params );
     /**/
 }
