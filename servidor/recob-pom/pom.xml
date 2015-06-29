@@ -185,9 +185,16 @@
                     </configuration>
                     <executions>
                     	<execution>
-                    		<id>redeploy</id>
+                    		<id>undeploy</id>
                     		<goals>
-                    			<goal>redeploy</goal>
+                    			<goal>undeploy</goal>
+                    		</goals>
+                    		<phase>clean</phase>
+                    	</execution>
+                    	<execution>
+                    		<id>deploy</id>
+                    		<goals>
+                    			<goal>deploy</goal>
                     		</goals>
                     		<phase>install</phase>
                     	</execution>

@@ -75,11 +75,11 @@
            on (a.ubic_id = b.ubic_id)
         where  a.ubic_vige = true
         
-        <if test="ubicacion.token != null" >
-            and b.tokn_id = #{ubicacion.token}
+        <if test="token != null" >
+            and b.tokn_id = #{token}
         </if>
-        <if test="ubicacion.id != null" >
-            and a.ubic_id = #{ubicacion.id}
+        <if test="id != null" >
+            and a.ubic_id = #{id}
         </if>
     </select>
     

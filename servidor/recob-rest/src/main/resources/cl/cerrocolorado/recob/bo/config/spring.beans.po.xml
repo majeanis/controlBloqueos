@@ -13,22 +13,22 @@
 		http://mybatis.org/schema/mybatis-spring 
 		http://mybatis.org/schema/mybatis-spring.xsd" >
 
-  	<!-- DATA SOURCE CUYO ORIGEN ES UNA CONEXIÓN JDBC LOCAL-->
-	<bean id="dsJdbcRecob" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://192.168.56.13:5432/bd_recob" />
-		<property name="username" value="recob" />
-		<property name="password" value="recob" />
-	</bean>
+   		<!-- DATA SOURCE CUYO ORIGEN ES UNA CONEXIÓN JDBC LOCAL-->
+<!-- 	<bean id="dsJdbcRecob" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="org.postgresql.Driver" /> -->
+<!-- 		<property name="url" value="jdbc:postgresql://192.168.56.13:5432/bd_recob" /> -->
+<!-- 		<property name="username" value="recob" /> -->
+<!-- 		<property name="password" value="recob" /> -->
+<!-- 	</bean> -->
 
-<!--    	DATA SOURCE CUYO ORIGEN ES UN APPLICATION SERVER -->
-<!--     <bean id="dsJndiRecob" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
-<!--         <property name="jndiName" value="jdbc/recob" /> -->
-<!--         <property name="resourceRef" value="false" />     -->
-<!--     </bean> -->
+    <!-- DATA SOURCE CUYO ORIGEN ES UN APPLICATION SERVER -->
+    <bean id="dsJndiRecob" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/recob" />
+        <property name="resourceRef" value="false" />    
+    </bean>
     
  	<!-- DEFINICION DE LOS DATA SOURCES QUE SERAN UTILIZADOS -->
- 	<alias name="dsJdbcRecob"  alias="dsRecob" />
+ 	<alias name="dsJndiRecob"  alias="dsRecob" />
  	
 	<!-- ADMINISTRADOR DE LAS TRANSACCIONES -->
 	<bean id="txManagerRecob" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >

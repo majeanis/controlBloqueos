@@ -78,6 +78,7 @@ public class CajaBloqueoPO
         logger.info ("get[INI] vigencia: {}", vigencia );
         
         Map<String, Object> parms = new HashMap<>();
+        parms.put("caja", new CajaBloqueoTO());
         parms.put("ubicacion", pkUbicacion);
         parms.put("vigencia", vigencia);
         logger.debug("get[001] parametros: {}", parms);
