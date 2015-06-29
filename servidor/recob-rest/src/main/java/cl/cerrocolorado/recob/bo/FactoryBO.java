@@ -24,4 +24,9 @@ public class FactoryBO
     {
         return (CandadoBO) beanFactory.getBean("candadoBO");
     }
+    
+    public static UbicacionBO getUbicacionBO()
+    {
+        return (UbicacionBO) beanFactory.getBean("ubicacionBO");
+    }
 }

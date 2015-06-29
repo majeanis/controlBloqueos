@@ -2,16 +2,14 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias alias="Rut" type="cl.cerrocolorado.recob.utils.Rut" />
-        <typeAlias alias="RutTypeHandler" type="cl.cerrocolorado.recob.utils.RutTypeHandler" />
         <package name="cl.cerrocolorado.recob.to" />
     </typeAliases>
-    
+
     <typeHandlers>
         <package name="cl.cerrocolorado.recob.utils" />
     </typeHandlers>
-
+<!--
     <mappers>
         <package name="cl.cerrocolorado.recob.po.map" />
-    </mappers>
+    </mappers>-->
 </configuration>

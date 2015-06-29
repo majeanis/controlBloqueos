@@ -35,20 +35,20 @@
     
     <resultMap id="personaMap" type="PersonaTO" >
         <id property="id" column="pers_id" />
-        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" />
+        <result property="rut" column="pers_rut" />
         <result property="nombre" column="pers_nomb" />
     </resultMap>
 
     <resultMap id="empresaMap" type="EmpresaTO" >
         <id property="id" column="empr_id" />
-        <result property="rut" column="empr_rut" typeHandler="RutTypeHandler" />
+        <result property="rut" column="empr_rut" />
         <result property="nombre" column="empr_nomb" />
         <result property="vigente" column="empr_vige" />
     </resultMap>
 
     <resultMap id="trabajadorMap" type="TrabajadorTO" >
         <id property="id" column="pers_id" />
-        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" />
+        <result property="rut" column="pers_rut" />
         <result property="nombre" column="pers_nomb" />
         <result property="cargo" column="trab_cargo" />
         <result property="tieneCursoBloqueo" column="trab_curs_bloq" />
@@ -214,19 +214,6 @@
         delete from rcb_cand
         where cand_id = #{id}
     </delete>
-    
-    <select id="selectUbicacion" parameterType="map" resultMap="ubicacionMap" >
-        select a.ubic_id
-              ,a.ubic_nomb
-              ,a.ubic_desc
-              ,a.ubic_vige
-              ,b.estc_id
-              ,b.estc_nomb
-              ,b.estc_vige
-        from   rcb_ubic a inner join rcb_estc b
-           on (a.estc_id = b.estc_id)
-        where  a.ubic_id = #{ubicacion.id}
-    </select>
     
     <select id="selectPersonas" parameterType="map" resultMap="personaMap" >
         select a.pers_id

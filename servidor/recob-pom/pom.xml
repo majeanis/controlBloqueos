@@ -95,7 +95,7 @@
             <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>9.1-901.jdbc4</version>
+                <version>9.1-901-1.jdbc4</version>
             </dependency>
             <dependency>
 				<groupId>com.google.code.gson</groupId>
@@ -114,6 +114,24 @@
     <build>
 		<pluginManagement>
 			<plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>2.10</version>
+                    <configuration>
+                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                        <skinnyWars>true</skinnyWars>
+                        <version>7</version>
+                        <encoding>UTF-8</encoding>
+                        <archive>
+                            <addMavenDescriptor>true</addMavenDescriptor>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -146,6 +164,41 @@
 						</execution>
 					</executions>
 				</plugin>			
+                <plugin>
+                    <groupId>org.glassfish.maven.plugin</groupId>
+                    <artifactId>maven-glassfish-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <glassfishDirectory>${glassfish.glassfishDirectory}</glassfishDirectory>
+                        <domainDirectory>${glassfish.domainDirectory}</domainDirectory>
+                        <user>${glassfish.user}</user>
+                        <adminPassword>${glassfish.adminPassword}</adminPassword>
+                        <echo>true</echo>
+                        <debug>true</debug>
+                        <skip>true</skip>
+                        <domain>
+                            <name>recob</name>
+                            <adminPort>5048</adminPort>
+                            <httpPort>5080</httpPort>
+                        </domain>
+                    </configuration>
+                    <executions>
+                    	<execution>
+                    		<id>deploy</id>
+                    		<goals>
+                    			<goal>deploy</goal>
+                    		</goals>
+                    		<phase>install</phase>
+                    	</execution>
+                    	<execution>
+                    		<id>undeploy</id>
+                    		<goals>
+                    			<goal>undeploy</goal>
+                    		</goals>
+                    		<phase>install</phase>
+                    	</execution>
+                    </executions>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>

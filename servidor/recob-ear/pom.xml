@@ -35,9 +35,22 @@
 						<webModule>
 							<groupId>cl.cerrocolorado.recob</groupId>
 							<artifactId>recob-rest</artifactId>
-							<contextRoot>/recobWS/rest</contextRoot>
+							<contextRoot>/recobWS</contextRoot>
 						</webModule>
 					</modules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.glassfish.maven.plugin</groupId>
+				<artifactId>maven-glassfish-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<components>
+						<component>
+							<name>${project.artifactId}</name>
+							<artifact>${project.build.directory}/${project.build.finalName}.ear</artifact>
+						</component>
+					</components>
 				</configuration>
 			</plugin>
 		</plugins>

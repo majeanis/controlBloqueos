@@ -10,11 +10,10 @@ import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
 /**
- *
  * @author mauricio.camara
  */
-@MappedJdbcTypes(JdbcType.VARCHAR)
-@MappedTypes(Rut.class)
+@MappedJdbcTypes(value={JdbcType.VARCHAR})
+@MappedTypes(value={Rut.class})
 public class RutTypeHandler extends BaseTypeHandler<Rut>
 {
     @Override
