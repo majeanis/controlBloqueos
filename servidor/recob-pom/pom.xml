@@ -176,6 +176,7 @@
                         <echo>true</echo>
                         <debug>true</debug>
                         <skip>true</skip>
+                        <components/>
                         <domain>
                             <name>recob</name>
                             <adminPort>5048</adminPort>
@@ -184,16 +185,9 @@
                     </configuration>
                     <executions>
                     	<execution>
-                    		<id>deploy</id>
+                    		<id>redeploy</id>
                     		<goals>
-                    			<goal>deploy</goal>
-                    		</goals>
-                    		<phase>install</phase>
-                    	</execution>
-                    	<execution>
-                    		<id>undeploy</id>
-                    		<goals>
-                    			<goal>undeploy</goal>
+                    			<goal>redeploy</goal>
                     		</goals>
                     		<phase>install</phase>
                     	</execution>
