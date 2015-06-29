@@ -21,11 +21,11 @@
 		<property name="password" value="recob" />
 	</bean>
 
-   	<!-- DATA SOURCE CUYO ORIGEN ES UN APPLICATION SERVER -->
-    <bean id="dsJndiRecob" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="jdbc/recob" />
-        <property name="resourceRef" value="false" />    
-    </bean>
+<!--    	DATA SOURCE CUYO ORIGEN ES UN APPLICATION SERVER -->
+<!--     <bean id="dsJndiRecob" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!--         <property name="jndiName" value="jdbc/recob" /> -->
+<!--         <property name="resourceRef" value="false" />     -->
+<!--     </bean> -->
     
  	<!-- DEFINICION DE LOS DATA SOURCES QUE SERAN UTILIZADOS -->
  	<alias name="dsJdbcRecob"  alias="dsRecob" />
@@ -36,12 +36,12 @@
 	</bean>
 
     <tx:annotation-driven transaction-manager="txManagerRecob" />
+<!-- 	<tx:jta-transaction-manager /> -->
 
 	<!-- SE DEFINEN LOS SQL SESSION FACTORY -->
 	<bean id="sqlSessionFactoryRecob" class="org.mybatis.spring.SqlSessionFactoryBean">
   		<property name="dataSource" ref="dsRecob" />
- 		<property name="configLocation" value="cl/cerrocolorado/recob/po/config/myBatis.xml" />
-        <property name="typeHandlersPackage" value="cl.cerrocolorado.recob.utils" />
+   		<property name="configLocation" value="cl/cerrocolorado/recob/po/config/myBatis.xml" />
 	</bean>	 
   
 	<!-- AUTODETECCION DE CLASES MAPPERS -->

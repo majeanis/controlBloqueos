@@ -35,20 +35,20 @@
     
     <resultMap id="personaMap" type="PersonaTO" >
         <id property="id" column="pers_id" />
-        <result property="rut" column="pers_rut" />
-        <result property="nombre" column="pers_nomb" />
+        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" />
+        <result property="nombre" column="pers_nomb"/>
     </resultMap>
 
     <resultMap id="empresaMap" type="EmpresaTO" >
         <id property="id" column="empr_id" />
-        <result property="rut" column="empr_rut" />
+        <result property="rut" column="empr_rut" typeHandler="RutTypeHandler" />
         <result property="nombre" column="empr_nomb" />
         <result property="vigente" column="empr_vige" />
     </resultMap>
 
     <resultMap id="trabajadorMap" type="TrabajadorTO" >
         <id property="id" column="pers_id" />
-        <result property="rut" column="pers_rut" />
+        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" /> 
         <result property="nombre" column="pers_nomb" />
         <result property="cargo" column="trab_cargo" />
         <result property="tieneCursoBloqueo" column="trab_curs_bloq" />
@@ -176,7 +176,7 @@
                     and a.ubic_id    = #{ubicacion.id}
                 </when>
                 <when test="persona.rut != null" >
-                    and c.pers_rut = #{persona.rut}
+                    and c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
                 </when>
                 <when test="ubicacion.id != null" >
                     and a.ubic_id = #{ubicacion.id}
@@ -226,7 +226,7 @@
                     a.pers_id  = #{persona.id}
                 </when>
                 <when test = "persona.rut != null" >
-                    a.pers_rut = #{persona.rut}
+                    a.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
                 </when>
             </choose>
         </where>
@@ -238,13 +238,13 @@
             select get_nuevo_id()
         </selectKey>
         insert into rcb_pers(pers_id, pers_rut, pers_nomb, audi_fech_crea)
-            values(#{id},#{rut},#{nombre},localtimestamp)
+            values(#{id},#{rut,typeHandler=RutTypeHandler},#{nombre},localtimestamp)
     </insert>
     
     <update id="updatePersona" parameterType="PersonaTO" >
         update rcb_pers set
-               pers_rut       = #{rut}
-              ,pers_nomb      = #{nombre} 
+               pers_nomb      = #{nombre}
+              ,pers_rut       = #{rut,typeHandler=RutTypeHandler}
               ,audi_fech_modi = localtimestamp
         where  pers_id = #{id}
     </update>
@@ -268,13 +268,13 @@
 	                b.pers_id = #{trabajador.id}
 	            </when>
 	            <when test = "trabajador.rut != null" >
-	                and b.pers_rut = #{trabajador.rut}
+	                and b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
 	            </when>
 	            <when test = "empresa.id != null" >
 	                and c.empr_id   = #{empresa.id}
 	            </when>
 	            <when test = "empresa.rut != null" >
-	                and c.empr_rut  = #{empresa.rut}
+	                and c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
 	            </when>
         	</choose>
             <if test="vigencia != null" >
@@ -299,7 +299,7 @@
           and  empr_id = #{empresa.id}
     </update>
     
-    <select id="selectEmpresas" parameterType="map" >
+    <select id="selectEmpresas" parameterType="map" resultMap="empresaMap" >
         select a.empr_id
               ,a.empr_rut
               ,a.empr_nomb
@@ -307,11 +307,11 @@
         from   rcb_empr a
         <where>
             <choose>
-                <when test="empresa.id != null" >
+                <when test="empresa != null and empresa.id != null" >
                     a.empr_id = #{empresa.id}
                 </when>
-                <when test="empresa.rut != null" >
-                    a.empr_rut = #{empresa.rut}
+                <when test="empresa != null and empresa.rut != null" >
+                    a.empr_rut = #{empresa.rut,typeHandler=RutTypeHandler}
                 </when>
                 <when test="vigencia != null" >
                     a.empr_vige = #{vigencia}
@@ -326,14 +326,14 @@
             select get_nuevo_id()
         </selectKey>
         insert into rcb_empr(empr_id, empr_rut, empr_nomb, empr_vige, audi_fech_crea)
-            values(#{id},#{rut},#{nombre},#{vigencia},localtimestamp)
+             values(#{id},#{rut,typeHandler=RutTypeHandler},#{nombre},#{vigente},localtimestamp)
     </insert>
     
     <update id="updateEmpresa" parameterType="EmpresaTO" >
         update rcb_empr set
-               empr_rut  = #{rut}
-              ,empr_nomb = #{nombre}
-              ,empr_vige = #{vigencia}
+               empr_nomb = #{nombre}
+              ,empr_rut  = #{rut,typeHandler=RutTypeHandler}
+              ,empr_vige = #{vigente}
               ,audi_fech_crea = localtimestamp
         where  empr_id = #{id}
     </update>
