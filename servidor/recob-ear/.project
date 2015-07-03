@@ -3,6 +3,7 @@
 	<name>recob-ear</name>
 	<comment></comment>
 	<projects>
+		<project>recob-rest</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

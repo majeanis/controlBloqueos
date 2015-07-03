@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>cl.cerrocolorado.recob</groupId>
     <artifactId>recob-pom</artifactId>
     <version>1.0.0</version>
@@ -13,6 +14,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release>1.0.0</release>
+        <versionSpring>4.1.7.RELEASE</versionSpring>
+        <versionMyBatis>3.3.0</versionMyBatis>
+        <versionMyBatisSpring>1.2.3</versionMyBatisSpring>
+        <versionLog4j>2.3</versionLog4j>
     </properties>
 
 	<prerequisites>
@@ -30,37 +35,32 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>4.1.6.RELEASE</version>
+				<version>${versionSpring}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>4.1.6.RELEASE</version>
+				<version>${versionSpring}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
-				<version>4.1.6.RELEASE</version>
+				<version>${versionSpring}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>4.1.6.RELEASE</version>
+				<version>${versionSpring}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis-spring</artifactId>
-				<version>1.2.3</version>
+				<version>${versionMyBatisSpring}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis</artifactId>
-				<version>3.3.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>2.3</version>
+				<version>${versionMyBatis}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -69,13 +69,18 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>${versionLog4j}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>
-				<version>2.3</version>
+				<version>${versionLog4j}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-core</artifactId>
-				<version>2.3</version>
+				<version>${versionLog4j}</version>
 			</dependency>			
 			<dependency>
 				<groupId>commons-codec</groupId>
@@ -105,7 +110,7 @@
             <dependency>
             	<groupId>cl.cerrocolorado.recob</groupId>
             	<artifactId>recob-rest</artifactId>
-            	<version>1.0.0</version>
+            	<version>${release}</version>
             	<type>war</type>
             </dependency>
 		</dependencies>
