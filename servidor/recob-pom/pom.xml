@@ -14,6 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release>1.0.0</release>
+        <versionJeeApi>7.0</versionJeeApi>
         <versionSpring>4.1.7.RELEASE</versionSpring>
         <versionMyBatis>3.3.0</versionMyBatis>
         <versionMyBatisSpring>1.2.3</versionMyBatisSpring>
@@ -29,7 +30,7 @@
 			<dependency>
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
-				<version>7.0</version>
+				<version>${versionJeeApi}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -63,11 +64,6 @@
 				<version>${versionMyBatis}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.7.12</version>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-slf4j-impl</artifactId>
 				<version>${versionLog4j}</version>
@@ -82,7 +78,12 @@
 				<artifactId>log4j-core</artifactId>
 				<version>${versionLog4j}</version>
 			</dependency>			
-			<dependency>
+<!--			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.12</version>
+			</dependency>-->
+            <dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.10</version>

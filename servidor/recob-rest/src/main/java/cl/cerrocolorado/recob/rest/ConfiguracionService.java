@@ -29,19 +29,11 @@ public class ConfiguracionService
 
     static
     {
-    	ubicacionBO = null;
-//        ubicacionBO = FactoryBO.getUbicacionBO();
-    }
-    
-    @Path("/probando")
-    @GET
-    public String saludo()
-    {
-    	return "I'm Live!";
+        ubicacionBO = FactoryBO.getUbicacionBO();
     }
     
     @Path("/{token}/cajasBloqueo")
-//    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @GET
     public BaseRespuesta<CajaBloqueoTO[]> cajasBloqueoVigentes(@PathParam("token") String tokenUbicacion)
     {

@@ -60,6 +60,7 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>recob.ws.rest</finalName>
     </build>
