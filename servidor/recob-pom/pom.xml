@@ -19,6 +19,7 @@
         <versionMyBatis>3.3.0</versionMyBatis>
         <versionMyBatisSpring>1.2.3</versionMyBatisSpring>
         <versionLog4j>2.3</versionLog4j>
+        <versionJackson>2.5.4</versionJackson>
     </properties>
 
 	<prerequisites>
@@ -103,6 +104,11 @@
                 <artifactId>postgresql</artifactId>
                 <version>9.1-901-1.jdbc4</version>
             </dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${versionJackson}</version>
+			</dependency>
             <dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>

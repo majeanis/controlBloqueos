@@ -5,16 +5,13 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cl.cerrocolorado.recob.bo.CajaBloqueoBO;
 import cl.cerrocolorado.recob.bo.FactoryBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
-import cl.cerrocolorado.recob.rest.utils.BaseRespuesta;
+import cl.cerrocolorado.recob.rest.utils.RespFactory;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
@@ -33,33 +30,40 @@ public class ConfiguracionService
     }
     
     @Path("/{token}/cajasBloqueo")
-    @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public BaseRespuesta<CajaBloqueoTO[]> cajasBloqueoVigentes(@PathParam("token") String tokenUbicacion)
+    public String cajasBloqueoVigentes(@PathParam("token") String tokenUbicacion)
     {
         logger.info ("cajasBloqueoVigentes[INI] token: {}", tokenUbicacion);
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
             logger.info ("cajasBloqueoVigentes[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return BaseRespuesta.of(respUbic.getResultado());
+            return RespFactory.get(respUbic.getResultado());
         }
         
         UbicacionTO ubicacion = respUbic.getContenido().get();
         List<CajaBloqueoTO> lista = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
         
         logger.info ("cajasBloqueoVigentes[FIN] cajas retornadas: {}", lista );        
-        return BaseRespuesta.of(lista.toArray(new CajaBloqueoTO[0]));
+        return RespFactory.get(lista);
     }
     
-    @Path("cajasBloqueo/todos")
+    @Path("/{token}/cajasBloqueo/todos")
     @GET
-    public List<CajaBloqueoTO> cajasBloqueo()
+    public String cajasBloqueo(@PathParam("token") String tokenUbicacion)
     {
-        Respuesta<UbicacionTO> ubic = ubicacionBO.validarToken(token);
-        UbicacionTO ubicacion = ubic.getContenido().get();
-        CajaBloqueoBO cajaBO = FactoryBO.getCajaBloqueoBO();
+    	logger.info ("cajasBloqueo[INI] token: {}", tokenUbicacion);
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("cajasBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespFactory.get(respUbic.getResultado());
+        }
 
-        return cajaBO.getTodos(ubicacion);
+        UbicacionTO ubicacion = respUbic.getContenido().get();
+        List<CajaBloqueoTO> lista = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion);
+
+        logger.info ("cajasBloqueo[FIN] cajas retornadas: {}", lista );
+        return RespFactory.get(lista);
     }
 }
