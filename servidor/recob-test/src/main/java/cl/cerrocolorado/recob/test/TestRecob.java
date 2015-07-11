@@ -1,7 +1,12 @@
 package cl.cerrocolorado.recob.test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import cl.cerrocolorado.recob.bo.FactoryBO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
+import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Rut;
 
 public class TestRecob
@@ -26,9 +31,25 @@ public class TestRecob
         System.out.println( FactoryBO.getEmpresaBO().getTodos() );
     }
 
+    public static void testJson()
+    {
+    	Date date = new Date();
+    	LocalDate localDate = LocalDate.now();
+    	LocalDateTime localDateTime = LocalDateTime.now();
+    	
+    	String[] json = new String[3];
+    	json[0] = JsonUtils.toJsonString(date);
+    	json[1] = JsonUtils.toJsonString(localDate);
+    	json[2] = JsonUtils.toJsonString(localDateTime);
+    	
+    	System.out.println( date + ":" + json[0] );
+    	System.out.println( localDate + ":" + json[1] );
+    	System.out.println( localDateTime + ":" + json[2] );
+    }
+
     public static void main(String[] args)
     {
-        testEmpresa();
+        testJson();
 //      
 //      CajaBloqueoTO caja = new CajaBloqueoTO();
 //      CajaBloqueoBO bo = FactoryBO.getCajaBloqueoBO();
