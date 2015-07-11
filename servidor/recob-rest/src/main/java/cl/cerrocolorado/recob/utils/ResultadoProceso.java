@@ -66,9 +66,9 @@ public class ResultadoProceso
     }
 
     @Override
-    public Mensaje addException(Exception exception, Class<?> clazz)
+    public Mensaje addException(Class<?> clazz, Exception exception)
     {
-        return this.addMensaje( new MensajeError(exception, clazz) );
+        return this.addMensaje( new MensajeError(clazz, exception) );
     }
 
     @Override

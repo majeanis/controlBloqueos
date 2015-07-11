@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface CajaBloqueoBO
 {
-    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo);
+    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws Exception;
 
-    public Resultado eliminar(CajaBloqueoTO pkCaja);
+    public Resultado eliminar(CajaBloqueoTO pkCaja) throws Exception;
 
     public CajaBloqueoTO get(CajaBloqueoTO pkCaja);
 

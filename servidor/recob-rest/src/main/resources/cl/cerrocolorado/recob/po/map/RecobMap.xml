@@ -74,13 +74,17 @@
         from   rcb_ubic a inner join rcb_tokn b
            on (a.ubic_id = b.ubic_id)
         where  a.ubic_vige = true
-        
-        <if test="token != null" >
-            and b.tokn_id = #{token}
-        </if>
-        <if test="id != null" >
-            and a.ubic_id = #{id}
-        </if>
+        <choose>
+        	<when test="token != null">
+            	and b.tokn_id = #{token}        	
+        	</when>
+	        <when test="id != null" >
+	            and a.ubic_id = #{id}
+	        </when>
+	        <otherwise>
+	        	and b.tokn_id = 'X'
+	        </otherwise>
+        </choose>
     </select>
     
     <select id="selectCajasBloqueos" parameterType="map" resultMap="cajaBloqueoMap" >
@@ -92,12 +96,14 @@
               ,b.ubic_nomb
               ,b.ubic_desc
               ,b.ubic_vige
+              ,d.tokn_id
               ,c.estc_id
               ,c.estc_nomb
               ,c.estc_vige
         from   rcb_caja_bloq a inner join rcb_ubic b
            on (a.ubic_id = b.ubic_id) inner join rcb_estc c
-           on (b.estc_id = c.estc_id) 
+           on (b.estc_id = c.estc_id) inner join rcb_tokn d
+           on (b.ubic_id = d.ubic_id)
         <where>
             <choose>
                 <when test="caja.id != null" >

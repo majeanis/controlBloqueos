@@ -23,4 +23,13 @@ public class JsonUtils
 			return null;
 		}
 	}
+	
+	public static <T> T fromJsonString(String json, Class<T> clazz)
+	{
+		try {
+			return mapper.readValue(json, clazz);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

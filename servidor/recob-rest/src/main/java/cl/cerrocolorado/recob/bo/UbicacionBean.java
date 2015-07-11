@@ -47,6 +47,8 @@ public class UbicacionBean implements UbicacionBO
         if( StringUtils.isBlank(tokenUbicacion))
         {
             rtdo.addError(UbicacionBean.class, "Debe informar el token asociado a la ubicacion" );
+            logger.info ("validarToken[FIN] no se informo el token: {}", tokenUbicacion );
+            return new Respuesta<>(rtdo);
         }
 
         UbicacionTO ubicacion = this.get(tokenUbicacion);
@@ -54,7 +56,7 @@ public class UbicacionBean implements UbicacionBO
         {
             rtdo.addError(UbicacionBean.class, "No existe ubicacion para el token informado" );
         }
-
+        
         logger.info ("validarToken[FIN] resultado validacion: {}-{}", rtdo, ubicacion );
         return new Respuesta<>(rtdo,ubicacion);
     }

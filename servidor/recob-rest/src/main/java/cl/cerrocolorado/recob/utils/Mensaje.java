@@ -17,7 +17,7 @@ public class Mensaje extends Throwable
         this.texto = ToStringUtils.toString(textoBase, valores);
     }
 
-    protected Mensaje(Exception exception, String codigo)
+    protected Mensaje(String codigo, Exception exception)
     {
         this.severidad = Severidad.ERROR;
         this.exception = exception;

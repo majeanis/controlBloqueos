@@ -77,9 +77,9 @@ public class ResultadoMap extends HashMap<String, Object> implements Resultado
     }
 
     @Override
-    public Mensaje addException(Exception exception, Class<?> clazz)
+    public Mensaje addException(Class<?> clazz, Exception exception)
     {
-        return resultado.addException(exception, clazz);
+        return resultado.addException(clazz, exception);
     }
 
     @Override

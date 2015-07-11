@@ -33,11 +33,18 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
     @Transaccional
     @Override
-    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo)
+    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws Exception
     {
         logger.info ("guardar[INI] cajaBloqueo: {}", cajaBloqueo);
         
         Resultado rtdo = new ResultadoProceso();
+
+        if( cajaBloqueo == null )
+        {
+        	rtdo.addError( CajaBloqueoBean.class, "Debe informar los datos de la Caja");
+            logger.info ("guardar[FIN] caja informada en null" );        	
+            return new Respuesta<>(rtdo);
+        } 
 
         if ( cajaBloqueo.getVigente() == null )
         {
@@ -60,12 +67,13 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         } else if (cajaBloqueo.getUbicacion().getId() == null )
         {
             rtdo.addError( CajaBloqueoBean.class, "Caja debe estar asociada a una Ubicación" );
-        }
-
-        UbicacionTO ubicacion = ubicacionPO.get(cajaBloqueo.getUbicacion());
-        if( ubicacion == null )
+        } else
         {
-            rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
+		    UbicacionTO ubicacion = ubicacionPO.get(cajaBloqueo.getUbicacion());
+		    if( ubicacion == null )
+		    {
+		        rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
+		    }
         }
 
         if( !rtdo.esExitoso() )
@@ -90,7 +98,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CajaBloqueoTO pkCaja)
+    public Resultado eliminar(CajaBloqueoTO pkCaja) throws Exception
     {
         logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();

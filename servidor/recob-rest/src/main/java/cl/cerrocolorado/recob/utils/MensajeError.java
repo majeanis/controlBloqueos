@@ -9,9 +9,9 @@ public class MensajeError extends Mensaje
         super(Severidad.ERROR, clazz.getSimpleName(), textoBase, valores );
     }
 
-    public MensajeError(Exception exception, Class<?> clazz)
+    public MensajeError(Class<?> clazz, Exception exception)
     {
-        super(exception, clazz.getSimpleName());
+        super(clazz.getSimpleName(), exception);
     }
 
     public MensajeError(Mensaje another)

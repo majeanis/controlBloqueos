@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.rest.utils;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -121,6 +122,17 @@ public class RespFactory {
 		return new RespRest<T>(rtdo,contenido);
 	}
 
+	public static <T> RespRest<T> getRespRest(Resultado rtdo, Optional<T> contenido)
+	{
+		if( contenido.isPresent())
+		{
+			return new RespRest<T>(rtdo,contenido.get());			
+		} else
+		{
+			return new RespRest<T>(rtdo,null);
+		}
+	}
+
 	public static <T> RespRest<T> getRespRest(Resultado rtdo)
 	{
 		return new RespRest<T>(rtdo,null);
@@ -129,5 +141,12 @@ public class RespFactory {
 	public static <T> RespRest<T> getRespRest(T contenido)
 	{
 		return new RespRest<T>(new ResultadoProceso(), contenido);
+	}
+	
+	public static <T> RespRest<T> getRespRest(Class<?> clazz, Exception exception)
+	{
+    	Resultado rtdo = new ResultadoProceso();
+		rtdo.addException(clazz, exception);
+		return RespFactory.getRespRest(rtdo);
 	}
 }
