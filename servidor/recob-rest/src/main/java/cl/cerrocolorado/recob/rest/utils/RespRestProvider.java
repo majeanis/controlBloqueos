@@ -1,6 +1,5 @@
 package cl.cerrocolorado.recob.rest.utils;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -16,7 +15,7 @@ import javax.ws.rs.ext.Provider;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 
 @Provider
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
 public class RespRestProvider implements MessageBodyWriter<RespRest<?>> 
 {
 	@Override
@@ -33,7 +32,6 @@ public class RespRestProvider implements MessageBodyWriter<RespRest<?>>
 	public void writeTo(RespRest<?> arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4,
 			MultivaluedMap<String, Object> arg5, OutputStream arg6) throws IOException, WebApplicationException {
 		String json = JsonUtils.toJsonString(arg0);
-		DataOutputStream dos = new DataOutputStream(arg6);
-		dos.writeChars(json);
+		arg6.write(json.getBytes("UTF-8"));
 	}
 }
