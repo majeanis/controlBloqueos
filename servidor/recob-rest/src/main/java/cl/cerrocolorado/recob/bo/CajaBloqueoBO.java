@@ -4,6 +4,8 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.Transaccional;
+
 import java.util.List;
 
 /**
@@ -12,8 +14,10 @@ import java.util.List;
  */
 public interface CajaBloqueoBO
 {
+	@Transaccional
     public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws Exception;
 
+	@Transaccional
     public Resultado eliminar(CajaBloqueoTO pkCaja) throws Exception;
 
     public CajaBloqueoTO get(CajaBloqueoTO pkCaja);

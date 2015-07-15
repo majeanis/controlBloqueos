@@ -38,15 +38,15 @@ public class ConfiguracionService
         ubicacionBO = FactoryBO.getUbicacionBO();
     }
 
-    @Path("/cajasBloqueo/listar")
+    @Path("cajasBloqueo/listar")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespRest<List<CajaBloqueoTO>> listarCajasBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("todos") Boolean todos)
+    		@QueryParam("vigencia") Boolean vigencia)
     {
         logger.info ("listarCajasBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("listarCajasBloqueo[INI] todos: {}", todos);
+        logger.info ("listarCajasBloqueo[INI] vigencia: {}", vigencia);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -58,19 +58,19 @@ public class ConfiguracionService
         UbicacionTO ubicacion = respUbic.getContenido().get();
         List<CajaBloqueoTO> lista;
         
-        if( todos )
-        {
-        	lista = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion);
-        } else
+        if( vigencia == null || vigencia == true)
         {
         	lista = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
+        } else
+        {
+        	lista = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion);
         }
         
         logger.info ("listarCajasBloqueo[FIN] cajas retornadas: {}", lista );        
         return RespFactory.getRespRest(lista);
     }
 
-    @Path("/cajasBloqueo/guardar")
+    @Path("cajasBloqueo/guardar")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST

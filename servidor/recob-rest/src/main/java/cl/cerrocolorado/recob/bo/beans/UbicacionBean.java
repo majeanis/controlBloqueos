@@ -1,5 +1,6 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.bo.beans;
 
+import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;

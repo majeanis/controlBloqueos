@@ -5,6 +5,8 @@ import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.Transaccional;
+
 import java.util.List;
 
 /**
@@ -13,9 +15,11 @@ import java.util.List;
  */
 public interface CandadoBO
 {
-    public Respuesta<CandadoTO> guardar(CandadoTO candado);
+	@Transaccional
+    public Respuesta<CandadoTO> guardar(CandadoTO candado) throws Exception; 
 
-    public Resultado eliminar(CandadoTO pkCandado);
+	@Transaccional
+    public Resultado eliminar(CandadoTO pkCandado) throws Exception;
 
     public CandadoTO get(CandadoTO pkCandado);
 
@@ -24,4 +28,6 @@ public interface CandadoBO
     public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
     
     public List<CandadoTO> getTodos(UbicacionTO pkUbicacion);
+
+    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona);
 }

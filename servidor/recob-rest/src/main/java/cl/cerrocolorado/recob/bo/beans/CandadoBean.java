@@ -1,7 +1,8 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.Respuesta;
+import cl.cerrocolorado.recob.bo.CandadoBO;
 import cl.cerrocolorado.recob.po.CandadoPO;
 import cl.cerrocolorado.recob.po.TrabajadorPO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
@@ -40,11 +41,18 @@ public class CandadoBean implements CandadoBO
 
     @Transaccional
     @Override
-    public Respuesta<CandadoTO> guardar(CandadoTO candado)
+    public Respuesta<CandadoTO> guardar(CandadoTO candado) throws Exception
     {
         logger.info ("guardar[INI] candadoo: {}", candado);
         
         Resultado rtdo = new ResultadoProceso();
+
+        if( candado == null )
+        {
+        	rtdo.addError(this.getClass(), "Debe informar datos del Candado" );
+        	logger.info("guardar[FIN] no se informaron datos");
+        	return new Respuesta<>(rtdo);
+        }
 
         if ( candado.getVigente() == null )
         {
@@ -55,22 +63,6 @@ public class CandadoBean implements CandadoBO
         {
             rtdo.addError(CandadoBean.class, "Debe informar número de serie del candado" );
         }
-        
-        if( candado.getPersona() == null )
-        {
-            rtdo.addError(CandadoBean.class, "Debe asociar el candado a una Persona" );
-        } else if( Rut.isBlank(candado.getPersona().getRut() ) )
-        {
-            rtdo.addError(CandadoBean.class, "Debe informar el RUT de la Persona");
-        }
-        
-        if( candado.getUbicacion() == null )
-        {
-            rtdo.addError(CandadoBean.class, "Candado debe estar asociado a una ubicación" );
-        } else if (candado.getUbicacion().getId() == null )
-        {
-            rtdo.addError(CandadoBean.class, "Candado debe estar asociado a una ubicación" );
-        }
 
         if( candado.getUso() == null )
         {
@@ -80,16 +72,34 @@ public class CandadoBean implements CandadoBO
             rtdo.addError(CandadoBean.class, "Debe informar el uso del candado" );
         }
 
-        UbicacionTO ubicacion = ubicacionPO.get(candado.getUbicacion());
-        if( ubicacion == null )
+        if( candado.getUbicacion() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(candado.getUbicacion().getId()));
+            rtdo.addError(CandadoBean.class, "Candado debe estar asociado a una ubicación" );
+        } else if (candado.getUbicacion().getId() == null )
+        {
+            rtdo.addError(CandadoBean.class, "Candado debe estar asociado a una ubicación" );
+        } else
+        {
+	        UbicacionTO ubicacion = ubicacionPO.get(candado.getUbicacion());
+	        if( ubicacion == null )
+	        {
+	            rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(candado.getUbicacion().getId()));
+	        }
         }
-        // Validamos que exista el RUT de la Personas Informada
-        PersonaTO persona = trabajadorPO.getPersona(candado.getPersona());
-        if( persona == null )
+
+        if( candado.getPersona() == null )
         {
-            rtdo.addError(CandadoBean.class, "Persona informada no existe [RUT: #{1}]", candado.getPersona().getRut().toText());
+            rtdo.addError(CandadoBean.class, "Debe asociar el candado a una Persona" );
+        } else if( Rut.isBlank(candado.getPersona().getRut() ) )
+        {
+            rtdo.addError(CandadoBean.class, "Debe informar el RUT de la Persona");
+        } else
+        {
+	        PersonaTO persona = trabajadorPO.getPersona(candado.getPersona());
+	        if( persona == null )
+	        {
+	            rtdo.addError(CandadoBean.class, "Persona informada no existe [RUT: #{1}]", candado.getPersona().getRut().toText());
+	        }
         }
         
         if( !rtdo.esExitoso() )
@@ -98,7 +108,7 @@ public class CandadoBean implements CandadoBO
             return new Respuesta<>(rtdo);
         }
 
-        // Buscamoa la preexistencia de la caja
+        // Buscamoa la preexistencia del candado
         CandadoTO otroCandado = candadoPO.get( candado );
         if( otroCandado != null ) 
         {
@@ -114,11 +124,16 @@ public class CandadoBean implements CandadoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CandadoTO pkCandado)
+    public Resultado eliminar(CandadoTO pkCandado) throws Exception
     {
         logger.info ("eliminar[INI] candado: {}", pkCandado );
         Resultado rtdo = new ResultadoProceso();
         
+        if(pkCandado==null)
+        {
+        	rtdo.addError(this.getClass(), "Debe informar el candado que desea eliminar" );
+        	return rtdo;
+        }
         if( StringUtils.isBlank(pkCandado.getSerie()) )
         {
             rtdo.addError(CandadoBean.class, "Debe informar el número de serie del candado" );
@@ -132,7 +147,6 @@ public class CandadoBean implements CandadoBO
         }
         
         CandadoTO candado = candadoPO.get(pkCandado);
-        
         if( candado == null )
         {
             rtdo.addError(CandadoBean.class, "No existe Candado con número de serie #{1}", pkCandado.getSerie() );
@@ -165,7 +179,7 @@ public class CandadoBean implements CandadoBO
     {
         logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
 
-        List<CandadoTO> candados = candadoPO.get(pkUbicacion, true);
+        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, true);
         
         logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
@@ -177,7 +191,7 @@ public class CandadoBean implements CandadoBO
         logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
         logger.info ("getVigentes[INI] persona: {}", pkPersona );
         
-        List<CandadoTO> candados = candadoPO.get(pkUbicacion, pkPersona);
+        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, pkPersona, true);
         
         logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
@@ -188,9 +202,20 @@ public class CandadoBean implements CandadoBO
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
 
-        List<CandadoTO> candados = candadoPO.get(pkUbicacion, (Boolean) null);
+        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, (Boolean) null);
         
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", candados.size() );
         return candados;
     }
+
+	@Override
+	public List<CandadoTO> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona) {
+        logger.info ("getTodos[INI] pkUbicacion: {}", pkUbicacion );
+        logger.info ("getTodos[INI] pkPersona: {}", pkPersona );
+        
+        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, pkPersona, (Boolean) null);
+        
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", candados.size() );
+        return candados;
+	}
 }

@@ -1,7 +1,8 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.Respuesta;
+import cl.cerrocolorado.recob.bo.EmpresaBO;
 import cl.cerrocolorado.recob.po.EmpresaPO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.utils.Resultado;
@@ -30,12 +31,19 @@ public class EmpresaBean implements EmpresaBO
 
     @Transaccional
     @Override
-    public Respuesta<EmpresaTO> guardar(EmpresaTO empresa)
+    public Respuesta<EmpresaTO> guardar(EmpresaTO empresa) throws Exception
     {
         logger.info ("guardar[INI] empresa: {}", empresa);
         
         Resultado rtdo = new ResultadoProceso();
 
+        if(empresa == null)
+        {
+        	rtdo.addError(this.getClass(), "Debe informar los datos de la empresa" );
+        	logger.info("guardar[FIN] no se informaron los datos de la empresa");
+        	return new Respuesta<>(rtdo);
+        }
+        
         if ( empresa.getVigente() == null )
         {
             rtdo.addError(EmpresaBean.class, "Debe informar vigencia de la empresa");
@@ -57,7 +65,7 @@ public class EmpresaBean implements EmpresaBO
             return new Respuesta<>(rtdo);
         }
 
-        // Si no se ha informado el Id, buscamos si ya existe el registro para el RUT dado
+        // Buscamos si ya existe un registro para el RUT dado, en cuyo caso actualizamos
         EmpresaTO otra = empresaPO.get(empresa);
         if(otra != null)
         {
@@ -73,16 +81,25 @@ public class EmpresaBean implements EmpresaBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(EmpresaTO pkEmpresa)
+    public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception
     {
         logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
         Resultado rtdo = new ResultadoProceso();
         
-        if( Rut.isBlank(pkEmpresa.getRut()) )
+        if(pkEmpresa == null)
+        {
+        	rtdo.addError(this.getClass(), "Debe informar la empresa que se desea eliminar" );
+        } else if( Rut.isBlank(pkEmpresa.getRut()) )
         {
             rtdo.addError(EmpresaBean.class, "Debe informar el RUT de la empresa" );
         }
         
+        if(!rtdo.esExitoso())
+        {
+        	logger.info("eliminar[FIN] no se eliminó por fallas en validación", rtdo);
+        	return rtdo;
+        }
+
         EmpresaTO otra = empresaPO.get(pkEmpresa);
         if( otra == null )
         {
@@ -115,7 +132,7 @@ public class EmpresaBean implements EmpresaBO
     {
         logger.info ("getVigentes[INI]" );
 
-        List<EmpresaTO> empresas = empresaPO.get(true);
+        List<EmpresaTO> empresas = empresaPO.getList(true);
         
         logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", empresas.size() );
         return empresas;
@@ -126,7 +143,7 @@ public class EmpresaBean implements EmpresaBO
     {
         logger.info ("getTodos[INI]" );
 
-        List<EmpresaTO> empresas = empresaPO.get((Boolean) null);
+        List<EmpresaTO> empresas = empresaPO.getList((Boolean) null);
         
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", empresas.size() );
         return empresas;

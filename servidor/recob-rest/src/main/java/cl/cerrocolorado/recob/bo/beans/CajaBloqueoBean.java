@@ -1,7 +1,8 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.Respuesta;
+import cl.cerrocolorado.recob.bo.CajaBloqueoBO;
 import cl.cerrocolorado.recob.po.CajaBloqueoPO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
@@ -103,6 +104,13 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
         
+        if( pkCaja == null )
+        {
+        	rtdo.addError(this.getClass(),  "Debe informar la caja que desea eliminar" );
+        	logger.info( "eliminar[FIN] no se informo la pk de la caja");
+        	return rtdo;
+        }
+
         if( pkCaja.getNumero() == null )
         {
             rtdo.addError(CajaBloqueoBean.class, "Debe informar el N° de la Caja" );
@@ -116,7 +124,6 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         }
         
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
-        
         if( caja == null )
         {
             rtdo.addError(CajaBloqueoBean.class, "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
@@ -148,7 +155,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     {
         logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
 
-        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, true);
+        List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, true);
         
         logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;
@@ -159,7 +166,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
 
-        List<CajaBloqueoTO> cajas = cajaPO.get(pkUbicacion, null);
+        List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, null);
         
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", cajas.size() );
         return cajas;

@@ -70,16 +70,16 @@ public class EmpresaPO
         return lista.get(0);
     }
     
-    public List<EmpresaTO> get(Boolean vigencia)
+    public List<EmpresaTO> getList(Boolean vigencia)
     {
-        logger.info ("getVigentes[INI] vigencia: {}", vigencia);
+        logger.info ("getList[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("vigencia", vigencia);
-        logger.debug("getVigentes[001] parametros: {}", parms );
+        logger.debug("getList[001] parametros: {}", parms );
         
         List<EmpresaTO> lista = mapper.selectEmpresas( parms );
-        logger.debug("getVigentes[002] despues de ejecutar el select: {}", lista.size() );
+        logger.debug("getList[002] despues de ejecutar el select: {}", lista.size() );
 
         logger.info ("getVigentes[FIN] registros: {}", lista.size() );
         return lista;

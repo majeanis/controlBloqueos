@@ -3,6 +3,8 @@ package cl.cerrocolorado.recob.bo;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.Transaccional;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,11 @@ import java.util.List;
  */
 public interface EmpresaBO
 {
-    public Respuesta<EmpresaTO> guardar(EmpresaTO empresa);
+	@Transaccional
+    public Respuesta<EmpresaTO> guardar(EmpresaTO empresa) throws Exception;
 
-    public Resultado eliminar(EmpresaTO pkEmpresa);
+	@Transaccional
+    public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception;
 
     public EmpresaTO get(EmpresaTO pkEmpresa);
 

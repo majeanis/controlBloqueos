@@ -73,7 +73,7 @@ public class CandadoPO
         return candados.get(0);
     }
     
-    public List<CandadoTO> get(UbicacionTO pkUbicacion, Boolean vigencia)
+    public List<CandadoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
         logger.info ("get[INI] vigencia: {}", vigencia);
@@ -90,21 +90,21 @@ public class CandadoPO
         return candados;
     }
     
-    public List<CandadoTO> get(UbicacionTO pkUbicacion, PersonaTO pkPersona)
+    public List<CandadoTO> getList(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia)
     {
-        logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
-        logger.info ("get[INI] pkPersona: {}", pkPersona);
+        logger.info ("getList[INI] pkUbicacion: {}", pkUbicacion);
+        logger.info ("getList[INI] pkPersona: {}", pkPersona);
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
         parms.put("persona", pkPersona);
-        parms.put("vigencia", true);
-        logger.debug("get[001] parametros: {}", parms);
+        parms.put("vigencia", vigencia);
+        logger.debug("getList[001] parametros: {}", parms);
 
         List<CandadoTO> candados = mapper.selectCandados( parms );
-        logger.debug("get[002] despues de ejecutar el select: {}", candados.size() );
+        logger.debug("getList[002] despues de ejecutar el select: {}", candados.size() );
         
-        logger.info ("get[FIN] candado encontrado: {}", candados.size() );
+        logger.info ("getList[FIN] candado encontrado: {}", candados.size() );
         return candados;
     }
 }
