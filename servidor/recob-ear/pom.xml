@@ -20,7 +20,7 @@
 	</dependencies>
 	
 	<build>
-		<finalName>recop-${project.version}</finalName>
+		<finalName>recob-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
