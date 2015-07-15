@@ -14,12 +14,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release>1.0.0</release>
-        <versionJeeApi>7.0</versionJeeApi>
-        <versionSpring>4.1.7.RELEASE</versionSpring>
-        <versionMyBatis>3.3.0</versionMyBatis>
-        <versionMyBatisSpring>1.2.3</versionMyBatisSpring>
-        <versionLog4j>2.3</versionLog4j>
-        <versionJackson>2.5.4</versionJackson>
     </properties>
 
 	<prerequisites>
@@ -31,53 +25,53 @@
 			<dependency>
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
-				<version>${versionJeeApi}</version>
+				<version>7.0</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>${versionSpring}</version>
+				<version>4.1.7.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>${versionSpring}</version>
+				<version>4.1.7.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
-				<version>${versionSpring}</version>
+				<version>4.1.7.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>${versionSpring}</version>
+				<version>4.1.7.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis-spring</artifactId>
-				<version>${versionMyBatisSpring}</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis</artifactId>
-				<version>${versionMyBatis}</version>
+				<version>3.3.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>${versionLog4j}</version>
+				<version>2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>
-				<version>${versionLog4j}</version>
+				<version>2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-core</artifactId>
-				<version>${versionLog4j}</version>
+				<version>2.3</version>
 			</dependency>			
             <dependency>
 				<groupId>commons-codec</groupId>
@@ -102,13 +96,8 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>${versionJackson}</version>
-			</dependency>
-            <dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.3.1</version>
-			</dependency>
+				<version>2.5.4</version>
+			</dependency>  
             <dependency>
             	<groupId>cl.cerrocolorado.recob</groupId>
             	<artifactId>recob-rest</artifactId>
@@ -192,20 +181,20 @@
                         </domain>
                     </configuration>
                     <executions>
-                    	<execution>
-                    		<id>undeploy</id>
-                    		<goals>
-                    			<goal>undeploy</goal>
-                    		</goals>
-                    		<phase>clean</phase>
-                    	</execution>
-                    	<execution>
-                    		<id>deploy</id>
-                    		<goals>
-                    			<goal>deploy</goal>
-                    		</goals>
-                    		<phase>install</phase>
-                    	</execution>
+<!--                     	<execution> -->
+<!--                     		<id>undeploy</id> -->
+<!--                     		<goals> -->
+<!--                     			<goal>undeploy</goal> -->
+<!--                     		</goals> -->
+<!--                     		<phase>clean</phase> -->
+<!--                     	</execution> -->
+<!--                     	<execution> -->
+<!--                     		<id>deploy</id> -->
+<!--                     		<goals> -->
+<!--                     			<goal>deploy</goal> -->
+<!--                     		</goals> -->
+<!--                     		<phase>install</phase> -->
+<!--                     	</execution> -->
                     </executions>
                 </plugin>
 			</plugins>
