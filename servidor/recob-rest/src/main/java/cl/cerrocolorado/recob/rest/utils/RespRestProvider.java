@@ -15,7 +15,7 @@ import javax.ws.rs.ext.Provider;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 
 @Provider
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
+@Produces(MediaType.APPLICATION_JSON)
 public class RespRestProvider implements MessageBodyWriter<RespRest<?>> 
 {
 	@Override
