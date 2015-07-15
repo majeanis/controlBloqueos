@@ -12,7 +12,8 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Severidad;
 
-public class RespFactory {
+public class RespFactory 
+{
 	private static final Logger logger = LogManager.getLogger(RespFactory.class);
 
     public static RespHead getRespHead(Resultado rtdo)
