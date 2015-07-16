@@ -4,6 +4,7 @@ import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
+import cl.cerrocolorado.recob.utils.Rut;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,45 +30,39 @@ public class TrabajadorPO
     public PersonaTO guardar(TrabajadorTO trabajador)
     {
         logger.info ("guardar[INI] trabajador: {}", trabajador);
-        
-        // Si se necesita aplicar un Update, entonces actualizamos el
-        // registro de la Persona, como también el del Trabajador
-        if( trabajador.getId() != null )
+
+        // primero validamos si existe el registro de la persona
+        PersonaTO persona = getPersona(trabajador);
+        if( persona == null )
         {
-            mapper.updatePersona( trabajador );
-            logger.debug("guardar[001] despues de actualizar a la persona: {}", trabajador);
-            
-            mapper.updateTrabajador( trabajador );
-            logger.debug("guardar[002] despues de actualizar al Trabajador: {}", trabajador);
+            mapper.insertPersona(trabajador);
+            logger.debug("guardar[001] despues de crear a la persona: {}", trabajador);
+
+            mapper.insertTrabajador(trabajador);
+            logger.debug("guardar[002] despues de crear al trabajador: {}", trabajador);
         
-            logger.info ("guardar[FIN] registro guardado con éxito: {}", trabajador);
+            logger.info ("guardar[FIN] registro creado con éxito: {}", trabajador);
             return trabajador;
         }
         
-        // Si llegamos a este punto, entonces se necesita la creación del Trabajador
-        // para lo cual validamos si existe el registro de la Persona.
-        Map<String,Object> parms = new HashMap<>();
-        parms.put ("persona", trabajador );
-        List<PersonaTO> personas = mapper.selectPersonas(parms);
-        logger.debug("guardar[003] despues de buscar a la persona: {}", personas);
-
-        // Si no existe registro para la persona, entonces procedemos a crearlo
-        // En caso contrario, asignamos su Id al objeto  del  Trabajador,  para
-        // garantizar la relación entre ambos registros.
-        if( personas.isEmpty() )
+        // En este punto ya existe el registro de la Persona
+        trabajador.setId(persona.getId());
+        mapper.updatePersona(trabajador);
+        logger.debug("guardar[003] despues de actualizar a la persona: {}", trabajador);
+        
+        // Validamos si ya existe la relación entre Trabajador y Empresa
+        TrabajadorTO otro = get(trabajador);
+        if(otro==null)
         {
-            mapper.insertPersona(trabajador);
-            logger.debug("guardar[004] despues de crear el registro de la persona: {}", trabajador);
-        } else 
+            mapper.insertTrabajador(trabajador);
+            logger.info("guardar[004] después de insertar al trabajador: {}", trabajador);
+        } else
         {
-            trabajador.setId(personas.get(0).getId());
+            mapper.updateTrabajador(trabajador);
+            logger.info("guardar[005] después de actualizar al trabajador: {}", trabajador);            
         }
 
-        // Finalmente insertamos al Trabajador
-        mapper.insertTrabajador(trabajador);
-        logger.debug("guardar[005] despues de crear el registro del trabajador: {}", trabajador);
-
-        logger.info ("guardar[FIN] registro guardado con exito: {}", trabajador);
+        logger.info ("guardar[FIN] registro guardado con éxito: {}", trabajador);
         return trabajador;
     }
 
@@ -81,7 +76,7 @@ public class TrabajadorPO
     public TrabajadorTO get(TrabajadorTO pkTrabajador )
     {
         logger.info ("get[INI] pkTrabajador: {}", pkTrabajador );
-        
+
         Map<String, Object> params = new HashMap<>();
         params.put( "trabajador", pkTrabajador );
         params.put( "empresa", pkTrabajador.getEmpresa() );
@@ -100,20 +95,35 @@ public class TrabajadorPO
         return lista.get(0);
     }
     
-    public List<TrabajadorTO> get(EmpresaTO pkEmpresa, Boolean vigencia)
+    public List<TrabajadorTO> getList(EmpresaTO pkEmpresa, Boolean vigencia)
     {
-        logger.info ("get[INI] pkEmpresa: {}", pkEmpresa);
-        logger.info ("get[INI] vigencia: {}", vigencia);
+        logger.info ("getList[INI] pkEmpresa: {}", pkEmpresa);
+        logger.info ("getList[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
         parms.put("empresa", pkEmpresa);
         parms.put("vigencia", vigencia);
-        logger.debug("get[001] parametros: {}", parms);
+        logger.debug("getList[001] parametros: {}", parms);
         
         List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );
-        logger.debug("get[002] despues de ejecutar el select: {}", lista.size() );
+        logger.debug("getList[002] despues de ejecutar el select: {}", lista.size() );
 
-        logger.info ("get[FIN] cantidad de registros encontrados: {}", lista.size() );
+        logger.info ("getList[FIN] cantidad de registros encontrados: {}", lista.size() );
+        return lista;
+    }
+
+    public List<TrabajadorTO> getList(Boolean vigencia)
+    {
+        logger.info ("getList[INI] vigencia: {}", vigencia);
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("vigencia", vigencia);
+        logger.debug("getList[001] parametros: {}", parms);
+        
+        List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );
+        logger.debug("getList[002] despues de ejecutar el select: {}", lista.size() );
+
+        logger.info ("getList[FIN] cantidad de registros encontrados: {}", lista.size() );
         return lista;
     }
 
@@ -135,6 +145,28 @@ public class TrabajadorPO
         }
         
         logger.info ("getPersona[FIN] registro encontrado: {}", lista.get(0));
+        return lista.get(0);
+    }
+    
+    public TrabajadorTO getVigente(Rut rutTrabajador)
+    {
+        logger.info("getVigente[INI] rutTrabajador: {}", rutTrabajador);
+        TrabajadorTO trabajador = new TrabajadorTO();
+        trabajador.setRut(rutTrabajador);
+
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("trabajador", trabajador);
+        parms.put("vigencia", true);
+        logger.debug("getVigente[001] parámetros para la query: {}", parms);
+        
+        List<TrabajadorTO> lista = mapper.selectTrabajadores(parms);
+        if(lista.isEmpty())
+        {
+            logger.info( "getVigente[FIN] no se encontró registro");
+            return null;
+        }
+        
+        logger.info( "getVigente[FIN] registro encontrado: {}", lista.get(0) );
         return lista.get(0);
     }
 }
