@@ -17,7 +17,18 @@ public class TagTO
     private String descripcion;
     private Boolean energiaCero;
     private Boolean vigente;
+    private Integer idEquipo;
 
+    public Integer getIdEquipo()
+    {
+        return idEquipo;
+    }
+
+    public void setIdEquipo(Integer idEquipo)
+    {
+        this.idEquipo = idEquipo;
+    }
+    
     public Integer getId()
     {
         return id;
