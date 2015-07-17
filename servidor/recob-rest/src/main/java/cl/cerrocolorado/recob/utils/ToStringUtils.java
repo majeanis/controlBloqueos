@@ -28,6 +28,14 @@ public class ToStringUtils
         return writer.toString();
     }
 
+    public static String toString(Integer value)
+    {
+        if(value == null)
+            return "";
+        
+        return String.valueOf(value);
+    }
+    
     public static String toString(Long value)
     {
         if (value == null)
@@ -82,7 +90,7 @@ public class ToStringUtils
      *            Valores que se debe aplicar en el Texto Base
      * @return Cadena que resulta de la combinación del textBase y valores
      */
-    public static String toString(String textoBase, final String... valores)
+    public static String toString(String textoBase, final Object... valores)
     {
         if (textoBase == null)
             return "";

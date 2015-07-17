@@ -83,13 +83,13 @@ public class ResultadoMap extends HashMap<String, Object> implements Resultado
     }
 
     @Override
-    public Mensaje addError(Class<?> clazz, String textoBase, String... valores)
+    public Mensaje addError(Class<?> clazz, String textoBase, Object... valores)
     {
         return resultado.addError(clazz, textoBase, valores);
     }
 
     @Override
-    public Mensaje addMensaje(Class<?> clazz, String textoBase, String... valores)
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, Object... valores)
     {
         return resultado.addMensaje(clazz, textoBase, valores);
     }

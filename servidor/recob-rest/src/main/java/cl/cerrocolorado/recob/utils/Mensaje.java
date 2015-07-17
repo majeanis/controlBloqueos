@@ -9,7 +9,7 @@ public class Mensaje extends Throwable
     private final Severidad   severidad;
     private final Exception   exception;
 
-    protected Mensaje(Severidad severidad, String codigo, String textoBase, String...valores)
+    protected Mensaje(Severidad severidad, String codigo, String textoBase, Object...valores)
     {
         this.severidad = severidad;
         this.exception = null;
