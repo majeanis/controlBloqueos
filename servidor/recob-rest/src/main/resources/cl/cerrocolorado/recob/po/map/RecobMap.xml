@@ -73,6 +73,7 @@
         <result property="descripcion" column="taeq_desc" />
         <result property="energiaCero" column="taeq_enrg_cero" />
         <result property="vigente" column="taeq_vige" />
+        <resilt property="idEquipo" column="eqpo_id" />
     </resultMap>
     
     <resultMap id="equipoMap" type="EquipoTO" >
@@ -425,8 +426,12 @@
            on (a.ubic_id = b.ubic_id)
         <where>
             <choose>
-                <when test="id != null" >
+                <when test="equipo.id != null" >
                     a.eqpo_id = #{equipo.id}
+                </when>
+                <when test="equipo.codigo != null and ubicacion.id != null" >
+                    a.eqpo_codi   = #{equipo.codigo}
+                    and a.ubic_id = #{ubicacion.id}
                 </when>
                 <when test="ubicacion.id != null" >
                     a.ubic_id = #{ubicacion.id}
@@ -469,21 +474,68 @@
     </delete>
 
     <select id="selectTags" parameterType="map" resultMap="tagMap" >
-        select b.taeq_id
-              ,b.taeq_nume
-              ,b.taeq_nomb
-              ,b.taeq_desc
-              ,b.taeq_enrg_cero
-              ,b.taeq_vige
-        from   rcb_tags_eqpo b
-        where  b.eqpo_id   = #{equipo.id}
-        <if test="vigencia != null" >
-            and a.eqpo_vige = #{vigencia}
-        </if>
-        <if test="energiaCero != null" >
-            and b.taeq_enrg_cero = #{energiaCero}
-        </if>
-        order by b.taeq_nume
+        select a.taeq_id
+              ,a.taeq_nume
+              ,a.taeq_nomb
+              ,a.taeq_desc
+              ,a.taeq_enrg_cero
+              ,a.taeq_vige
+              ,a.eqpo_id
+        from   rcb_tags_eqpo a inner join rcb_eqpo b
+           on (a.eqpo_id = b.eqpo_id)
+        <where>
+            <choose>
+                <when test="tag.id != null" >
+                    a.taeq_id = #{tag.id}
+                </when>
+                <when test="tag.idEquipo != null and tag.numero != null" >
+                    a.eqpo_id = #{tag.idEquipo}
+                    and a.taeq_nume = #{tag.numero}
+                </when>
+                <when test="equipo.id != null" >
+                    a.eqpo_id = #{equipo.id}
+                </when>
+                <when test="equipo.codigo != null and ubicacion.id != null" >
+                    b.eqpo_codi   = #{equipo.codigo}
+                    and b.ubic_id = #{ubicacion.id}
+                </when>
+                <if test="vigencia != null" >
+                    and a.taeq_vige = #{vigencia}
+                </if>
+                <if test="energiaCero != null" >
+                    and b.taeq_enrg_cero = #{energiaCero}
+                </if>
+            </choose>
+        </where>
+
+        order by a.eqpo_id, b.taeq_nume
     </select>
 
+    <insert id="insertTag" parameterType="TagTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_tags_eqpo(taeq_id, taeq_nume, taeq_nomb, taeq_desc, taeq_enrg_cero, taeq_vige, eqpo_id, audi_fech_crea)
+             values(#{id},#{numero},#{nombre},#{descripcion},#{energiaCero},#{vigente},#{idEquipo},localtimestamp)        
+    </insert>
+
+    <update id="updateTag" parameterType="TagTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        update into rcb_tags_eqpo set
+               taeq_nume      = #{numero}
+              ,taeq_nomb      = #{nombre}
+              ,taeq_desc      = #{descripcion}
+              ,taeq_enrg_cero = #{energiaCero}
+              ,taeq_vige      = #{vigencia}
+              ,eqpo_id        = #{idEquipo}
+              ,audi_fech_modi = localtimestamp 
+        where  taeq_id = #{id}
+    </update>
+
+    <delete id="deleteTag" parameterType="TagTO" >
+        delete from rcb_tags_eqpo
+        where  taeq_id = #{id}
+    </delete>
 </mapper>

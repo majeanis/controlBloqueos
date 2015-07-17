@@ -26,4 +26,8 @@ public interface EquipoBO
     public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion);
     
     public List<EquipoTO> getTodos(UbicacionTO pkUbicacion);
+    
+    public List<TagTO> getTagsEnergiaCero(EquipoTO pk);
+    
+    public List<TagTO> getTagsVigentes(EquipoTO pk);
 }
