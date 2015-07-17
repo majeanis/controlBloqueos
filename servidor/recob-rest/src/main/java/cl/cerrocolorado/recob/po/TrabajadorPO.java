@@ -4,7 +4,6 @@ import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
-import cl.cerrocolorado.recob.utils.Rut;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +19,15 @@ import org.springframework.stereotype.Repository;
  */
 @Scope("singleton")
 @Repository
-public class TrabajadorPO
+public class TrabajadorPO implements BasePO<TrabajadorTO>
 {
     private static final Logger logger = LogManager.getLogger(TrabajadorPO.class );
     
     @Autowired
     private RecobMap mapper;
     
-    public PersonaTO guardar(TrabajadorTO trabajador)
+    @Override
+    public TrabajadorTO guardar(TrabajadorTO trabajador)
     {
         logger.info ("guardar[INI] trabajador: {}", trabajador);
 
@@ -66,6 +66,7 @@ public class TrabajadorPO
         return trabajador;
     }
 
+    @Override
     public void eliminar(TrabajadorTO pkTrabajador)
     {
         logger.info ("eliminar[INI] trabajador: {}", pkTrabajador );
@@ -73,6 +74,7 @@ public class TrabajadorPO
         logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pkTrabajador );
     }
 
+    @Override
     public TrabajadorTO get(TrabajadorTO pkTrabajador )
     {
         logger.info ("get[INI] pkTrabajador: {}", pkTrabajador );
@@ -166,5 +168,16 @@ public class TrabajadorPO
         
         logger.info( "getVigente[FIN] registro encontrado: {}", lista.get(0) );
         return lista.get(0);
+    }
+
+    @Override
+    public boolean esEliminable(TrabajadorTO pk)
+    {
+        logger.info ("esEliminable[INI] pkTrabajador: {}", pk);
+        
+        int relaciones = mapper.childsTrabajador(pk);
+        
+        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
+        return relaciones > 0;
     }
 }

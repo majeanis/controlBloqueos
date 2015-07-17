@@ -19,13 +19,14 @@ import org.springframework.stereotype.Repository;
  */
 @Scope("singleton")
 @Repository
-public class CandadoPO
+public class CandadoPO implements BasePO<CandadoTO>
 {
     private static final Logger logger = LogManager.getLogger(CandadoPO.class );
     
     @Autowired
     private RecobMap mapper;
     
+    @Override
     public CandadoTO guardar(CandadoTO candado)
     {
         logger.info ("guardar[INI] candado: {}", candado);
@@ -44,6 +45,7 @@ public class CandadoPO
         return candado;
     }
 
+    @Override
     public void eliminar(CandadoTO pkCandado)
     {
         logger.info ("eliminar[INI] candado: {}", pkCandado );
@@ -51,6 +53,7 @@ public class CandadoPO
         logger.info ("eliminar[FIN] despues de eliminar a la candado: {}", pkCandado );
     }
 
+    @Override
     public CandadoTO get(CandadoTO pkCandado )
     {
         logger.info ("get[INI] pkCandado: {}", pkCandado );
@@ -128,5 +131,16 @@ public class CandadoPO
         
         logger.info ("getList[FIN] candado encontrado: {}", candados.size() );
         return candados;
+    }
+
+    @Override
+    public boolean esEliminable(CandadoTO pk)
+    {
+        logger.info ("esEliminable[INI] pkCandado: {}", pk);
+        
+        int relaciones = mapper.childsCandado(pk);
+        
+        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
+        return relaciones > 0;
     }
 }

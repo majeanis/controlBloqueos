@@ -18,13 +18,14 @@ import org.springframework.stereotype.Repository;
  */
 @Scope("singleton")
 @Repository
-public class CajaBloqueoPO
+public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
 {
     private static final Logger logger = LogManager.getLogger( CajaBloqueoPO.class );
     
     @Autowired
     private RecobMap mapper;
     
+    @Override
     public CajaBloqueoTO guardar(CajaBloqueoTO caja)
     {
         logger.info ("guardar[INI] caja: {}", caja);
@@ -43,6 +44,7 @@ public class CajaBloqueoPO
         return caja;
     }
 
+    @Override
     public void eliminar(CajaBloqueoTO pkCaja)
     {
         logger.info ("eliminar[INI] pkCaja: {}", pkCaja );
@@ -50,6 +52,7 @@ public class CajaBloqueoPO
         logger.info ("eliminar[FIN] despues de eliminar a la caja: {}", pkCaja );
     }
 
+    @Override
     public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
     {
         logger.info ("get[INI] pkCaja: {}", pkCaja );
@@ -88,5 +91,16 @@ public class CajaBloqueoPO
 
         logger.info ("getList[FIN] registros encontrados: {}", cajas.size() );
         return cajas;
+    }
+
+    @Override
+    public boolean esEliminable(CajaBloqueoTO pk)
+    {
+        logger.info ("esEliminable[INI] pkCaja: {}", pk);
+        
+        int relaciones = mapper.childsCajaBloqueo(pk);
+        
+        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
+        return relaciones > 0;
     }
 }

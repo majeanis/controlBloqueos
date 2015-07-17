@@ -162,6 +162,13 @@ public class CandadoBean implements CandadoBO
             return rtdo;
         }
 
+        if(!candadoPO.esEliminable(candado))
+        {
+            rtdo.addError(this.getClass(), "Candado tiene registros asociados" );
+            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            return rtdo;
+        }
+
         // Si llegamos a este punto, entonces es posible la eliminación
         candadoPO.eliminar(candado);
         logger.debug("eliminar[001] despues de eliminar el candado: {}", candado );

@@ -101,7 +101,14 @@ public class EmpresaBean implements EmpresaBO
             logger.info ("eliminar[FIN] no existe el registro: {}", pkEmpresa );
             return rtdo;
         }
-        
+
+        if(!empresaPO.esEliminable(otra))
+        {
+            rtdo.addError(this.getClass(), "Empresa tiene registros asociados" );
+            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            return rtdo;
+        }
+
         empresaPO.eliminar(otra);
         logger.debug("eliminar[001] despues de eliminar el registro: {}", otra );
         

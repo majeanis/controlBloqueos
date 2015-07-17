@@ -136,14 +136,21 @@ public class TrabajadorBean implements TrabajadorBO
         {
             rtdo.addError(this.getClass(), "No se encontró registro del Trabajador" );
             logger.info("eliminar[FIN] no se encontró registro eliminable");
-        } else
+            return rtdo;
+        }
+        
+        if(!trabajadorPO.esEliminable(eliminar))
         {
-            // Si llegamos a este punto, es posible eliminar al trabajador
-            trabajadorPO.eliminar(eliminar);
-            logger.info("eliminar[FIN] registro eliminado con éxito");
+            rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
+            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            return rtdo;
         }
 
+        // Si llegamos a este punto, es posible eliminar al trabajador
+        trabajadorPO.eliminar(eliminar);
         rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. #{1} eliminado con éxito", eliminar.getRut().toText() );
+
+        logger.info("eliminar[FIN] registro eliminado con éxito");
         return rtdo;
     }
 

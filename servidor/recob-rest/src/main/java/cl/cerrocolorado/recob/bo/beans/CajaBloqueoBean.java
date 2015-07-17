@@ -139,6 +139,13 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return rtdo;
         }
         
+        if(!cajaPO.esEliminable(caja))
+        {
+            rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
+            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            return rtdo;
+        }
+
         cajaPO.eliminar(caja);
         logger.debug("eliminar[001] despues de eliminar la caja: {}", caja );
         

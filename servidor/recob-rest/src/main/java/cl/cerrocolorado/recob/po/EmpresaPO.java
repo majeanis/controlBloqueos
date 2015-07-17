@@ -17,13 +17,14 @@ import org.springframework.stereotype.Repository;
  */
 @Scope("singleton")
 @Repository
-public class EmpresaPO
+public class EmpresaPO implements BasePO<EmpresaTO>
 {
     private static final Logger logger = LogManager.getLogger(EmpresaPO.class );
     
     @Autowired
     private RecobMap mapper;
     
+    @Override
     public EmpresaTO guardar(EmpresaTO empresa)
     {
         logger.info ("guardar[INI] empresa: {}", empresa);
@@ -42,6 +43,7 @@ public class EmpresaPO
         return empresa;
     }
 
+    @Override
     public void eliminar(EmpresaTO pkEmpresa)
     {
         logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
@@ -49,6 +51,7 @@ public class EmpresaPO
         logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pkEmpresa );
     }
 
+    @Override
     public EmpresaTO get(EmpresaTO pkEmpresa )
     {
         logger.info ("get[INI] pkEmpresa: {}", pkEmpresa );
@@ -83,5 +86,16 @@ public class EmpresaPO
 
         logger.info ("getVigentes[FIN] registros: {}", lista.size() );
         return lista;
+    }
+
+    @Override
+    public boolean esEliminable(EmpresaTO pk)
+    {
+        logger.info ("esEliminable[INI] pkEmpresa: {}", pk);
+        
+        int relaciones = mapper.childsEmpresa(pk);
+        
+        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
+        return relaciones > 0;
     }
 }
