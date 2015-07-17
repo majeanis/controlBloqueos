@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      ModeloLogico-ControlDeBloqueos.dm1
 --
--- Date Created : Friday, June 26, 2015 22:20:29
+-- Date Created : Thursday, July 16, 2015 21:43:26
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -23,6 +23,11 @@ CREATE TABLE rcb_bloq_depa(
 
 
 
+COMMENT ON COLUMN rcb_bloq_depa.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_bloq_depa IS 'Bloqueos Departamentales'
+;
+
 -- 
 -- TABLE: rcb_caja_bloq 
 --
@@ -41,13 +46,19 @@ CREATE TABLE rcb_caja_bloq(
 
 
 
+COMMENT ON COLUMN rcb_caja_bloq.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_caja_bloq IS 'Cajas de Bloqueo'
+;
+
 -- 
 -- TABLE: rcb_cand 
 --
 
 CREATE TABLE rcb_cand(
     cand_id           numeric(14, 0)    NOT NULL,
-    cand_serie        varchar(30)       NOT NULL,
+    cand_nume         numeric(4, 0)     NOT NULL,
+    cand_seri         varchar(30)       NOT NULL,
     cand_vige         boolean           NOT NULL,
     dval_id_uso       numeric(14, 0)    NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
@@ -59,6 +70,13 @@ CREATE TABLE rcb_cand(
 ;
 
 
+
+COMMENT ON COLUMN rcb_cand.cand_nume IS 'Número del Candado'
+;
+COMMENT ON COLUMN rcb_cand.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_cand IS 'Candados'
+;
 
 -- 
 -- TABLE: rcb_domi_valo 
@@ -75,6 +93,9 @@ CREATE TABLE rcb_domi_valo(
 ;
 
 
+
+COMMENT ON TABLE rcb_domi_valo IS 'Dominio de Valores'
+;
 
 -- 
 -- TABLE: rcb_dota_lcbl 
@@ -96,6 +117,9 @@ CREATE TABLE rcb_dota_lcbl(
 
 
 
+COMMENT ON TABLE rcb_dota_lcbl IS 'Dotación registrada en el Libro de Control de Bloqueos'
+;
+
 -- 
 -- TABLE: rcb_empr 
 --
@@ -113,6 +137,11 @@ CREATE TABLE rcb_empr(
 
 
 
+COMMENT ON COLUMN rcb_empr.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_empr IS 'Empresas'
+;
+
 -- 
 -- TABLE: rcb_enrg_lcbl 
 --
@@ -123,6 +152,7 @@ CREATE TABLE rcb_enrg_lcbl(
     CONSTRAINT enlc_pk PRIMARY KEY (lcbl_id, dval_id_item) USING INDEX TABLESPACE recob_ind 
 )
 ;
+
 
 
 
@@ -143,19 +173,10 @@ CREATE TABLE rcb_eqpo(
 
 
 
--- 
--- TABLE: rcb_eqpo_lcbl 
---
-
-CREATE TABLE rcb_eqpo_lcbl(
-    lcbl_id           varchar(20)       NOT NULL,
-    eqpo_id           numeric(14, 0)    NOT NULL,
-    audi_fech_crea    timestamp         NOT NULL,
-    CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, eqpo_id) USING INDEX TABLESPACE recob_ind 
-)
+COMMENT ON COLUMN rcb_eqpo.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
 ;
-
-
+COMMENT ON TABLE rcb_eqpo IS 'Equipos'
+;
 
 -- 
 -- TABLE: rcb_estc 
@@ -172,6 +193,11 @@ CREATE TABLE rcb_estc(
 ;
 
 
+
+COMMENT ON COLUMN rcb_estc.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_estc IS 'Estaciones'
+;
 
 -- 
 -- TABLE: rcb_libr_ctrl_bloq 
@@ -191,6 +217,11 @@ CREATE TABLE rcb_libr_ctrl_bloq(
 
 
 
+COMMENT ON COLUMN rcb_libr_ctrl_bloq.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_libr_ctrl_bloq IS 'Libros de Control de Bloqueos'
+;
+
 -- 
 -- TABLE: rcb_pers 
 --
@@ -207,6 +238,11 @@ CREATE TABLE rcb_pers(
 
 
 
+COMMENT ON COLUMN rcb_pers.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_pers IS 'Personas'
+;
+
 -- 
 -- TABLE: rcb_resp_lcbl 
 --
@@ -222,6 +258,26 @@ CREATE TABLE rcb_resp_lcbl(
 ;
 
 
+
+COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de Bloqueos'
+;
+
+-- 
+-- TABLE: rcb_taeq_lcbl 
+--
+
+CREATE TABLE rcb_taeq_lcbl(
+    lcbl_id           varchar(20)       NOT NULL,
+    taeq_id           numeric(14, 0)    NOT NULL,
+    audi_fech_crea    timestamp         NOT NULL,
+    CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, taeq_id)
+)
+;
+
+
+
+COMMENT ON TABLE rcb_taeq_lcbl IS 'Equipos registrados en el Libro de Control de Bloqueos'
+;
 
 -- 
 -- TABLE: rcb_tags_eqpo 
@@ -243,6 +299,11 @@ CREATE TABLE rcb_tags_eqpo(
 
 
 
+COMMENT ON COLUMN rcb_tags_eqpo.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_tags_eqpo IS 'TAGs de los Equipos'
+;
+
 -- 
 -- TABLE: rcb_tokn 
 --
@@ -257,6 +318,9 @@ CREATE TABLE rcb_tokn(
 
 
 
+COMMENT ON TABLE rcb_tokn IS 'Toke para identificación de Ubicaciones'
+;
+
 -- 
 -- TABLE: rcb_trab 
 --
@@ -264,7 +328,7 @@ CREATE TABLE rcb_tokn(
 CREATE TABLE rcb_trab(
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
-    trab_cargo        varchar(60)       NOT NULL,
+    trab_carg         varchar(60)       NOT NULL,
     trab_curs_bloq    boolean           NOT NULL,
     trab_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
@@ -274,6 +338,11 @@ CREATE TABLE rcb_trab(
 ;
 
 
+
+COMMENT ON COLUMN rcb_trab.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_trab IS 'Trabajadores'
+;
 
 -- 
 -- TABLE: rcb_ubic 
@@ -293,6 +362,11 @@ CREATE TABLE rcb_ubic(
 
 
 
+COMMENT ON COLUMN rcb_ubic.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_ubic IS 'Estación'
+;
+
 -- 
 -- INDEX: cabl_uk 
 --
@@ -303,7 +377,13 @@ CREATE UNIQUE INDEX cabl_uk ON rcb_caja_bloq(ubic_id, cabl_nume)
 -- INDEX: cand_uk 
 --
 
-CREATE UNIQUE INDEX cand_uk ON rcb_cand(cand_serie)
+CREATE UNIQUE INDEX cand_uk ON rcb_cand(cand_seri)
+;
+-- 
+-- INDEX: cand_nume_uk 
+--
+
+CREATE UNIQUE INDEX cand_nume_uk ON rcb_cand(cand_nume, ubic_id)
 ;
 -- 
 -- INDEX: dval_uk 
@@ -426,21 +506,6 @@ ALTER TABLE rcb_eqpo ADD CONSTRAINT eqpo_ubic_fk
 
 
 -- 
--- TABLE: rcb_eqpo_lcbl 
---
-
-ALTER TABLE rcb_eqpo_lcbl ADD CONSTRAINT eqlc_eqpo_fk 
-    FOREIGN KEY (eqpo_id)
-    REFERENCES rcb_eqpo(eqpo_id)
-;
-
-ALTER TABLE rcb_eqpo_lcbl ADD CONSTRAINT eqlc_lcbl_fk 
-    FOREIGN KEY (lcbl_id)
-    REFERENCES rcb_libr_ctrl_bloq(lcbl_id)
-;
-
-
--- 
 -- TABLE: rcb_libr_ctrl_bloq 
 --
 
@@ -462,6 +527,21 @@ ALTER TABLE rcb_resp_lcbl ADD CONSTRAINT relc_lcbl_fk
 ALTER TABLE rcb_resp_lcbl ADD CONSTRAINT relc_trab_fk 
     FOREIGN KEY (pers_id, empr_id)
     REFERENCES rcb_trab(pers_id, empr_id)
+;
+
+
+-- 
+-- TABLE: rcb_taeq_lcbl 
+--
+
+ALTER TABLE rcb_taeq_lcbl ADD CONSTRAINT eqlc_lcbl_fk 
+    FOREIGN KEY (lcbl_id)
+    REFERENCES rcb_libr_ctrl_bloq(lcbl_id)
+;
+
+ALTER TABLE rcb_taeq_lcbl ADD CONSTRAINT talc_taeq_fk 
+    FOREIGN KEY (taeq_id)
+    REFERENCES rcb_tags_eqpo(taeq_id)
 ;
 
 
