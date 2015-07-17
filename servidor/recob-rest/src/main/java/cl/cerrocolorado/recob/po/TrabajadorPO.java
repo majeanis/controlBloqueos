@@ -148,14 +148,12 @@ public class TrabajadorPO
         return lista.get(0);
     }
     
-    public TrabajadorTO getVigente(Rut rutTrabajador)
+    public TrabajadorTO getVigente(TrabajadorTO pkTrabajador)
     {
-        logger.info("getVigente[INI] rutTrabajador: {}", rutTrabajador);
-        TrabajadorTO trabajador = new TrabajadorTO();
-        trabajador.setRut(rutTrabajador);
+        logger.info("getVigente[INI] pkTrabajador: {}", pkTrabajador);
 
         Map<String,Object> parms = new HashMap<>();
-        parms.put("trabajador", trabajador);
+        parms.put("trabajador", pkTrabajador);
         parms.put("vigencia", true);
         logger.debug("getVigente[001] parámetros para la query: {}", parms);
         

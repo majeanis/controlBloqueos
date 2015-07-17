@@ -20,7 +20,7 @@ public interface TrabajadorBO
 	@Transaccional
     public Resultado eliminar(TrabajadorTO pkTrabajador) throws Exception;
 
-    public TrabajadorTO get(TrabajadorTO pkTrabajador);
+    public Respuesta<TrabajadorTO> get(TrabajadorTO pkTrabajador);
 
     public List<TrabajadorTO> getVigentes();
     public List<TrabajadorTO> getVigentes(EmpresaTO pkEmpresa);

@@ -66,10 +66,7 @@ public class TrabajadorBean implements TrabajadorBO
             rtdo.addError(this.getClass(), "Debe informar la vigencia del trabajador" );
         }
 
-        if( trabajador.getEmpresa() == null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar la Empresa");
-        } else if( Rut.isBlank( trabajador.getEmpresa().getRut() ) )
+        if( trabajador.getEmpresa() == null || Rut.isBlank( trabajador.getEmpresa().getRut() ) )
         {
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la Empresa");
         }
@@ -80,7 +77,7 @@ public class TrabajadorBean implements TrabajadorBO
             return Respuesta.of(rtdo);
         }
         
-        TrabajadorTO actual = trabajadorPO.getVigente(trabajador.getRut());
+        TrabajadorTO actual = trabajadorPO.getVigente(trabajador);
         if(actual != null)
         {
             trabajador.setId(actual.getId());
@@ -116,23 +113,18 @@ public class TrabajadorBean implements TrabajadorBO
 
         Resultado rtdo = new ResultadoProceso();
         
-        if(pkTrabajador == null)
+        if(pkTrabajador == null || pkTrabajador.getRut() == null)
         {
-            rtdo.addError(this.getClass(), "Debe informar al Trabajador");
+            rtdo.addError(this.getClass(), "Debe informar al R.U.T. del trabajador");
             logger.info("eliminar[FIN] pkTrabajador llegó en NULL");
             return rtdo;
-        }
-        
-        if( Rut.isBlank(pkTrabajador.getRut()))
-        {
-            rtdo.addError(this.getClass(), "Debe informar el R.U.T. del Trabajador" );
         }
 
         // Si no se informa la Empresa entonces se elimina la relación que esté vigente
         TrabajadorTO eliminar;
         if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
         {
-            eliminar = trabajadorPO.getVigente(pkTrabajador.getRut());
+            eliminar = trabajadorPO.getVigente(pkTrabajador);
             logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", eliminar);
         } else
         {
@@ -151,54 +143,79 @@ public class TrabajadorBean implements TrabajadorBO
             logger.info("eliminar[FIN] registro eliminado con éxito");
         }
 
+        rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. #{1} eliminado con éxito", eliminar.getRut().toText() );
         return rtdo;
     }
 
     @Override
-    public TrabajadorTO get(TrabajadorTO pkTrabajador)
+    public Respuesta<TrabajadorTO> get(TrabajadorTO pkTrabajador)
     {
         logger.info( "get[INI] pkTrabajador: {}", pkTrabajador);
 
-        if(pkTrabajador==null)
+        Resultado rtdo = new ResultadoProceso();
+        if(pkTrabajador==null || pkTrabajador.getRut()==null)
         {
-            
+            rtdo.addError(this.getClass(), "Debe informar el R.U.T. del trabajador");
+            logger.info ("get[FIN] no se informaron todos los filtros: {}", pkTrabajador);
+            return Respuesta.of(rtdo);
         }
         
-        TrabajadorTO eliminar;
+        TrabajadorTO trabajador;
         if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
         {
-            eliminar = trabajadorPO.getVigente(pkTrabajador.getRut());
-            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", eliminar);
+            trabajador = trabajadorPO.getVigente(pkTrabajador);
+            logger.debug("get[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            eliminar = trabajadorPO.get(pkTrabajador);
-            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", eliminar);            
+            trabajador = trabajadorPO.get(pkTrabajador);
+            logger.debug("get[002] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        logger.info ("get[FIN] registro retornado: {}", trabajador);
+        return Respuesta.of(trabajador);
     }
 
     @Override
     public List<TrabajadorTO> getVigentes()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getVigentes[INI]");
+        
+        List<TrabajadorTO> lista = trabajadorPO.getList(Boolean.TRUE);
+        
+        logger.info("getVigentes[FIN] cantidad de registros retornados: {}", lista.size());
+        return lista;
     }
 
     @Override
     public List<TrabajadorTO> getVigentes(EmpresaTO pkEmpresa)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getVigentes[INI] pkEmpresa: {}", pkEmpresa);
+        
+        List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, Boolean.TRUE);
+        
+        logger.info("getVigentes[FIN] cantidad de registros retornados: {}", lista.size());
+        return lista;
     }
 
     @Override
     public List<TrabajadorTO> getTodos()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTodos[INI]");
+        
+        List<TrabajadorTO> lista = trabajadorPO.getList(null);
+        
+        logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
+        return lista;
     }
 
     @Override
     public List<TrabajadorTO> getTodos(EmpresaTO pkEmpresa)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTodos[INI] pkEmpresa: {}", pkEmpresa);
+        
+        List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, null);
+        
+        logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
+        return lista;
     }
 }
