@@ -10,7 +10,7 @@ public class Respuesta<T> implements Serializable
     private final Resultado   resultado;
     private final Optional<T> contenido;
 
-    public Respuesta(Resultado resultado, T contenido)
+    private Respuesta(Resultado resultado, T contenido)
     {
         if (resultado != null)
         {
@@ -21,16 +21,6 @@ public class Respuesta<T> implements Serializable
         }
 
         this.contenido = Optional.ofNullable(contenido);
-    }
-
-    public Respuesta(Resultado resultado)
-    {
-        this(resultado,null);
-    }
-
-    public Respuesta(T contenido)
-    {
-        this(null,contenido);
     }
 
     public Resultado getResultado()
@@ -47,5 +37,20 @@ public class Respuesta<T> implements Serializable
     public String toString()
     {
         return ToStringUtils.toString(this);
+    }
+    
+    public static <T> Respuesta<T> of(Resultado resultado, T contenido)
+    {
+        return new Respuesta<>(resultado, contenido);
+    }
+    
+    public static <T> Respuesta<T> of(Resultado resultado)
+    {
+        return new Respuesta<>(resultado,null);
+    }
+
+    public static <T> Respuesta<T> of(T contenido)
+    {
+        return new Respuesta<>(null, contenido);
     }
 }

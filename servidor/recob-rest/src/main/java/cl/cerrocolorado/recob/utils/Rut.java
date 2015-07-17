@@ -168,7 +168,7 @@ public class Rut implements Serializable, Comparable<Rut>
         if( rut.numero == null || rut.digito == null )
             return true;
         
-        return StringUtils.isBlank(rut.digito);
+        return rut.numero == 0 || StringUtils.isBlank(rut.digito);
     }
     
     public Rut(Rut another)

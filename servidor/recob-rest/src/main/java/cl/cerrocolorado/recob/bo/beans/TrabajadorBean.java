@@ -38,7 +38,7 @@ public class TrabajadorBean implements TrabajadorBO
         {
             rtdo.addError(this.getClass(), "Debe informar datos del trabajador");
             logger.info ("guardar[FIN] objeto trabajador llegó en null" );
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         }
         
         if(Rut.isBlank(trabajador.getRut()))
@@ -77,7 +77,7 @@ public class TrabajadorBean implements TrabajadorBO
         if(!rtdo.esExitoso())
         {
             logger.info("guardar[FIN] se detectaron errores de validación: {}", trabajador);
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         }
         
         TrabajadorTO actual = trabajadorPO.getVigente(trabajador.getRut());
@@ -92,32 +92,89 @@ public class TrabajadorBean implements TrabajadorBO
                 trabajador.getEmpresa().setId(actual.getEmpresa().getId());
                 trabajadorPO.guardar(trabajador);
                 logger.info("guardar[FIN] registro del trabajador actualizado con éxito: {}", trabajador);
-                return new Respuesta<>(rtdo,trabajador);
+                return Respuesta.of(rtdo,trabajador);
             } else if( trabajador.getVigente() && actual.getVigente() ) 
             {
                 actual.setVigente(Boolean.FALSE);
                 trabajadorPO.guardar(actual);
                 trabajadorPO.guardar(trabajador);
                 logger.info("guardar[FIN] se desactivo registro actual y se activo una nueva relación: actual {} nuevo {}", actual, trabajador);                
-                return new Respuesta<>(rtdo,trabajador);
+                return Respuesta.of(rtdo,trabajador);
             }
         }
 
         // Si se llega a este punto, entonces solor esta guardar el registro del trabajador
         trabajadorPO.guardar(trabajador);
         logger.info("guardar[FIN] trabajador guardado con éxito: {}", trabajador);
-        return new Respuesta<>(rtdo,trabajador);
+        return Respuesta.of(rtdo,trabajador);
     }
 
     @Override
     public Resultado eliminar(TrabajadorTO pkTrabajador) throws Exception
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("eliminar[INI] pkTrabajador: {}", pkTrabajador);
+
+        Resultado rtdo = new ResultadoProceso();
+        
+        if(pkTrabajador == null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar al Trabajador");
+            logger.info("eliminar[FIN] pkTrabajador llegó en NULL");
+            return rtdo;
+        }
+        
+        if( Rut.isBlank(pkTrabajador.getRut()))
+        {
+            rtdo.addError(this.getClass(), "Debe informar el R.U.T. del Trabajador" );
+        }
+
+        // Si no se informa la Empresa entonces se elimina la relación que esté vigente
+        TrabajadorTO eliminar;
+        if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
+        {
+            eliminar = trabajadorPO.getVigente(pkTrabajador.getRut());
+            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", eliminar);
+        } else
+        {
+            eliminar = trabajadorPO.get(pkTrabajador);
+            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", eliminar);            
+        }
+
+        if(eliminar==null)
+        {
+            rtdo.addError(this.getClass(), "No se encontró registro del Trabajador" );
+            logger.info("eliminar[FIN] no se encontró registro eliminable");
+        } else
+        {
+            // Si llegamos a este punto, es posible eliminar al trabajador
+            trabajadorPO.eliminar(eliminar);
+            logger.info("eliminar[FIN] registro eliminado con éxito");
+        }
+
+        return rtdo;
     }
 
     @Override
     public TrabajadorTO get(TrabajadorTO pkTrabajador)
     {
+        logger.info( "get[INI] pkTrabajador: {}", pkTrabajador);
+
+        if(pkTrabajador==null)
+        {
+            
+        }
+        
+        TrabajadorTO eliminar;
+        if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
+        {
+            eliminar = trabajadorPO.getVigente(pkTrabajador.getRut());
+            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", eliminar);
+        } else
+        {
+            eliminar = trabajadorPO.get(pkTrabajador);
+            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", eliminar);            
+        }
+        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

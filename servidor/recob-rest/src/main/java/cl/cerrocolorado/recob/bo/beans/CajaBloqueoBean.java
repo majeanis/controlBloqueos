@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,45 +43,48 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
         if( cajaBloqueo == null )
         {
-        	rtdo.addError( CajaBloqueoBean.class, "Debe informar los datos de la Caja");
+        	rtdo.addError( this.getClass(), "Debe informar los datos de la Caja");
             logger.info ("guardar[FIN] caja informada en null" );        	
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         } 
 
         if ( cajaBloqueo.getVigente() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "Debe informar Vigencia de la Caja");
+            rtdo.addError( this.getClass(), "Debe informar Vigencia de la Caja");
         }
         
         if( cajaBloqueo.getNumero() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "Debe informar Número de la Caja" );
+            rtdo.addError( this.getClass(), "Debe informar N° de la Caja" );
+        } else if( cajaBloqueo.getNumero() == 0 )
+        {
+            rtdo.addError( this.getClass(), "El N° de Caja es inválido" );
         }
         
         if( cajaBloqueo.getNombre() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "Debe informar nombre de la Caja" );
+            rtdo.addError( this.getClass(), "Debe informar nombre de la Caja" );
         }
         
         if( cajaBloqueo.getUbicacion() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "Caja debe estar asociada a una Ubicación" );
+            rtdo.addError( this.getClass(), "Caja debe estar asociada a una Ubicación" );
         } else if (cajaBloqueo.getUbicacion().getId() == null )
         {
-            rtdo.addError( CajaBloqueoBean.class, "Caja debe estar asociada a una Ubicación" );
+            rtdo.addError( this.getClass(), "Caja debe estar asociada a una Ubicación" );
         } else
         {
 		    UbicacionTO ubicacion = ubicacionPO.get(cajaBloqueo.getUbicacion());
 		    if( ubicacion == null )
 		    {
-		        rtdo.addError( CajaBloqueoBean.class, "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
+		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
 		    }
         }
 
         if( !rtdo.esExitoso() )
         {
             logger.info ("guardar[FIN] saliendo del método por campos en NULL: {}", rtdo );
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         }
         
         // Buscamos la preexistencia de la caja
@@ -94,7 +98,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         // Si llegamos a este punto la Caja puede ser Guardada
         cajaPO.guardar(cajaBloqueo);
         logger.info ("guardar[FIN] caja guardada con exito: {}", cajaBloqueo );
-        return new Respuesta<>(cajaBloqueo);
+        return Respuesta.of(cajaBloqueo);
     }
     
     @Transaccional
@@ -113,20 +117,24 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
         if( pkCaja.getNumero() == null )
         {
-            rtdo.addError(CajaBloqueoBean.class, "Debe informar el N° de la Caja" );
+            rtdo.addError(this.getClass(), "Debe informar el N° de la Caja" );
         }
-        if( pkCaja.getUbicacion() == null )
+
+        if( pkCaja.getUbicacion() == null || pkCaja.getUbicacion().getId() == null )
         {
-            rtdo.addError(CajaBloqueoBean.class, "Debe informar la Ubicación de la Caja" );
-        } else if( pkCaja.getUbicacion().getId() == null )
+            rtdo.addError(this.getClass(), "Debe informar la Ubicación de la Caja" );
+        }
+        
+        if( !rtdo.esExitoso() )
         {
-            rtdo.addError(CajaBloqueoBean.class, "Debe informar la Ubicación de la Caja" );
+            logger.info("eliminar[FIN] errores de validación: {}", rtdo);
+            return rtdo;
         }
         
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
         if( caja == null )
         {
-            rtdo.addError(CajaBloqueoBean.class, "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
+            rtdo.addError(this.getClass(), "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
             logger.info ("eliminar[FIN] no existe caja: {}", pkCaja );
             return rtdo;
         }
@@ -134,26 +142,43 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         cajaPO.eliminar(caja);
         logger.debug("eliminar[001] despues de eliminar la caja: {}", caja );
         
-        rtdo.addMensaje(CajaBloqueoBean.class, "Caja N° #{1} eliminada con éxito", String.valueOf( caja.getNumero() ) );
+        rtdo.addMensaje(this.getClass(), "Caja N° #{1} eliminada con éxito", String.valueOf( caja.getNumero() ) );
         logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, caja );
         return rtdo;
     }
     
     @Override
-    public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
+    public Respuesta<CajaBloqueoTO> get(CajaBloqueoTO pkCaja)
     {
         logger.info ("get[INI] caja: {}", pkCaja );
 
+        Resultado rtdo = new ResultadoProceso();
+        if(pkCaja == null || 
+           pkCaja.getNumero() == null || 
+           pkCaja.getUbicacion() == null || 
+           pkCaja.getUbicacion().getId() == null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación de la caja" );
+            logger.info("get[FIN] No se informaron los datos mínimos: {}", pkCaja );
+            return Respuesta.of(rtdo);
+        }
+
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
         
-        logger.info ("get[FIN] resultado busqueda: {}", caja );
-        return caja;
+        logger.info ("get[FIN] resultado búsqueda: {}", caja );
+        return Respuesta.of(caja);
     }
 
     @Override
     public List<CajaBloqueoTO> getVigentes(UbicacionTO pkUbicacion)
     {
         logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
+
+        if(pkUbicacion == null || pkUbicacion.getId() == null)
+        {
+            logger.info("getVigentes[FIN] pkUbicacion llegó en NULL");
+            return new ArrayList<>();
+        }
 
         List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, true);
         
@@ -165,6 +190,12 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     public List<CajaBloqueoTO> getTodos(UbicacionTO pkUbicacion)
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
+
+        if(pkUbicacion == null || pkUbicacion.getId() == null)
+        {
+            logger.info("getTodos[FIN] pkUbicacion llegó en NULL");
+            return new ArrayList<>();
+        }
 
         List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, null);
         

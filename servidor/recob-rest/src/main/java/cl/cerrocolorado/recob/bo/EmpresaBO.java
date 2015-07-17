@@ -20,7 +20,7 @@ public interface EmpresaBO
 	@Transaccional
     public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception;
 
-    public EmpresaTO get(EmpresaTO pkEmpresa);
+    public Respuesta<EmpresaTO> get(EmpresaTO pkEmpresa);
 
     public List<EmpresaTO> getVigentes();
     

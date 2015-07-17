@@ -49,7 +49,7 @@ public class UbicacionBean implements UbicacionBO
         {
             rtdo.addError(UbicacionBean.class, "Debe informar el token asociado a la ubicación" );
             logger.info ("validarToken[FIN] no se informo el token: {}", tokenUbicacion );
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         }
 
         UbicacionTO ubicacion = this.get(tokenUbicacion);
@@ -59,6 +59,6 @@ public class UbicacionBean implements UbicacionBO
         }
         
         logger.info ("validarToken[FIN] resultado validación: {}-{}", rtdo, ubicacion );
-        return new Respuesta<>(rtdo,ubicacion);
+        return Respuesta.of(rtdo,ubicacion);
     }
 }

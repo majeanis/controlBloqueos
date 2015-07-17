@@ -21,8 +21,10 @@ public interface CandadoBO
 	@Transaccional
     public Resultado eliminar(CandadoTO pkCandado) throws Exception;
 
-    public CandadoTO get(CandadoTO pkCandado);
-
+    public Respuesta<CandadoTO> get(CandadoTO pkCandado);
+    
+    public Respuesta<CandadoTO> get(UbicacionTO pkUbicacion, String serieCandado);
+    
     public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion);
     
     public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);

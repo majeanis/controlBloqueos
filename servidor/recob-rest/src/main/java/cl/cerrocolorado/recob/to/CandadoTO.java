@@ -11,6 +11,7 @@ public class CandadoTO extends BaseTO
 	private static final long serialVersionUID = 1L;
 	
     private Integer id;
+    private Integer numero;
     private String serie;
     private Boolean vigente;
     private ValorDominioTO uso;
@@ -25,6 +26,16 @@ public class CandadoTO extends BaseTO
     public void setId(Integer id)
     {
         this.id = id;
+    }
+
+    public Integer getNumero()
+    {
+        return numero;
+    }
+
+    public void setNumero(Integer numero)
+    {
+        this.numero = numero;
     }
 
     public String getSerie()

@@ -73,6 +73,28 @@ public class CandadoPO
         return candados.get(0);
     }
     
+    public CandadoTO getBySerie(CandadoTO pkCandado)
+    {
+        logger.info ("getBySerie[INI] pkCandado: {}", pkCandado );
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put( "ubicacion", pkCandado.getUbicacion() );
+        params.put( "serie", pkCandado.getSerie() );
+        logger.debug ("getBySerie[001] parametros: {}", params);
+
+        List<CandadoTO> candados = mapper.selectCandados( params );
+        logger.debug ("getBySerie[002] despues de ejecutar el select: {}", candados.size() );
+        
+        if(candados.isEmpty())
+        {
+            logger.info ("getBySerie[FIN] no se encontró registro del candado: {}", params );
+            return null;
+        }
+        
+        logger.info ("getBySerie[FIN] candado encontrado: {}", candados.get(0) );
+        return candados.get(0);
+    }
+    
     public List<CandadoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);

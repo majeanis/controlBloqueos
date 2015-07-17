@@ -5,8 +5,6 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.bo.EmpresaBO;
 import cl.cerrocolorado.recob.po.EmpresaPO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
@@ -43,19 +41,16 @@ public class EmpresaBean implements EmpresaBO
         {
         	rtdo.addError(this.getClass(), "Debe informar los datos de la empresa" );
         	logger.info("guardar[FIN] no se informaron los datos de la empresa");
-        	return new Respuesta<>(rtdo);
+        	return Respuesta.of(rtdo);
         }
-        
         if ( empresa.getVigente() == null )
         {
             rtdo.addError(EmpresaBean.class, "Debe informar vigencia de la empresa");
         }
-        
         if( StringUtils.isBlank(empresa.getNombre()) )
         {
             rtdo.addError(EmpresaBean.class, "Debe informar nombre de la empresa" );
         }
-        
         if( Rut.isBlank(empresa.getRut()) )
         {
             rtdo.addError(EmpresaBean.class, "Debe informar RUT de la empresa" );
@@ -64,7 +59,7 @@ public class EmpresaBean implements EmpresaBO
         if( !rtdo.esExitoso() )
         {
             logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
-            return new Respuesta<>(rtdo);
+            return Respuesta.of(rtdo);
         }
 
         // Buscamos si ya existe un registro para el RUT dado, en cuyo caso actualizamos
@@ -78,7 +73,7 @@ public class EmpresaBean implements EmpresaBO
         // Si llegamos a este punto la Caja puede ser Guardada
         empresaPO.guardar(empresa);
         logger.info ("guardar[FIN] registro guardado con exito: {}", empresa );
-        return new Respuesta<>(empresa);
+        return Respuesta.of(empresa);
     }
     
     @Transaccional
@@ -88,12 +83,9 @@ public class EmpresaBean implements EmpresaBO
         logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
         Resultado rtdo = new ResultadoProceso();
         
-        if(pkEmpresa == null)
+        if(pkEmpresa == null || Rut.isBlank(pkEmpresa.getRut()))
         {
-        	rtdo.addError(this.getClass(), "Debe informar la empresa que se desea eliminar" );
-        } else if( Rut.isBlank(pkEmpresa.getRut()) )
-        {
-            rtdo.addError(EmpresaBean.class, "Debe informar el RUT de la empresa" );
+        	rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa" );
         }
         
         if(!rtdo.esExitoso())
@@ -119,14 +111,21 @@ public class EmpresaBean implements EmpresaBO
     }
     
     @Override
-    public EmpresaTO get(EmpresaTO pkEmpresa)
+    public Respuesta<EmpresaTO> get(EmpresaTO pkEmpresa)
     {
         logger.info ("get[INI] pkEmpresa: {}", pkEmpresa );
 
+        Resultado rtdo = new ResultadoProceso();
+        
+        if(pkEmpresa == null || pkEmpresa.getRut() == null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa");
+            return Respuesta.of(rtdo);
+        }
         EmpresaTO empresa = empresaPO.get(pkEmpresa);
         
         logger.info ("get[FIN] resultado busqueda: {}", empresa );
-        return empresa;
+        return Respuesta.of(empresa);
     }
 
     @Override
@@ -145,7 +144,7 @@ public class EmpresaBean implements EmpresaBO
     {
         logger.info ("getTodos[INI]" );
 
-        List<EmpresaTO> empresas = empresaPO.getList((Boolean) null);
+        List<EmpresaTO> empresas = empresaPO.getList(null);
         
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", empresas.size() );
         return empresas;

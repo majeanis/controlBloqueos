@@ -20,7 +20,7 @@ public interface CajaBloqueoBO
 	@Transaccional
     public Resultado eliminar(CajaBloqueoTO pkCaja) throws Exception;
 
-    public CajaBloqueoTO get(CajaBloqueoTO pkCaja);
+    public Respuesta<CajaBloqueoTO> get(CajaBloqueoTO pkCaja);
 
     public List<CajaBloqueoTO> getVigentes(UbicacionTO pkUbicacion);
     

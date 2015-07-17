@@ -120,28 +120,28 @@ public class RespFactory
 	
 	public static <T> RespRest<T> getRespRest(Resultado rtdo, T contenido)
 	{
-		return new RespRest<T>(rtdo,contenido);
+		return new RespRest<>(rtdo,contenido);
 	}
 
 	public static <T> RespRest<T> getRespRest(Resultado rtdo, Optional<T> contenido)
 	{
 		if( contenido.isPresent())
 		{
-			return new RespRest<T>(rtdo,contenido.get());			
+			return new RespRest<>(rtdo,contenido.get());			
 		} else
 		{
-			return new RespRest<T>(rtdo,null);
+			return new RespRest<>(rtdo,null);
 		}
 	}
 
 	public static <T> RespRest<T> getRespRest(Resultado rtdo)
 	{
-		return new RespRest<T>(rtdo,null);
+		return new RespRest<>(rtdo,null);
 	}
 
 	public static <T> RespRest<T> getRespRest(T contenido)
 	{
-		return new RespRest<T>(new ResultadoProceso(), contenido);
+		return new RespRest<>(new ResultadoProceso(), contenido);
 	}
 	
 	public static <T> RespRest<T> getRespRest(Class<?> clazz, Exception exception)

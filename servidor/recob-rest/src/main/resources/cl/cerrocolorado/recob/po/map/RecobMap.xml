@@ -50,7 +50,7 @@
         <id property="id" column="pers_id" />
         <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" /> 
         <result property="nombre" column="pers_nomb" />
-        <result property="cargo" column="trab_cargo" />
+        <result property="cargo" column="trab_carg" />
         <result property="tieneCursoBloqueo" column="trab_curs_bloq" />
         <result property="vigente" column="trab_vige" />
         <association property="empresa" resultMap="empresaMap" />
@@ -58,7 +58,8 @@
     
     <resultMap id="candadoMap" type="CandadoTO" >
         <id property="id" column="cand_id" />
-        <result property="serie" column="cand_serie" />
+        <result property="numero" column="cand_nume" />
+        <result property="serie" column="cand_seri" />
         <result property="vigente" column="cand_vige" />
         <association property="uso" resultMap="usoCandadoMap" />
         <association property="persona" resultMap="personaMap" />
@@ -76,13 +77,13 @@
         where  a.ubic_vige = true
         <choose>
         	<when test="token != null">
-            	and b.tokn_id = #{token}        	
+            	b.tokn_id = #{token}        	
         	</when>
 	        <when test="id != null" >
-	            and a.ubic_id = #{id}
+	            a.ubic_id = #{id}
 	        </when>
 	        <otherwise>
-	        	and b.tokn_id = 'X'
+	        	b.tokn_id = 'X'
 	        </otherwise>
         </choose>
     </select>
@@ -107,14 +108,14 @@
         <where>
             <choose>
                 <when test="caja.id != null" >
-                    and a.cabl_id = #{caja.id}
+                    a.cabl_id = #{caja.id}
                 </when>
                 <when test="caja.numero != null and ubicacion.id != null" >
-                    and a.cabl_nume = #{caja.numero}
+                    a.cabl_nume = #{caja.numero}
                     and a.ubic_id   = #{ubicacion.id}
                 </when>
                 <when test="ubicacion.id != null" >
-                    and a.ubic_id   = #{ubicacion.id}
+                    a.ubic_id   = #{ubicacion.id}
                 </when>
             </choose>
             <if test="vigencia != null" >
@@ -151,6 +152,7 @@
     
     <select id="selectCandados" parameterType="map" resultMap="candadoMap" >
         select a.cand_id
+              ,a.cand_nume
               ,a.cand_seri
               ,a.cand_vige
               ,b.dval_id
@@ -177,15 +179,19 @@
                 <when test="candado.id != null" >
                     a.cand_id = #{candado.id}
                 </when>
-                <when test="candado.serie != null and ubicacion.serie != null" >
-                    and a.cand_serie = #{candado.serie}
+                <when test="candado.numero != null and ubicacion.id != null" >
+                        a.cand_nume  = #{candado.numero}
+                    and a.ubic_id    = #{ubicacion.id}
+                </when>
+                <when test="serie != null and ubicacion.id != null" >
+                        a.cand_serie = #{serie}
                     and a.ubic_id    = #{ubicacion.id}
                 </when>
                 <when test="persona.rut != null" >
-                    and c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
+                    c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
                 </when>
                 <when test="ubicacion.id != null" >
-                    and a.ubic_id = #{ubicacion.id}
+                    a.ubic_id = #{ubicacion.id}
                 </when>
             </choose>
             <if test="vigencia != null" >
@@ -201,13 +207,14 @@
         <selectKey keyProperty="id" resultType="int" order="BEFORE" >
             select get_nuevo_id()
         </selectKey>
-        insert into rcb_cand(cand_id, cand_seri, cand_vige, dval_id_uso, pers_id, ubic_id, audi_fech_crea)
-            values(#{id},#{serie},#{vigente},#{uso.id},#{persona.id},#{ubicacion.id},localtimestamp)
+        insert into rcb_cand(cand_id, cand_nume, cand_seri, cand_vige, dval_id_uso, pers_id, ubic_id, audi_fech_crea)
+            values(#{id},#{numero},#{serie},#{vigente},#{uso.id},#{persona.id},#{ubicacion.id},localtimestamp)
     </insert>
 
     <update id="updateCandado" parameterType="CandadoTO" >
         update rcb_cand set
                cand_seri   = #{serie}
+              ,cand_nume   = #{numero}
               ,cand_vige   = #{vigente}
               ,dval_id_uso = #{uso.id}
               ,pers_id     = #{persona.id}
@@ -274,13 +281,13 @@
 	                b.pers_id = #{trabajador.id}
 	            </when>
 	            <when test = "trabajador.rut != null" >
-	                and b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
+	                b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
 	            </when>
 	            <when test = "empresa.id != null" >
-	                and c.empr_id   = #{empresa.id}
+	                c.empr_id   = #{empresa.id}
 	            </when>
 	            <when test = "empresa.rut != null" >
-	                and c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
+	                c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
 	            </when>
         	</choose>
             <if test="vigencia != null" >
@@ -305,6 +312,12 @@
           and  empr_id = #{empresa.id}
     </update>
     
+    <delete id="deleteTrabajador" parameterType="TrabajadorTO" >
+        delete from rcb_trab
+        where  pers_id = #{id}
+          and empr_id = #{empresa.id}
+    </delete>
+
     <select id="selectEmpresas" parameterType="map" resultMap="empresaMap" >
         select a.empr_id
               ,a.empr_rut
