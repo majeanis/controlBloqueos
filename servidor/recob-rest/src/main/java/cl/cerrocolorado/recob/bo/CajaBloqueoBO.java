@@ -22,7 +22,7 @@ public interface CajaBloqueoBO
 
     public Respuesta<CajaBloqueoTO> get(CajaBloqueoTO pkCaja);
 
-    public List<CajaBloqueoTO> getVigentes(UbicacionTO pkUbicacion);
-    
-    public List<CajaBloqueoTO> getTodos(UbicacionTO pkUbicacion);
+    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
+
+    public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion);
 }

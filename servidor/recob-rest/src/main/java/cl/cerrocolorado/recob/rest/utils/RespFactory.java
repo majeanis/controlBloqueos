@@ -20,6 +20,11 @@ public class RespFactory
     {
 		RespHead encabezado = new RespHead();
         
+        if(rtdo == null)
+        {
+            rtdo = new ResultadoProceso();
+        }
+        
         encabezado.setFecha(new Date());
         if(rtdo.esExitoso())
         {

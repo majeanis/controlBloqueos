@@ -9,7 +9,6 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -162,36 +161,29 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     }
 
     @Override
-    public List<CajaBloqueoTO> getVigentes(UbicacionTO pkUbicacion)
-    {
-        logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
-
-        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
-        {
-            logger.info("getVigentes[FIN] pkUbicacion llegó en NULL");
-            return new ArrayList<>();
-        }
-
-        List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, true);
-        
-        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", cajas.size() );
-        return cajas;
-    }
-
-    @Override
-    public List<CajaBloqueoTO> getTodos(UbicacionTO pkUbicacion)
+    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getTodos[INI] vigencia: {}", vigencia);
 
+        Resultado rtdo = new ResultadoProceso();
         if(pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
+            rtdo.addError(this.getClass(), "Debe informar la ubicación");
             logger.info("getTodos[FIN] pkUbicacion llegó en NULL");
-            return new ArrayList<>();
+            return Respuesta.of(rtdo);
         }
 
-        List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, null);
-        
+        List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, vigencia);
+        rtdo.addMensaje(this.getClass(), "Se han encontrado #{1} registros", String.valueOf(cajas.size()));
+
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", cajas.size() );
-        return cajas;
+        return Respuesta.of(rtdo, cajas);
+    }
+    
+    @Override
+    public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion)
+    {
+        return getTodos(pkUbicacion, Boolean.TRUE);
     }
 }

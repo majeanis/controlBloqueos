@@ -1,5 +1,6 @@
 package cl.cerrocolorado.recob.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -26,6 +27,7 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 
+
 @Path("configuracion")
 public class ConfiguracionService
 {
@@ -34,20 +36,26 @@ public class ConfiguracionService
     private static final UbicacionBO ubicacionBO;
     // private static final String token = "ec4b8544-1c73-11e5-9840-080027465435";
 
+    private static final int VER_TODOS = 1;
+    private static final int VER_VIGENTES = 2;
+    private static final int VER_UNO = 3;
+
     static
     {
         ubicacionBO = FactoryBO.getUbicacionBO();
     }
 
-    @Path("cajasBloqueo/listar")
+    @Path("cajasBloqueo/ver")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public RespRest<List<CajaBloqueoTO>> listarCajasBloqueo(
+    public RespRest<List<CajaBloqueoTO>> verCajasBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("vigencia") Boolean vigencia)
+    		@QueryParam("accion") Integer accion,
+    		@QueryParam("id") Integer numeroCaja)
     {
         logger.info ("listarCajasBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("listarCajasBloqueo[INI] vigencia: {}", vigencia);
+        logger.info ("listarCajasBloqueo[INI] accion: {}", accion);
+        logger.info ("listarCajasBloqueo[INI] numeroCaja: {}", numeroCaja);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -57,18 +65,38 @@ public class ConfiguracionService
         }
         
         UbicacionTO ubicacion = respUbic.getContenido().get();
-        List<CajaBloqueoTO> lista;
-        
-        if( vigencia == null || vigencia == true)
+        List<CajaBloqueoTO> lista = null;
+        Resultado rtdo = null;
+
+        switch( accion )
         {
-        	lista = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
-        } else
-        {
-        	lista = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion);
+        	case VER_TODOS:
+        		Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,null);
+                rtdo = r1.getResultado();
+                lista = r1.getContenido().orElse(null);
+        		break;
+        		
+        	case VER_VIGENTES:
+        		Respuesta<List<CajaBloqueoTO>> r2 = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
+                rtdo = r2.getResultado();
+                lista = r2.getContenido().orElse(null);
+                break;
+
+        	case VER_UNO:
+                CajaBloqueoTO caja = new CajaBloqueoTO();
+                caja.setUbicacion(ubicacion);
+                caja.setNumero(numeroCaja);
+                Respuesta<CajaBloqueoTO> resp = FactoryBO.getCajaBloqueoBO().get(caja);
+                rtdo = resp.getResultado();
+        		if( resp.getContenido().isPresent())
+        		{
+        			lista = new ArrayList<>();
+        			lista.add(caja);
+        		}
         }
-        
+
         logger.info ("listarCajasBloqueo[FIN] cajas retornadas: {}", lista );        
-        return RespFactory.getRespRest(lista);
+        return RespFactory.getRespRest(rtdo, lista);
     }
 
     @Path("cajasBloqueo/guardar")
@@ -145,33 +173,6 @@ public class ConfiguracionService
             
         logger.info ("listarEquipos[FIN] equipos retornadas: {}", lista );        
         return RespFactory.getRespRest(lista);
-    }
-
-    @Path("cajasBloqueo/ver")
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    public RespRest<CajaBloqueoTO> verCajaBloqueo(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("id") Integer numeroCaja)
-    {
-        logger.info ("verCajaBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("verCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
-
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("verCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
-        }
-        
-        UbicacionTO ubicacion = respUbic.getContenido().get();
-        CajaBloqueoTO caja = new CajaBloqueoTO();
-        caja.setUbicacion(ubicacion);
-        caja.setNumero(numeroCaja);
-        Respuesta<CajaBloqueoTO> resp = FactoryBO.getCajaBloqueoBO().get(caja);
-
-        logger.info ("verCajaBloqueo[FIN] respuesta retornado: {}", resp );
-        return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
     }
     
     @Path("equipos/ver")
