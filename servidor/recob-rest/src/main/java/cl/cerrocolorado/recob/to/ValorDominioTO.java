@@ -5,13 +5,14 @@
  */
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author mauricio.camara
  */
-public class ValorDominioTO extends BaseTO
+public class ValorDominioTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -71,4 +72,9 @@ public class ValorDominioTO extends BaseTO
         this.dominio = dominio;
     }
 
+    @Override
+    public boolean isKeyBlank()
+    {
+        return StringUtils.isBlank(codigo) || StringUtils.isBlank(dominio);
+    }
 }

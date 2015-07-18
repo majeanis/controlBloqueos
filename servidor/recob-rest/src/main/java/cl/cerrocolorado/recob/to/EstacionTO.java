@@ -5,13 +5,13 @@
  */
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
 
 /**
  *
  * @author mauricio.camara
  */
-public class EstacionTO extends BaseTO
+public class EstacionTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -47,5 +47,11 @@ public class EstacionTO extends BaseTO
     public void setVigente(Boolean vigente)
     {
         this.vigente = vigente;
+    }
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return id == null || id==0;
     }
 }

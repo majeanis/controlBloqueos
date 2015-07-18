@@ -3,7 +3,6 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.utils.Rut;
-import cl.cerrocolorado.recob.utils.ValidUtils;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

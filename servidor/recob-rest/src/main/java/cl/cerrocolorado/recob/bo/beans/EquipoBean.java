@@ -1,7 +1,14 @@
 package cl.cerrocolorado.recob.bo.beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import cl.cerrocolorado.recob.bo.EquipoBO;
-import cl.cerrocolorado.recob.po.CajaBloqueoPO;
 import cl.cerrocolorado.recob.po.EquipoPO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.TagTO;
@@ -10,12 +17,6 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Transaccional;
-import java.util.List;
-import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -28,86 +29,23 @@ public class EquipoBean implements EquipoBO
     @Autowired
     private EquipoPO equipoPO;
 
-    private Resultado validarTag(TagTO tag, int index)
-    {
-        logger.info ("validarTag[INI] tag: {}", tag);
-        logger.info ("validarTag[INI] index: {}", index);
-        
-        Resultado rtdo = new ResultadoProceso();
-        
-        if(tag == null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar los datos del Tag [indice: #{1}]", index);
-            logger.info("validarTag[FIN] objeto tag llegó en NULL");
-            return rtdo;
-        }
-        if(tag.getEnergiaCero() == null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar energía cero [indice: #{1}]", index );
-        }
-        if(tag.getVigente() == null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar la vigencia del tag [indice: #{1}]", index );
-        }
-        if(StringUtils.isBlank(tag.getDescripcion()))
-        {
-            rtdo.addError(this.getClass(), "Debe informar la descripción del tag [indice: #{1}]", index );
-        }
-        if(StringUtils.isBlank(tag.getNombre()))
-        {
-            rtdo.addError(this.getClass(), "Debe informar el nombre del tag [indice: #{1}]", index );
-        }
-        if(tag.getNumero()==null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar el N° del tag [indice: #{1}]", index );
-        }
-        if(!rtdo.esExitoso())
-        {
-            logger.info ("validarTag[FIN] errores de validación: {} {}", rtdo, tag);
-            return rtdo;
-        }
-
-        // Si es un TAG que aún no se ha creado, puesto que tampoco tiene el
-        // Id del Equipo al cual pertenece, entonces no hay más validaciones
-        if(tag.getIdEquipo() == null)
-        {
-            logger.info ("validarTag[FIN] tag pertenece a un equipo nuevo: {}", rtdo ); 
-            return rtdo;
-        }
-
-        TagTO otro = equipoPO.getTag(tag);
-        if( otro == null )
-        {
-            logger.info ("validarTag[FIN] no existe otro tag con el mismo número: {}", rtdo);
-            return rtdo;
-        }
-
-        // Si existe un TAG con el número dado y no corresponde al mismo tag que estamos validando
-        if( tag.getId() == null || !Objects.equals(tag.getId(), otro.getId()))
-        {
-            rtdo.addError(this.getClass(), "Ya existe TAG con el N° #{1} [id: #{2}[index: #{3}]", tag.getNumero(), otro.getId(), index);
-            logger.info("validarTag[FIN] ya existe el N° de TAG: tag:{} - otro:{}", tag, otro);
-            return rtdo;
-        }
-
-        logger.info ("validarTag[FIN] tag validado con exito: {}", tag);
-        return rtdo;
-    }
-    
-    @Override
     @Transaccional
+    @Override
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception
     {
        logger.info ("guardar[INI] equipo: {}", equipo);
        
-       Resultado rtdo = ResultadoProceso();
+       Resultado rtdo = new ResultadoProceso();
        if(equipo==null)
        {
            rtdo.addError(this.getClass(), "Debe informar los datos del Equipo");
            logger.info ("guardar[FIN] se informó el objeto en NULL");
            return Respuesta.of(rtdo);
        }
-       
+       if(equipo.getUbicacion() == null || equipo.getUbicacion().isKeyBlank())
+       {
+           rtdo.addError(this.getClass(), "El equipo debe estar asociado a una ubicación" );
+       }
        if(equipo.getVigente() == null)
        {
            rtdo.addError(this.getClass(), "Debe informar la vigencia del Equipo");
@@ -116,86 +54,259 @@ public class EquipoBean implements EquipoBO
        {
            rtdo.addError(this.getClass(),"Debe informar el código del equipo");
        }
-       if(equipo.getUbicacion() == null || equipo.getUbicacion().getId() == null)
-       {
-           rtdo.addError(this.getClass(), "El equipo debe estar asociado a una ubicación" );
-       }
-       
-       // Si contiene TAGs, entonces también los validamos
-       if(equipo.getTags() != null)
-       {
-           for(int i=0; i < equipo.getTags().size(); i++ )
-           {
-               rtdo.append(validarTag(equipo.getTags().get(i),i));
-           }
-       }
-       
-       // Validadmos que no se repita el N° de TAGs, entre todos los de la lista
-       for(int i=0; i < equipo.getTags().size(); i++)
-       {
-           TagTO tag = equipo.getTags().get(i);
 
-           for( int j=0; j < equipo.getTags().size(); j++ )
-           {
-               TagTO otro = equipo.getTags().get(j);
-
-               if( tag != otro && tag.getNumero() == otro.getNumero() )
-               {
-                   rtdo.addError(this.getClass(), "N° de TAG #{1} está repetido en la lista [indices: #{2}-#{3}", i, j );
-                   logger.debug ("guardar[001] N° de TAG está repetido: tag {} otro {}", tag, otro);
-               }
-           }
-       }
-       
-       if(!rtdo.esExitoso())
+       EquipoTO otro = equipoPO.get(equipo);
+       logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
+       if(otro!=null)
        {
-           logger.info( "guardar[FIN] se encontraron errores de validación: {}", rtdo);
-           return Respuesta.of(rtdo);
+    	   equipo.setId(otro.getId());
        }
-       
+
        equipoPO.guardar(equipo);
        logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
        return Respuesta.of(equipo);
     }
 
+    @Transaccional
     @Override
     public Resultado eliminar(EquipoTO pk) throws Exception
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info ("eliminar[INI] pk: {}", pk);
+        
+        Resultado rtdo = new ResultadoProceso();
+        
+        if(pk==null || pk.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar identificación del equipo");
+            logger.info("eliminar[FIN] no se informo la pk del equipo: {}", pk);
+            return rtdo;
+        }
+        
+        EquipoTO equipo = equipoPO.get(pk);
+        if(equipo == null)
+        {
+            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
+            logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
+            return rtdo;
+        }
+        
+        if(!equipoPO.esEliminable(equipo))
+        {
+            rtdo.addError(this.getClass(),"TAG tiene registros relacionados" );
+            logger.info("eliminar[FIN] equipo no es eliminable: {}", equipo);
+            return rtdo;
+        }
+
+        equipoPO.eliminar(equipo);
+        logger.info ("eliminar[FIN] registro eliminado con éxito: {}", equipo);
+        return rtdo;
     }
 
     @Override
     public Respuesta<EquipoTO> get(EquipoTO pk)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("get[INI] pk: {}", pk);
+
+        Resultado rtdo = new ResultadoProceso();
+
+        if(pk==null || pk.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación del Equipo");
+            return Respuesta.of(rtdo);
+        }
+        
+        EquipoTO equipo = equipoPO.get(pk);
+        logger.info("get[FIN] registro encontrado: {}", equipo);
+        return Respuesta.of(equipo);
     }
 
     @Override
     public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getVigentes[INI] pkUbicacion: {}", pkUbicacion);
+        
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
+        {
+            logger.info("getVigentes[FIN] no se informo la ubicación");
+            return new ArrayList<>();
+        }
+        
+        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, true);
+        logger.info("getVigentes[FIN] cantidad de equipos encontrados: {}", lista.size() );
+        return lista;
     }
 
     @Override
     public List<EquipoTO> getTodos(UbicacionTO pkUbicacion)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTodos[INI] pkUbicacion: {}", pkUbicacion);
+        
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
+        {
+            logger.info("getTodos[FIN] no se informo la ubicación");
+            return new ArrayList<>();
+        }
+        
+        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, null);
+        logger.info("getTodos[FIN] cantidad de equipos encontrados: {}", lista.size() );
+        return lista;
+    }
+
+    @Transaccional
+    @Override
+    public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception
+    {
+    	logger.info("guardarTag[INI] tag: {}", tag);
+    	
+    	Resultado rtdo = new ResultadoProceso();
+    	if( tag == null )
+    	{
+    		rtdo.addError(this.getClass(), "Debe informar los datos del TAG");
+    		logger.info("guardarTag[FIN] el tag llegó en NULL");
+    		return Respuesta.of(rtdo);
+    	}
+    	
+    	if(tag.getEnergiaCero() == null)
+    	{
+    		rtdo.addError(this.getClass(), "Debe informar la energía cero" );
+    	}
+    	if(tag.getVigente() == null)
+    	{
+    		rtdo.addError(this.getClass(), "Debe informar la vigencia del TAG" );
+    	}
+    	if(StringUtils.isBlank(tag.getDescripcion()))
+    	{
+    		rtdo.addError(this.getClass(), "Debe informar la descripción del TAG" );
+		}
+    	if(tag.getEquipo()==null || tag.getEquipo().isKeyBlank())
+    	{
+    		rtdo.addError(this.getClass(), "El TAG debe estar asociado a un equipo" );
+    	}
+    	if(StringUtils.isBlank(tag.getNombre()))
+    	{
+    		rtdo.addError(this.getClass(), "Debe informar el nombre del TAG" );
+    	}
+    	if(tag.getNumero() == null)
+    	{
+    		rtdo.addError(this.getClass(),  "Debe informar el N° del TAG" );
+    	}
+    	
+    	if(!rtdo.esExitoso())
+    	{
+    		logger.info("guardarTag[FIN] hubo errores de validación: {}", rtdo);
+    		return Respuesta.of(rtdo);
+    	}
+    	
+    	TagTO otro = equipoPO.getTag(tag);
+    	logger.debug("guardarTag[001] despues de buscar al TAG: {}", otro);
+
+    	if( otro != null )
+    	{
+    		tag.setId(otro.getId());
+    	}
+
+    	equipoPO.guardarTag(tag);
+    	logger.info("guardarTag[FIN] tag guardado con éxito: {}", tag);
+    	return Respuesta.of(tag);
+    }
+
+    @Transaccional
+    @Override
+    public Resultado eliminarTag(TagTO pk) throws Exception
+    {
+        logger.info ("eliminarTag[INI] pkTag: {}", pk);
+        
+        Resultado rtdo = new ResultadoProceso();
+        if(pk==null || pk.isKeyBlank())
+        {
+            rtdo.addError(this.getClass(), "Debe informar identificación del TAG");
+            logger.info ("eliminarTag[FIN] no se informó completa la pk: {}", pk);
+            return rtdo;
+        }
+        
+        TagTO tag = equipoPO.getTag(pk);
+        if( tag == null)
+        {
+            rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", pk.getNumero() );
+            logger.info("eliminarTag[FIN] no existe el TAG: {}", pk);
+            return rtdo;
+        }
+        
+        if( equipoPO.esTagEliminable(tag))
+        {
+            rtdo.addError(this.getClass(), "TAG tiene registros asociados");
+            logger.info("eliminarTag[FIN] tag no es eliminable: {}", tag );
+            return rtdo;
+        }
+
+        equipoPO.eliminarTag(tag);
+        logger.info ("eliminarTag[FIN] registro elimiinado con éxito: {}", tag);        
+        return rtdo;
     }
 
     @Override
+    public Respuesta<TagTO> getTag(TagTO pk)
+    {
+        logger.info ("getTag[INI] pkTag: {}", pk );
+
+        Resultado rtdo = new ResultadoProceso();
+        if( pk == null || pk.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación del TAG");
+            logger.info ("getTag[FIN] no se informó completa la key: {}", pk);
+            return Respuesta.of(rtdo);
+        }
+        
+        TagTO tag = equipoPO.getTag(pk);
+        logger.info ("getTag[FIN] tag retornado: {}", tag);
+        return Respuesta.of(tag);
+    }
+    
+    @Override
     public List<TagTO> getTagsEnergiaCero(EquipoTO pk)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTagsEnergiaCero[INI] pk: {}", pk);
+        
+        if(pk==null || pk.isKeyBlank() )
+        {
+            logger.info("getTagsEnergiaCero[FIN] no se informó bien la pk del equipo: {}", pk);
+            return new ArrayList<>();
+        }
+        
+        List<TagTO> lista = equipoPO.getTags(pk, Boolean.TRUE, Boolean.TRUE);
+        logger.info("getTagsEnergiaCero[FIN] registros retornados: {}", lista );
+        return lista;
     }
 
     @Override
     public List<TagTO> getTagsVigentes(EquipoTO pk)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTagsVigentes[INI] pk: {}", pk);
+        
+        if(pk==null || pk.isKeyBlank() )
+        {
+            logger.info("getTagsVigentes[FIN] no se informó bien la pk del equipo: {}", pk);
+            return new ArrayList<>();
+        }
+        
+        List<TagTO> lista = equipoPO.getTags(pk, null, Boolean.TRUE);
+        logger.info("getTagsVigentes[FIN] registros retornados: {}", lista );
+        return lista;
     }
-
-    private Resultado ResultadoProceso()
+    
+    @Override
+    public List<TagTO> getTagsTodos(EquipoTO pk)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("getTagsTodos[INI] pk: {}", pk);
+        
+        if(pk==null || pk.isKeyBlank() )
+        {
+            logger.info("getTagsTodos[FIN] no se informó bien la pk del equipo: {}", pk);
+            return new ArrayList<>();
+        }
+        
+        List<TagTO> lista = equipoPO.getTags(pk, null, null);
+        logger.info("getTagsTodos[FIN] registros retornados: {}", lista );
+        return lista;
     }
 }

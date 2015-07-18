@@ -1,9 +1,9 @@
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
 import cl.cerrocolorado.recob.utils.Rut;
 
-public class PersonaTO extends BaseTO
+public class PersonaTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -40,4 +40,11 @@ public class PersonaTO extends BaseTO
     {
         this.nombre = nombre;
     }
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return rut == null;
+    }
+
 }

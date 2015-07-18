@@ -5,12 +5,12 @@
  */
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
 
 /**
  * @author mauricio.camara
  */
-public class UbicacionTO extends BaseTO
+public class UbicacionTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -79,5 +79,11 @@ public class UbicacionTO extends BaseTO
     public void setToken(String token)
     {
         this.token = token;
+    }
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return id==null || id==0;
     }
 }

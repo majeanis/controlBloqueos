@@ -8,6 +8,7 @@ package cl.cerrocolorado.recob.po;
 import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.TagTO;
+import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +56,13 @@ public class EquipoPO implements BasePO<EquipoTO>
             return null;
         }
 
-        List<TagTO> tags = getTags(pk,null,null);
-        logger.debug("get[002] después de buscar los tags: size {}", tags.size());
-        lista.get(0).setTags(tags);
-
-        logger.info("get[FIN] registro encontrado: {}", lista.get(0));
-        return lista.get(0);
+        EquipoTO equipo = lista.get(0);
+        List<TagTO> tags = getTags(equipo,null,null);
+        logger.debug("get[002] después de buscar los tags: size {} {}", tags.size(), equipo);
+     
+        equipo.setTags(tags);
+        logger.info("get[FIN] registro encontrado: {}", equipo);
+        return equipo;
     }
 
     @Override
@@ -68,54 +70,16 @@ public class EquipoPO implements BasePO<EquipoTO>
     {
         logger.info ("guardar[INI] equipo: {}", equipo);
 
-        // Si se trata de una inserción, entonces creamos el equipo y todos sus tags
         if( equipo.getId() == null )
         {
             mapper.insertEquipo(equipo);
-            logger.debug("guardar[001] después de insertar el equipo: {}", equipo);
-            
-            for( TagTO tag: equipo.getTags())
-            {
-                tag.setIdEquipo(equipo.getId());
-                mapper.insertTag(tag);
-                logger.debug("guardar[002] después de insertar el tag: {} {}", tag, equipo);
-            }
-            
             logger.info("guardar[FIN] registro creado con éxito: {}", equipo);
-            return equipo;
-        }
-
-        // Si llegamos a este punto, entonces debes aplicar una actualización
-        mapper.updateEquipo(equipo);
-        logger.debug("guardar[003] después de actualizar el equipo: {}", equipo);
-
-        for( TagTO tag: equipo.getTags())
+        } else
         {
-            if( tag.getId() == null )
-            {
-                mapper.insertTag(tag);
-                logger.debug("guardar[004] después de insertar el tag: {} {}", tag, equipo);
-            } else
-            {
-                mapper.updateTag(tag);
-                logger.debug("guardar[005] después de actualizar el tag: {} {}", tag, equipo);                
-            }
+            mapper.updateEquipo(equipo);
+            logger.debug("guardar[FIN] registro actualizado con éxito: {}", equipo);
         }
 
-        // Determinamos los TAGs que no fueron considerados
-        // en este proceso para marcarlos como No Vigentes
-        List<TagTO> todos = this.getTags(equipo, null, null );
-        for( TagTO tag: todos)
-        {
-            if( !equipo.getTags().contains(tag))
-            {
-                tag.setVigente(Boolean.FALSE);
-                mapper.updateTag(tag);
-                logger.debug("guardar[006] después de desactivar tag: {} {}", tag, equipo);                
-            }
-        }
-        
-        logger.info ("guardar[FIN] registro actualizado con éxito: {}", equipo);
         return equipo;
     }
 
@@ -129,13 +93,24 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
         return relaciones > 0;
     }
-    
+
+    public boolean esTagEliminable(TagTO pk)
+    {
+        logger.info ("esTagEliminable[INI] pk: {}", pk);
+        
+        int relaciones = mapper.childsTag(pk);
+        
+        logger.info ("esTagEliminable[FIN] relaciones: {}", relaciones);
+        return relaciones > 0;
+    }
+
     public TagTO getTag(TagTO pk)
     {
         logger.info("getTag[INI] tag: {}", pk);
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("tag", pk);
+        parms.put("equipo", pk.getEquipo());
         logger.info("getTag[001] parámetros de la consulta: {}", parms);
         
         List<TagTO> lista = mapper.selectTags(parms);
@@ -153,19 +128,19 @@ public class EquipoPO implements BasePO<EquipoTO>
     
     public List<TagTO> getTags(EquipoTO pk, Boolean energiaCero, Boolean vigencia)
     {
-        logger.info("get[INI] pk: {}", pk);
+        logger.info("getTags[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("equipo"   , pk);
         parms.put("ubicacion", pk.getUbicacion());
         parms.put("energiaCero", energiaCero);
         parms.put("vigencia", vigencia);
-        logger.debug("get[001] parámetros del select: {}", parms);
+        logger.debug("getTags[001] parámetros del select: {}", parms);
         
         List<TagTO> tags = mapper.selectTags(parms);
-        logger.debug("get[002] después de buscar los tags: size {}", tags.size());
+        logger.debug("getTags[002] después de buscar los tags: size {}", tags.size());
 
-        logger.info("get[FIN] registros encontrados: {}", tags);
+        logger.info("getTags[FIN] registros encontrados: {}", tags);
         return tags;
     }
     
@@ -192,5 +167,21 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("eliminarTag[INI] tag: {}", pk);
         mapper.deleteTag(pk);
         logger.info ("eliminarTag[FIN] tag eliminado con éxito: {}", pk);
+    }
+
+    public List<EquipoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
+    {
+        logger.info ("getList[INI] vigencia: {}", vigencia);
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("ubicacion", pkUbicacion);
+        parms.put("vigencia", vigencia);
+        logger.debug("getList[001] parametros: {}", parms );
+        
+        List<EquipoTO> lista = mapper.selectEquipos(parms);
+        logger.debug("getList[002] despues de ejecutar el select: {}", lista.size() );
+
+        logger.info ("getVigentes[FIN] registros: {}", lista.size() );
+        return lista;
     }
 }

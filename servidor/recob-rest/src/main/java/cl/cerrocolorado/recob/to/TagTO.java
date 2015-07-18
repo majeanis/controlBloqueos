@@ -5,30 +5,34 @@
  */
 package cl.cerrocolorado.recob.to;
 
+import cl.cerrocolorado.recob.utils.EntidadTO;
+
 /**
  *
  * @author mauricio.camara
  */
-public class TagTO
+public class TagTO extends EntidadTO
 {
-    private Integer id;
+	private static final long serialVersionUID = 1L;
+
+	private Integer id;
     private Integer numero;
     private String nombre;
     private String descripcion;
     private Boolean energiaCero;
     private Boolean vigente;
-    private Integer idEquipo;
+    private EquipoTO equipo;
 
-    public Integer getIdEquipo()
+    public EquipoTO getEquipo()
     {
-        return idEquipo;
+        return equipo;
     }
 
-    public void setIdEquipo(Integer idEquipo)
+    public void setEquipo(EquipoTO equipo)
     {
-        this.idEquipo = idEquipo;
+        this.equipo = equipo;
     }
-    
+
     public Integer getId()
     {
         return id;
@@ -87,5 +91,11 @@ public class TagTO
     public void setVigente(Boolean vigente)
     {
         this.vigente = vigente;
+    }
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return numero==null || numero==0 || equipo==null || equipo.isKeyBlank();
     }
 }

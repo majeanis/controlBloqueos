@@ -25,15 +25,20 @@ public interface Resultado extends Serializable
 
     public Mensaje addMensaje(Mensaje mensaje);
 
+    default void append(Resultado another, String addText)
+    {
+    	if(another==null)
+    		return;
+    	
+    	for( Mensaje m: another.getMensajes() )
+    	{
+    		Mensaje nuevo = new Mensaje(m.getSeveridad(), m.getCodigo(), m.getTexto() + addText );
+    		this.addMensaje(nuevo);
+    	}
+    }
+
     default void append(Resultado another)
     {
-        if (another == null)
-            return;
-
-        List<Mensaje> newMensajes = another.getMensajes();
-        for (Mensaje mensaje : newMensajes)
-        {
-            addMensaje(mensaje);
-        }
+    	append(another, "");
     }
 }

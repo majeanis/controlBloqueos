@@ -5,14 +5,17 @@
  */
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import cl.cerrocolorado.recob.utils.EntidadTO;
 
 /**
  *
  * @author mauricio.camara
  */
-public class EquipoTO extends BaseTO
+public class EquipoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
@@ -71,4 +74,11 @@ public class EquipoTO extends BaseTO
     {
         this.ubicacion = ubicacion;
     }
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return StringUtils.isBlank(codigo) || ubicacion == null || ubicacion.isKeyBlank();
+    }    
+
 }

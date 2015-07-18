@@ -1,12 +1,12 @@
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
 
 /**
  *
  * @author mauricio.camara
  */
-public class CandadoTO extends BaseTO
+public class CandadoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -87,6 +87,10 @@ public class CandadoTO extends BaseTO
     {
         this.ubicacion = ubicacion;
     }
-    
-    
+
+    @Override
+    public boolean isKeyBlank()
+    {
+        return numero==null || numero==0 || ubicacion == null || ubicacion.isKeyBlank();
+    }
 }

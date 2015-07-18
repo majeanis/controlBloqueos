@@ -108,27 +108,11 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
         
-        if( pkCaja == null )
+        if( pkCaja == null || pkCaja.isKeyBlank() )
         {
-        	rtdo.addError(this.getClass(),  "Debe informar la caja que desea eliminar" );
-        	logger.info( "eliminar[FIN] no se informo la pk de la caja");
+        	rtdo.addError(this.getClass(),  "Debe informar la identificación de la caja" );
+        	logger.info( "eliminar[FIN] no se informaron todos los filtros: {}", pkCaja );
         	return rtdo;
-        }
-
-        if( pkCaja.getNumero() == null )
-        {
-            rtdo.addError(this.getClass(), "Debe informar el N° de la Caja" );
-        }
-
-        if( pkCaja.getUbicacion() == null || pkCaja.getUbicacion().getId() == null )
-        {
-            rtdo.addError(this.getClass(), "Debe informar la Ubicación de la Caja" );
-        }
-        
-        if( !rtdo.esExitoso() )
-        {
-            logger.info("eliminar[FIN] errores de validación: {}", rtdo);
-            return rtdo;
         }
         
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
@@ -160,10 +144,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         logger.info ("get[INI] caja: {}", pkCaja );
 
         Resultado rtdo = new ResultadoProceso();
-        if(pkCaja == null || 
-           pkCaja.getNumero() == null || 
-           pkCaja.getUbicacion() == null || 
-           pkCaja.getUbicacion().getId() == null)
+        if(pkCaja == null || pkCaja.isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Debe informar la identificación de la caja" );
             logger.info("get[FIN] No se informaron los datos mínimos: {}", pkCaja );
@@ -181,7 +162,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     {
         logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
 
-        if(pkUbicacion == null || pkUbicacion.getId() == null)
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
             logger.info("getVigentes[FIN] pkUbicacion llegó en NULL");
             return new ArrayList<>();
@@ -198,7 +179,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
 
-        if(pkUbicacion == null || pkUbicacion.getId() == null)
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
             logger.info("getTodos[FIN] pkUbicacion llegó en NULL");
             return new ArrayList<>();

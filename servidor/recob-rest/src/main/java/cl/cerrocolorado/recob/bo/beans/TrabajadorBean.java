@@ -113,7 +113,7 @@ public class TrabajadorBean implements TrabajadorBO
 
         Resultado rtdo = new ResultadoProceso();
         
-        if(pkTrabajador == null || pkTrabajador.getRut() == null)
+        if(pkTrabajador == null || pkTrabajador.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar al R.U.T. del trabajador");
             logger.info("eliminar[FIN] pkTrabajador llegó en NULL");
@@ -160,7 +160,7 @@ public class TrabajadorBean implements TrabajadorBO
         logger.info( "get[INI] pkTrabajador: {}", pkTrabajador);
 
         Resultado rtdo = new ResultadoProceso();
-        if(pkTrabajador==null || pkTrabajador.getRut()==null)
+        if(pkTrabajador==null || pkTrabajador.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. del trabajador");
             logger.info ("get[FIN] no se informaron todos los filtros: {}", pkTrabajador);

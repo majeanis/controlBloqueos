@@ -1,9 +1,9 @@
 package cl.cerrocolorado.recob.to;
 
-import cl.cerrocolorado.recob.utils.BaseTO;
+import cl.cerrocolorado.recob.utils.EntidadTO;
 import cl.cerrocolorado.recob.utils.Rut;
 
-public class EmpresaTO extends BaseTO
+public class EmpresaTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -45,4 +45,10 @@ public class EmpresaTO extends BaseTO
     public void setVigente(Boolean vigente) {
         this.vigente = vigente;
     }
+    
+    @Override
+    public boolean isKeyBlank()
+    {
+        return Rut.isBlank(rut);
+    }    
 }

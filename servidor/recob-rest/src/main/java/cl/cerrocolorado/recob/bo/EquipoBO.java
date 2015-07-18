@@ -18,10 +18,18 @@ public interface EquipoBO
 	@Transaccional
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception;
 
+    @Transaccional
+    public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception;
+
 	@Transaccional
     public Resultado eliminar(EquipoTO pk) throws Exception;
 
+    @Transaccional
+    public Resultado eliminarTag(TagTO pk) throws Exception;
+    
     public Respuesta<EquipoTO> get(EquipoTO pk);
+
+    public Respuesta<TagTO> getTag(TagTO pk);
 
     public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion);
     
@@ -30,4 +38,6 @@ public interface EquipoBO
     public List<TagTO> getTagsEnergiaCero(EquipoTO pk);
     
     public List<TagTO> getTagsVigentes(EquipoTO pk);
+    
+    public List<TagTO> getTagsTodos(EquipoTO pk);
 }

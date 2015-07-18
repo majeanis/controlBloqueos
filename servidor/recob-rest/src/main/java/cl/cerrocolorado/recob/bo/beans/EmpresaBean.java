@@ -83,17 +83,13 @@ public class EmpresaBean implements EmpresaBO
         logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
         Resultado rtdo = new ResultadoProceso();
         
-        if(pkEmpresa == null || Rut.isBlank(pkEmpresa.getRut()))
+        if(pkEmpresa == null || pkEmpresa.isKeyBlank())
         {
         	rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa" );
-        }
-        
-        if(!rtdo.esExitoso())
-        {
         	logger.info("eliminar[FIN] no se eliminó por fallas en validación", rtdo);
         	return rtdo;
         }
-
+        
         EmpresaTO otra = empresaPO.get(pkEmpresa);
         if( otra == null )
         {
@@ -124,7 +120,7 @@ public class EmpresaBean implements EmpresaBO
 
         Resultado rtdo = new ResultadoProceso();
         
-        if(pkEmpresa == null || pkEmpresa.getRut() == null)
+        if(pkEmpresa == null || pkEmpresa.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa");
             return Respuesta.of(rtdo);
