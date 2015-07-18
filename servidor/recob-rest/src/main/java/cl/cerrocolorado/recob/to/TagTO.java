@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
@@ -21,16 +16,16 @@ public class TagTO extends EntidadTO
     private String descripcion;
     private Boolean energiaCero;
     private Boolean vigente;
-    private EquipoTO equipo;
+    private Integer idEquipo;
 
-    public EquipoTO getEquipo()
+    public Integer getIdEquipo()
     {
-        return equipo;
+        return idEquipo;
     }
 
-    public void setEquipo(EquipoTO equipo)
+    public void setIdEquipo(Integer idEquipo)
     {
-        this.equipo = equipo;
+        this.idEquipo = idEquipo;
     }
 
     public Integer getId()
@@ -96,6 +91,6 @@ public class TagTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return numero==null || numero==0 || equipo==null || equipo.isKeyBlank();
+        return numero==null || numero==0 || idEquipo==null || idEquipo==0;
     }
 }

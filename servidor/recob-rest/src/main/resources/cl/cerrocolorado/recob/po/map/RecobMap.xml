@@ -73,7 +73,7 @@
         <result property="descripcion" column="taeq_desc" />
         <result property="energiaCero" column="taeq_enrg_cero" />
         <result property="vigente" column="taeq_vige" />
-        <association property="equipo" resultMap="equipoMap" />
+        <result property="idEquipo" column="eqpo_id" />
     </resultMap>
     
     <resultMap id="equipoMap" type="EquipoTO" >
@@ -81,7 +81,7 @@
         <result property="codigo" column="eqpo_codi" />
         <result property="vigente" column="eqpo_vige" />
         <association property="ubicacion" resultMap="ubicacionMap" />
-        <collection property="tags" javaType="ArrayList" ofType="TagTO" resultMap="tagMap" />
+<!--        <collection property="tags" javaType="ArrayList" ofType="TagTO" resultMap="tagMap" />-->
     </resultMap>
     
     <select id="selectUbicacion" parameterType="UbicacionTO" resultMap="ubicacionMap" >
@@ -503,8 +503,8 @@
                 <when test="tag.id != null" >
                     a.taeq_id = #{tag.id}
                 </when>
-                <when test="tag.numero != null and equipo.id != null" >
-                        a.eqpo_id   = #{equipo.id}
+                <when test="tag.numero != null and tag.idEquipo != null" >
+                        a.eqpo_id   = #{tag.idEquipo}
                     and a.taeq_nume = #{tag.numero}
                 </when>
                 <when test="equipo.id != null" >
@@ -539,7 +539,7 @@
             select get_nuevo_id()
         </selectKey>
         insert into rcb_tags_eqpo(taeq_id, taeq_nume, taeq_nomb, taeq_desc, taeq_enrg_cero, taeq_vige, eqpo_id, audi_fech_crea)
-             values(#{id},#{numero},#{nombre},#{descripcion},#{energiaCero},#{vigente},#{equipo.id},localtimestamp)
+             values(#{id},#{numero},#{nombre},#{descripcion},#{energiaCero},#{vigente},#{idEquipo},localtimestamp)
     </insert>
 
     <update id="updateTag" parameterType="TagTO" >
@@ -549,7 +549,7 @@
               ,taeq_desc      = #{descripcion}
               ,taeq_enrg_cero = #{energiaCero}
               ,taeq_vige      = #{vigente}
-              ,eqpo_id        = #{equipo.id}
+              ,eqpo_id        = #{idEquipo}
               ,audi_fech_modi = localtimestamp 
         where  taeq_id = #{id}
     </update>

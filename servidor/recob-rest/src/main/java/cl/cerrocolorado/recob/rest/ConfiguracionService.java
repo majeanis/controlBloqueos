@@ -25,6 +25,7 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import javax.ws.rs.PathParam;
 
 @Path("configuracion")
 public class ConfiguracionService
@@ -146,7 +147,34 @@ public class ConfiguracionService
         logger.info ("listarEquipos[FIN] equipos retornadas: {}", lista );        
         return RespFactory.getRespRest(lista);
     }
-    
+
+    @Path("equipos/ver")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespRest<EquipoTO> verEquipo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("codigo") String codigoEquipo)
+    {
+        logger.info ("listarEquipo[INI] token: {}", tokenUbicacion);
+        logger.info ("listarEquipo[INI] codigoEquipo: {}", codigoEquipo);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("listarEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespFactory.getRespRest(respUbic.getResultado());
+        }
+        
+        UbicacionTO ubicacion = respUbic.getContenido().get();
+        EquipoTO equipo = new EquipoTO();
+        equipo.setUbicacion(ubicacion);
+        equipo.setCodigo(codigoEquipo);
+        Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().get(equipo);
+
+        logger.info ("listarEquipo[FIN] respuesta retornado: {}", resp );
+        return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
+    }
+
     @Path("equipos/guardar")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

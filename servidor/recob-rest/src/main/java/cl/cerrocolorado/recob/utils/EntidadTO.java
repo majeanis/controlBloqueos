@@ -1,5 +1,7 @@
 package cl.cerrocolorado.recob.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class EntidadTO extends BaseTO
 {
     private static final long serialVersionUID = 1L;
@@ -8,5 +10,6 @@ public abstract class EntidadTO extends BaseTO
      * Determina si los campos que componen a la llave de negocio están en blanco o no, incluyendo NULLs
      * @return 
      */
+    @JsonIgnore
     public abstract boolean isKeyBlank();
 }

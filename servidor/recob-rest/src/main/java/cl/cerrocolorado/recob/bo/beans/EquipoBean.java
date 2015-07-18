@@ -80,7 +80,7 @@ public class EquipoBean implements EquipoBO
             for(int i=0; i < tags.size(); i++ )
             {
                 TagTO tag = tags.get(i);
-                tag.setEquipo(equipo);
+                tag.setIdEquipo(equipo.getId());
 
                 Respuesta<TagTO> r = guardarTag(tag);
                 if(!r.getResultado().esExitoso())
@@ -137,7 +137,7 @@ public class EquipoBean implements EquipoBO
     	{
     		rtdo.addError(this.getClass(), "Debe informar la descripción del TAG" );
 		}
-    	if(tag.getEquipo()==null || tag.getEquipo().isKeyBlank())
+    	if(tag.getIdEquipo()==null)
     	{
     		rtdo.addError(this.getClass(), "El TAG debe estar asociado a un equipo" );
     	}

@@ -110,7 +110,7 @@ public class EquipoPO implements BasePO<EquipoTO>
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("tag"        , pk);
-        parms.put("equipo"     , pk.getEquipo());
+        parms.put("equipo"     , new EquipoTO());
         parms.put("ubicacion"  , new UbicacionTO());
         parms.put("energiaCero", null);
         parms.put("vigencia"   , null);
