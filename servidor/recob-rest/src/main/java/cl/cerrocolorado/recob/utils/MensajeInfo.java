@@ -4,7 +4,7 @@ public class MensajeInfo extends Mensaje
 {
     private static final long serialVersionUID = 1L;
 
-    public MensajeInfo(Class<?> clazz, String textoBase, Object...valores)
+    public MensajeInfo(Class<?> clazz, String textoBase, String...valores)
     {
         super(Severidad.INFO, clazz.getSimpleName(), textoBase, valores);
     }

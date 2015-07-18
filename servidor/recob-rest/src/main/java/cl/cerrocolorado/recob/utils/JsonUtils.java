@@ -23,6 +23,7 @@ public class JsonUtils
 		try {
 			return mapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
+            System.out.println(e);
 			return null;
 		}
 	}

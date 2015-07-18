@@ -72,13 +72,13 @@ public class ResultadoProceso
     }
 
     @Override
-    public Mensaje addError(Class<?> clazz, String textoBase, Object... valores)
+    public Mensaje addError(Class<?> clazz, String textoBase, String... valores)
     {
         return this.addMensaje( new MensajeError( clazz, textoBase, valores) );
     }
 
     @Override
-    public Mensaje addMensaje(Class<?> clazz, String textoBase, Object... valores)
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, String... valores)
     {
         return this.addMensaje( new MensajeInfo( clazz, textoBase, valores) );
     }

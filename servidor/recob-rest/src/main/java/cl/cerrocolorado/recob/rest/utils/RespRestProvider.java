@@ -32,6 +32,7 @@ public class RespRestProvider implements MessageBodyWriter<RespRest<?>>
 	public void writeTo(RespRest<?> arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4,
 			MultivaluedMap<String, Object> arg5, OutputStream arg6) throws IOException, WebApplicationException {
 		String json = JsonUtils.toJsonString(arg0);
-		arg6.write(json.getBytes("UTF-8"));
+        if( json != null )
+            arg6.write(json.getBytes("UTF-8"));
 	}
 }

@@ -35,7 +35,12 @@ public class FactoryBO
     {
         return (UbicacionBO) beanFactory.getBean("ubicacionBO");
     }
-    
+
+    public static EquipoBO getEquipoBO()
+    {
+        return (EquipoBO) beanFactory.getBean("equipoBO");
+    }
+
     public static PlatformTransactionManager getTransactionManager()
     {
         return (PlatformTransactionManager) beanFactory.getBean("txManager");

@@ -109,8 +109,11 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info("getTag[INI] tag: {}", pk);
         
         Map<String,Object> parms = new HashMap<>();
-        parms.put("tag", pk);
-        parms.put("equipo", pk.getEquipo());
+        parms.put("tag"        , pk);
+        parms.put("equipo"     , pk.getEquipo());
+        parms.put("ubicacion"  , new UbicacionTO());
+        parms.put("energiaCero", null);
+        parms.put("vigencia"   , null);
         logger.info("getTag[001] parámetros de la consulta: {}", parms);
         
         List<TagTO> lista = mapper.selectTags(parms);
@@ -131,10 +134,11 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info("getTags[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
-        parms.put("equipo"   , pk);
-        parms.put("ubicacion", pk.getUbicacion());
+        parms.put("tag"        , new TagTO());
+        parms.put("equipo"     , pk);
+        parms.put("ubicacion"  , pk.getUbicacion());
         parms.put("energiaCero", energiaCero);
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia"   , vigencia);
         logger.debug("getTags[001] parámetros del select: {}", parms);
         
         List<TagTO> tags = mapper.selectTags(parms);
@@ -181,6 +185,7 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("getList[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
+        parms.put("equipo", new EquipoTO());
         parms.put("ubicacion", pkUbicacion);
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms );

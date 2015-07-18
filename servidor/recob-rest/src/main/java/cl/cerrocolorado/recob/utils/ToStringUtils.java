@@ -90,7 +90,7 @@ public class ToStringUtils
      *            Valores que se debe aplicar en el Texto Base
      * @return Cadena que resulta de la combinación del textBase y valores
      */
-    public static String toString(String textoBase, final Object... valores)
+    public static String toString(String textoBase, final String... valores)
     {
         if (textoBase == null)
             return "";

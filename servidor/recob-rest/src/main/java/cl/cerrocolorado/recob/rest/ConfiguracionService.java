@@ -19,6 +19,7 @@ import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.rest.utils.RespFactory;
 import cl.cerrocolorado.recob.rest.utils.RespRest;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
@@ -76,7 +77,7 @@ public class ConfiguracionService
     @POST
     public RespRest<CajaBloqueoTO> guardarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("jsonCaja") String jsonCaja)
+    		@QueryParam("caja") String jsonCaja)
     {
     	logger.info ("guardarCajaBloqueo[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
@@ -106,10 +107,88 @@ public class ConfiguracionService
 	        logger.info ("guardarCajaBloqueo[FIN] caja registrada: {}", resp.getContenido());
 			return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
 
-        } catch (Exception e) {
+        } catch (Exception e) 
+        {
 			rtdo.addException(this.getClass(), e);			
 			logger.error("guardarCajaBloqueo[FIN] salida con error:", e);
 			return RespFactory.getRespRest(this.getClass(), e);
         }
     }
+
+    @Path("equipos/listar")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespRest<List<EquipoTO>> listarEquipos(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("vigencia") Boolean vigencia)
+    {
+        logger.info ("listarEquipos[INI] token: {}", tokenUbicacion);
+        logger.info ("listarEquipos[INI] vigencia: {}", vigencia);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("listarEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespFactory.getRespRest(respUbic.getResultado());
+        }
+        
+        UbicacionTO ubicacion = respUbic.getContenido().get();
+        List<EquipoTO> lista;
+        
+        if( vigencia == null || vigencia == true)
+        {
+        	lista = FactoryBO.getEquipoBO().getVigentes(ubicacion);
+        } else
+        {
+        	lista = FactoryBO.getEquipoBO().getTodos(ubicacion);
+        }
+            
+        logger.info ("listarEquipos[FIN] equipos retornadas: {}", lista );        
+        return RespFactory.getRespRest(lista);
+    }
+    
+    @Path("equipos/guardar")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @POST
+    public RespRest<EquipoTO> guardarEquipo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("equipo") String jsonEquipo)
+    {
+    	logger.info ("guardarEquipo[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarEquipo[INI] equipo: {}", jsonEquipo);
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("guardarEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespFactory.getRespRest(respUbic.getResultado());
+        }
+
+        Resultado rtdo = new ResultadoProceso();
+        try 
+        {
+			EquipoTO equipo = JsonUtils.fromJsonString(jsonEquipo, EquipoTO.class);
+			if( equipo == null )
+			{
+				rtdo.addError(this.getClass(), "No se pudo parsear JSON con datos [equipo]");
+				logger.info ("guardarEquipo[FIN] salida con error: {}", rtdo);
+				return RespFactory.getRespRest(rtdo);
+			}
+
+			// Asignamos la Ubicación a la que debe pertenecer el Equipos
+            equipo.setUbicacion(respUbic.getContenido().get());
+			Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().guardar(equipo);
+
+			logger.info ("guardarEquipo[FIN] resultado: {}", resp.getResultado());
+	        logger.info ("guardarEquipo[FIN] equipo registrado: {}", resp.getContenido());
+			return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
+
+        } catch (Exception e) 
+        {
+			rtdo.addException(this.getClass(), e);			
+			logger.info ("guardarEquipo[FIN] al guardar equipo:", e);
+			return RespFactory.getRespRest(this.getClass(), e);
+        }
+    }
+
 }

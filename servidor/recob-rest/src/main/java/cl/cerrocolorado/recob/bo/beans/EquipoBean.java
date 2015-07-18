@@ -18,12 +18,15 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Transaccional;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author mauricio.camara
  */
+@Scope("singleton")
+@Service("equipoBO")
 public class EquipoBean implements EquipoBO
 {
     private static final Logger logger = LogManager.getLogger(EquipoBean.class);
@@ -77,11 +80,13 @@ public class EquipoBean implements EquipoBO
             for(int i=0; i < tags.size(); i++ )
             {
                 TagTO tag = tags.get(i);
+                tag.setEquipo(equipo);
+
                 Respuesta<TagTO> r = guardarTag(tag);
                 if(!r.getResultado().esExitoso())
                 {
                     logger.debug("guardar[002] errores al validar el TAG: {}", tag);
-                    rtdo.append(r.getResultado(), "[indice:" + i + "]");
+                    rtdo.append(r.getResultado(), "[indice:" + (i + 1) + "]");
                 }
             }
             
@@ -92,7 +97,8 @@ public class EquipoBean implements EquipoBO
             } else
             {
                 txLocal.rollback();
-                logger.debug("guardad{004] después del rollback: {} {}", rtdo, equipo);
+                logger.info ("guardar[FIN] después del rollback: {} {}", rtdo, equipo);
+                return Respuesta.of(rtdo);
             }
         } catch(Exception e)
         {
@@ -191,7 +197,7 @@ public class EquipoBean implements EquipoBO
         {
             if( !equipoPO.esTagEliminable(tag) )
             {
-                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", tag.getNumero());
+                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", String.valueOf(tag.getNumero()));
             }
         }
 
@@ -206,7 +212,7 @@ public class EquipoBean implements EquipoBO
         {
             if( !equipoPO.esTagEliminable(tag) )
             {
-                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", tag.getNumero());
+                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", String.valueOf(tag.getNumero()));
             }
         }
         
@@ -233,7 +239,7 @@ public class EquipoBean implements EquipoBO
         TagTO tag = equipoPO.getTag(pk);
         if( tag == null)
         {
-            rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", pk.getNumero() );
+            rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getNumero()) );
             logger.info("eliminarTag[FIN] no existe el TAG: {}", pk);
             return rtdo;
         }

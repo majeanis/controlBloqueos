@@ -19,9 +19,9 @@ public interface Resultado extends Serializable
 
     public Mensaje addException(Class<?> clazz, Exception exception);
     
-    public Mensaje addError(Class<?> clazz, String textoBase, Object...valores);
+    public Mensaje addError(Class<?> clazz, String textoBase, String...valores);
     
-    public Mensaje addMensaje(Class<?> clazz, String textoBase, Object...valores);
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, String...valores);
 
     public Mensaje addMensaje(Mensaje mensaje);
 
