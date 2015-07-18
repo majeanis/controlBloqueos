@@ -152,9 +152,13 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         }
 
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
-        
+        if( caja == null )
+        {
+            rtdo.addMensaje(this.getClass(), "No se encontró registro para Caja N° #{1}", String.valueOf(pkCaja.getNumero()));
+        }
+
         logger.info ("get[FIN] resultado búsqueda: {}", caja );
-        return Respuesta.of(caja);
+        return Respuesta.of(rtdo, caja);
     }
 
     @Override

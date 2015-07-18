@@ -25,7 +25,6 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
-import javax.ws.rs.PathParam;
 
 @Path("configuracion")
 public class ConfiguracionService
@@ -148,20 +147,47 @@ public class ConfiguracionService
         return RespFactory.getRespRest(lista);
     }
 
+    @Path("cajasBloqueo/ver")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespRest<CajaBloqueoTO> verCajaBloqueo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("id") Integer numeroCaja)
+    {
+        logger.info ("verCajaBloqueo[INI] token: {}", tokenUbicacion);
+        logger.info ("verCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespFactory.getRespRest(respUbic.getResultado());
+        }
+        
+        UbicacionTO ubicacion = respUbic.getContenido().get();
+        CajaBloqueoTO caja = new CajaBloqueoTO();
+        caja.setUbicacion(ubicacion);
+        caja.setNumero(numeroCaja);
+        Respuesta<CajaBloqueoTO> resp = FactoryBO.getCajaBloqueoBO().get(caja);
+
+        logger.info ("verCajaBloqueo[FIN] respuesta retornado: {}", resp );
+        return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
+    }
+    
     @Path("equipos/ver")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespRest<EquipoTO> verEquipo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("codigo") String codigoEquipo)
+    		@QueryParam("id") String codigoEquipo)
     {
-        logger.info ("listarEquipo[INI] token: {}", tokenUbicacion);
-        logger.info ("listarEquipo[INI] codigoEquipo: {}", codigoEquipo);
+        logger.info ("verEquipo[INI] token: {}", tokenUbicacion);
+        logger.info ("verEquipo[INI] codigoEquipo: {}", codigoEquipo);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("listarEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("verEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespFactory.getRespRest(respUbic.getResultado());
         }
         
@@ -171,7 +197,7 @@ public class ConfiguracionService
         equipo.setCodigo(codigoEquipo);
         Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().get(equipo);
 
-        logger.info ("listarEquipo[FIN] respuesta retornado: {}", resp );
+        logger.info ("verEquipo[FIN] respuesta retornado: {}", resp );
         return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
     }
 

@@ -5,7 +5,6 @@ import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
-import cl.cerrocolorado.recob.utils.Transaccional;
 
 import java.util.List;
 
