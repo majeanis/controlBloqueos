@@ -169,6 +169,13 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("eliminarTag[FIN] tag eliminado con éxito: {}", pk);
     }
 
+    public void eliminarTags(EquipoTO pk)
+    {
+        logger.info ("eliminarTags[INI] tag: {}", pk);
+        mapper.deleteTags(pk);
+        logger.info ("eliminarTags[FIN] tags eliminados con éxito: {}", pk);
+    }
+
     public List<EquipoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("getList[INI] vigencia: {}", vigencia);

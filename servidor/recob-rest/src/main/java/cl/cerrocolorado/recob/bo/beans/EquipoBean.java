@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cl.cerrocolorado.recob.bo.EquipoBO;
+import cl.cerrocolorado.recob.bo.Transaccion;
 import cl.cerrocolorado.recob.po.EquipoPO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.TagTO;
@@ -17,6 +18,7 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Transaccional;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  *
@@ -29,127 +31,78 @@ public class EquipoBean implements EquipoBO
     @Autowired
     private EquipoPO equipoPO;
 
-    @Transaccional
     @Override
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception
     {
-       logger.info ("guardar[INI] equipo: {}", equipo);
-       
-       Resultado rtdo = new ResultadoProceso();
-       if(equipo==null)
-       {
-           rtdo.addError(this.getClass(), "Debe informar los datos del Equipo");
-           logger.info ("guardar[FIN] se informó el objeto en NULL");
-           return Respuesta.of(rtdo);
-       }
-       if(equipo.getUbicacion() == null || equipo.getUbicacion().isKeyBlank())
-       {
-           rtdo.addError(this.getClass(), "El equipo debe estar asociado a una ubicación" );
-       }
-       if(equipo.getVigente() == null)
-       {
-           rtdo.addError(this.getClass(), "Debe informar la vigencia del Equipo");
-       }
-       if(StringUtils.isBlank(equipo.getCodigo()))
-       {
-           rtdo.addError(this.getClass(),"Debe informar el código del equipo");
-       }
-
-       EquipoTO otro = equipoPO.get(equipo);
-       logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
-       if(otro!=null)
-       {
-    	   equipo.setId(otro.getId());
-       }
-
-       equipoPO.guardar(equipo);
-       logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
-       return Respuesta.of(equipo);
-    }
-
-    @Transaccional
-    @Override
-    public Resultado eliminar(EquipoTO pk) throws Exception
-    {
-        logger.info ("eliminar[INI] pk: {}", pk);
-        
-        Resultado rtdo = new ResultadoProceso();
-        
-        if(pk==null || pk.isKeyBlank() )
-        {
-            rtdo.addError(this.getClass(), "Debe informar identificación del equipo");
-            logger.info("eliminar[FIN] no se informo la pk del equipo: {}", pk);
-            return rtdo;
-        }
-        
-        EquipoTO equipo = equipoPO.get(pk);
-        if(equipo == null)
-        {
-            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
-            logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
-            return rtdo;
-        }
-        
-        if(!equipoPO.esEliminable(equipo))
-        {
-            rtdo.addError(this.getClass(),"TAG tiene registros relacionados" );
-            logger.info("eliminar[FIN] equipo no es eliminable: {}", equipo);
-            return rtdo;
-        }
-
-        equipoPO.eliminar(equipo);
-        logger.info ("eliminar[FIN] registro eliminado con éxito: {}", equipo);
-        return rtdo;
-    }
-
-    @Override
-    public Respuesta<EquipoTO> get(EquipoTO pk)
-    {
-        logger.info("get[INI] pk: {}", pk);
+        logger.info("guardar[INI] equipo: {}", equipo);
 
         Resultado rtdo = new ResultadoProceso();
-
-        if(pk==null || pk.isKeyBlank() )
+        if (equipo == null)
         {
-            rtdo.addError(this.getClass(), "Debe informar la identificación del Equipo");
+            rtdo.addError(this.getClass(), "Debe informar los datos del Equipo");
+            logger.info("guardar[FIN] se informó el objeto en NULL");
             return Respuesta.of(rtdo);
         }
-        
-        EquipoTO equipo = equipoPO.get(pk);
-        logger.info("get[FIN] registro encontrado: {}", equipo);
+        if (equipo.getUbicacion() == null || equipo.getUbicacion().isKeyBlank())
+        {
+            rtdo.addError(this.getClass(), "El equipo debe estar asociado a una ubicación");
+        }
+        if (equipo.getVigente() == null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar la vigencia del Equipo");
+        }
+        if (StringUtils.isBlank(equipo.getCodigo()))
+        {
+            rtdo.addError(this.getClass(), "Debe informar el código del equipo");
+        }
+
+        EquipoTO otro = equipoPO.get(equipo);
+        logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
+        if (otro != null)
+        {
+            equipo.setId(otro.getId());
+        }
+
+        // Se utilizará control manual de transacciones, ya que internamente
+        // llamaremos a un método que también será transaccional y eventualmente
+        // necesitaremos hacer rollback, cuando fallas de validación
+        Transaccion txLocal = new Transaccion();
+
+        try
+        {
+            txLocal.begin();
+            equipoPO.guardar(equipo);
+
+            List<TagTO> tags = equipo.getTags();
+            for(int i=0; i < tags.size(); i++ )
+            {
+                TagTO tag = tags.get(i);
+                Respuesta<TagTO> r = guardarTag(tag);
+                if(!r.getResultado().esExitoso())
+                {
+                    logger.debug("guardar[002] errores al validar el TAG: {}", tag);
+                    rtdo.append(r.getResultado(), "[indice:" + i + "]");
+                }
+            }
+            
+            if(rtdo.esExitoso())
+            {
+                txLocal.commit();
+                logger.debug("guardar[003] después del commit: {}", equipo);
+            } else
+            {
+                txLocal.rollback();
+                logger.debug("guardad{004] después del rollback: {} {}", rtdo, equipo);
+            }
+        } catch(Exception e)
+        {
+            txLocal.rollback();
+            logger.error("guardar[ERR] ", e);
+            throw e;
+        }
+
+        logger.info("guardar[FIN] equipo guardado con éxito: {}", equipo);
         return Respuesta.of(equipo);
-    }
-
-    @Override
-    public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion)
-    {
-        logger.info("getVigentes[INI] pkUbicacion: {}", pkUbicacion);
-        
-        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
-        {
-            logger.info("getVigentes[FIN] no se informo la ubicación");
-            return new ArrayList<>();
-        }
-        
-        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, true);
-        logger.info("getVigentes[FIN] cantidad de equipos encontrados: {}", lista.size() );
-        return lista;
-    }
-
-    @Override
-    public List<EquipoTO> getTodos(UbicacionTO pkUbicacion)
-    {
-        logger.info("getTodos[INI] pkUbicacion: {}", pkUbicacion);
-        
-        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
-        {
-            logger.info("getTodos[FIN] no se informo la ubicación");
-            return new ArrayList<>();
-        }
-        
-        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, null);
-        logger.info("getTodos[FIN] cantidad de equipos encontrados: {}", lista.size() );
-        return lista;
     }
 
     @Transaccional
@@ -209,6 +162,59 @@ public class EquipoBean implements EquipoBO
     	logger.info("guardarTag[FIN] tag guardado con éxito: {}", tag);
     	return Respuesta.of(tag);
     }
+    
+    @Transaccional
+    @Override
+    public Resultado eliminar(EquipoTO pk) throws Exception
+    {
+        logger.info ("eliminar[INI] pk: {}", pk);
+        
+        Resultado rtdo = new ResultadoProceso();
+        
+        if(pk==null || pk.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar identificación del equipo");
+            logger.info("eliminar[FIN] no se informo la pk del equipo: {}", pk);
+            return rtdo;
+        }
+        
+        EquipoTO equipo = equipoPO.get(pk);
+        if(equipo == null)
+        {
+            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
+            logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
+            return rtdo;
+        }
+    
+        // Revisamos si es posible eliminar los TAGs
+        for( TagTO tag: equipo.getTags())
+        {
+            if( !equipoPO.esTagEliminable(tag) )
+            {
+                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", tag.getNumero());
+            }
+        }
+
+        if(!rtdo.esExitoso())
+        {
+            logger.info("eliminar[FIN] se encontraron errores de validación");
+            return rtdo;
+        }
+
+        // Revisamos si es posible eliminar los TAGs
+        for( TagTO tag: equipo.getTags())
+        {
+            if( !equipoPO.esTagEliminable(tag) )
+            {
+                rtdo.addError(this.getClass(), "TAG N° #{1} tiene registros asociados", tag.getNumero());
+            }
+        }
+        
+        equipoPO.eliminarTags(equipo);
+        equipoPO.eliminar(equipo);
+        logger.info ("eliminar[FIN] registro eliminado con éxito: {}", equipo);
+        return rtdo;
+    }
 
     @Transaccional
     @Override
@@ -242,6 +248,56 @@ public class EquipoBean implements EquipoBO
         equipoPO.eliminarTag(tag);
         logger.info ("eliminarTag[FIN] registro elimiinado con éxito: {}", tag);        
         return rtdo;
+    }
+
+    @Override
+    public Respuesta<EquipoTO> get(EquipoTO pk)
+    {
+        logger.info("get[INI] pk: {}", pk);
+
+        Resultado rtdo = new ResultadoProceso();
+
+        if(pk==null || pk.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación del Equipo");
+            return Respuesta.of(rtdo);
+        }
+        
+        EquipoTO equipo = equipoPO.get(pk);
+        logger.info("get[FIN] registro encontrado: {}", equipo);
+        return Respuesta.of(equipo);
+    }
+
+    @Override
+    public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion)
+    {
+        logger.info("getVigentes[INI] pkUbicacion: {}", pkUbicacion);
+        
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
+        {
+            logger.info("getVigentes[FIN] no se informo la ubicación");
+            return new ArrayList<>();
+        }
+        
+        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, true);
+        logger.info("getVigentes[FIN] cantidad de equipos encontrados: {}", lista.size() );
+        return lista;
+    }
+
+    @Override
+    public List<EquipoTO> getTodos(UbicacionTO pkUbicacion)
+    {
+        logger.info("getTodos[INI] pkUbicacion: {}", pkUbicacion);
+        
+        if(pkUbicacion == null || pkUbicacion.isKeyBlank())
+        {
+            logger.info("getTodos[FIN] no se informo la ubicación");
+            return new ArrayList<>();
+        }
+        
+        List<EquipoTO> lista = equipoPO.getList(pkUbicacion, null);
+        logger.info("getTodos[FIN] cantidad de equipos encontrados: {}", lista.size() );
+        return lista;
     }
 
     @Override

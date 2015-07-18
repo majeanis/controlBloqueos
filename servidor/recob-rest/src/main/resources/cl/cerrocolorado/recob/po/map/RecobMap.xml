@@ -557,4 +557,10 @@
         delete from rcb_tags_eqpo
         where  taeq_id = #{id}
     </delete>
+
+    <delete id="deleteTags" parameterType="EquipoTO" >
+        delete from rcb_tags_eqpo
+        where  eqpo_id = #{id}
+    </delete>
+    
 </mapper>

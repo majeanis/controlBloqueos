@@ -30,12 +30,15 @@
  	<!-- DEFINICION DE LOS DATA SOURCES QUE SERAN UTILIZADOS -->
  	<alias name="dsJndiRecob"  alias="dsRecob" />
  	
-	<!-- ADMINISTRADOR DE LAS TRANSACCIONES -->
-	<bean id="txManagerRecob" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+	<!-- ADMINISTRADOR DE LAS TRANSACCIONES EN MODO JDBC -->
+<!--	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
    		<property name="dataSource" ref="dsRecob" />
-	</bean>
+	</bean>-->
 
-    <tx:annotation-driven transaction-manager="txManagerRecob" />
+    <!-- ADMINISTRADOR DE LAS TRANSACCION EN MODO JTA -->    
+	<bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
+
+    <tx:annotation-driven transaction-manager="txManager" />
 <!-- 	<tx:jta-transaction-manager /> -->
 
 	<!-- SE DEFINEN LOS SQL SESSION FACTORY -->

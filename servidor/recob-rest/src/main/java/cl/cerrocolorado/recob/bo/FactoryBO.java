@@ -2,6 +2,7 @@ package cl.cerrocolorado.recob.bo;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  *
@@ -33,5 +34,10 @@ public class FactoryBO
     public static UbicacionBO getUbicacionBO()
     {
         return (UbicacionBO) beanFactory.getBean("ubicacionBO");
+    }
+    
+    public static PlatformTransactionManager getTransactionManager()
+    {
+        return (PlatformTransactionManager) beanFactory.getBean("txManager");
     }
 }

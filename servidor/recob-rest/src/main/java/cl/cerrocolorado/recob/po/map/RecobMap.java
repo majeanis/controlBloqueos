@@ -89,5 +89,6 @@ public interface RecobMap
     public void deleteTag(TagTO tag);
     public int  childsTag(TagTO tag);
     public List<TagTO> selectTags( Map<String,Object> parms );
+    public int  deleteTags(EquipoTO equipo);
     
 }

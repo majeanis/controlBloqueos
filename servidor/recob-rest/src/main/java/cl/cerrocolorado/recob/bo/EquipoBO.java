@@ -15,16 +15,12 @@ import java.util.List;
  */
 public interface EquipoBO
 {
-	@Transaccional
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception;
 
-    @Transaccional
     public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception;
 
-	@Transaccional
     public Resultado eliminar(EquipoTO pk) throws Exception;
 
-    @Transaccional
     public Resultado eliminarTag(TagTO pk) throws Exception;
     
     public Respuesta<EquipoTO> get(EquipoTO pk);
