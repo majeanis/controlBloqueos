@@ -25,11 +25,11 @@ public interface CandadoBO
     
     public Respuesta<CandadoTO> get(UbicacionTO pkUbicacion, String serieCandado);
     
-    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion);
-    
-    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
-    
-    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion);
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
 
-    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona);
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia);
+
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion);
+    
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
 }

@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.Transaccional;
+import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -187,46 +188,48 @@ public class TrabajadorBean implements TrabajadorBO
     }
 
     @Override
-    public List<TrabajadorTO> getVigentes()
+    public Respuesta<List<TrabajadorTO>> getVigentes()
     {
-        logger.info("getVigentes[INI]");
-        
-        List<TrabajadorTO> lista = trabajadorPO.getList(Boolean.TRUE);
-        
-        logger.info("getVigentes[FIN] cantidad de registros retornados: {}", lista.size());
-        return lista;
+        return getTodos(Boolean.TRUE);
     }
 
     @Override
-    public List<TrabajadorTO> getVigentes(EmpresaTO pkEmpresa)
+    public Respuesta<List<TrabajadorTO>> getVigentes(EmpresaTO pkEmpresa)
     {
-        logger.info("getVigentes[INI] pkEmpresa: {}", pkEmpresa);
-        
-        List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, Boolean.TRUE);
-        
-        logger.info("getVigentes[FIN] cantidad de registros retornados: {}", lista.size());
-        return lista;
+        return getTodos(pkEmpresa, Boolean.TRUE);
     }
 
     @Override
-    public List<TrabajadorTO> getTodos()
+    public Respuesta<List<TrabajadorTO>> getTodos(Boolean vigencia)
     {
-        logger.info("getTodos[INI]");
-        
-        List<TrabajadorTO> lista = trabajadorPO.getList(null);
+        logger.info("getTodos[INI] vigencia: {}", vigencia);
+
+        Resultado rtdo = new ResultadoProceso();
+        List<TrabajadorTO> lista = trabajadorPO.getList(vigencia);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
         logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
-        return lista;
+        return Respuesta.of(rtdo, lista);
     }
 
     @Override
-    public List<TrabajadorTO> getTodos(EmpresaTO pkEmpresa)
+    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa, Boolean vigencia)
     {
         logger.info("getTodos[INI] pkEmpresa: {}", pkEmpresa);
+        logger.info("getTodos[INI] vigencia: {}", vigencia);
+        
+        Resultado rtdo = new ResultadoProceso();
+        if( pkEmpresa == null || pkEmpresa.isKeyBlank() )
+        {
+            rtdo.addError(this.getClass(), "Debe informar la Empresa" );
+            logger.info("getTodos[FIN] no se informaron todos los filtros: {}", pkEmpresa);
+            return Respuesta.of(rtdo);
+        }
         
         List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, null);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
         logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
-        return lista;
+        return Respuesta.of(rtdo, lista);
     }
 }

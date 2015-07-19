@@ -19,8 +19,8 @@ public interface EmpresaBO
     public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception;
 
     public Respuesta<EmpresaTO> get(EmpresaTO pkEmpresa);
+        
+    public Respuesta<List<EmpresaTO>> getTodos(Boolean vigencia);
 
-    public List<EmpresaTO> getVigentes();
-    
-    public List<EmpresaTO> getTodos();
+    public Respuesta<List<EmpresaTO>> getVigentes();
 }

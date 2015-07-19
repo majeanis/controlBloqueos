@@ -8,6 +8,7 @@ import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
+import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -72,8 +73,10 @@ public class EmpresaBean implements EmpresaBO
 
         // Si llegamos a este punto la Caja puede ser Guardada
         empresaPO.guardar(empresa);
+        rtdo.addMensaje(this.getClass(), "Empresa guardada con éxito");
+        
         logger.info ("guardar[FIN] registro guardado con exito: {}", empresa );
-        return Respuesta.of(empresa);
+        return Respuesta.of(rtdo, empresa);
     }
     
     @Transaccional
@@ -125,6 +128,7 @@ public class EmpresaBean implements EmpresaBO
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa");
             return Respuesta.of(rtdo);
         }
+
         EmpresaTO empresa = empresaPO.get(pkEmpresa);
         
         logger.info ("get[FIN] resultado busqueda: {}", empresa );
@@ -132,24 +136,22 @@ public class EmpresaBean implements EmpresaBO
     }
 
     @Override
-    public List<EmpresaTO> getVigentes()
+    public Respuesta<List<EmpresaTO>> getTodos(Boolean vigencia)
     {
-        logger.info ("getVigentes[INI]" );
+        logger.info ("getTodos[INI] vigencia: {}", vigencia );
 
-        List<EmpresaTO> empresas = empresaPO.getList(true);
+        Resultado rtdo = new ResultadoProceso();
+        List<EmpresaTO> lista = empresaPO.getList(vigencia);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
-        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", empresas.size() );
-        return empresas;
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        return Respuesta.of(rtdo,lista);
     }
 
     @Override
-    public List<EmpresaTO> getTodos()
+    public Respuesta<List<EmpresaTO>> getVigentes()
     {
-        logger.info ("getTodos[INI]" );
-
-        List<EmpresaTO> empresas = empresaPO.getList(null);
-        
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", empresas.size() );
-        return empresas;
+        return getTodos(true);
     }
+
 }

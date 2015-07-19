@@ -12,7 +12,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
-import java.util.ArrayList;
+import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
@@ -128,8 +128,10 @@ public class CandadoBean implements CandadoBO
         
         // Si llegamos a este punto la Caja puede ser Guardada
         candadoPO.guardar(candado);
+        rtdo.addMensaje(this.getClass(), "Candado guardado con éxito");
+
         logger.info ("guardar[FIN] candado guardado con exito: {}", candado );
-        return Respuesta.of(candado);
+        return Respuesta.of(rtdo,candado);
     }
     
     @Transaccional
@@ -185,10 +187,7 @@ public class CandadoBean implements CandadoBO
 
         Resultado rtdo = new ResultadoProceso();
         
-        if( pkCandado == null || 
-            pkCandado.getNumero() == null || 
-            pkCandado.getUbicacion() == null ||
-            pkCandado.getUbicacion().getId() == null)
+        if( pkCandado == null || pkCandado.isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Debe informar la identificación del candado");
             logger.info("get[FIN] faltaron datos en la identificación del candado: {}", pkCandado);
@@ -196,9 +195,13 @@ public class CandadoBean implements CandadoBO
         }
 
         CandadoTO candado = candadoPO.get(pkCandado);
-        
+        if( candado == null)
+        {
+            rtdo.addError(this.getClass(), "No existe candado con N° #{1}", String.valueOf(pkCandado.getNumero()));
+        }
+
         logger.info ("get[FIN] resultado busqueda: {}", candado );
-        return Respuesta.of(candado);
+        return Respuesta.of(rtdo, candado);
     }
 
     @Override
@@ -209,9 +212,7 @@ public class CandadoBean implements CandadoBO
         
         Resultado rtdo = new ResultadoProceso();
         
-        if( pkUbicacion == null || 
-            pkUbicacion.getId() == null || 
-            serieCandado == null )
+        if( pkUbicacion == null || pkUbicacion.isKeyBlank() || serieCandado == null )
         {
             rtdo.addError(this.getClass(), "Debe informar la identificación del candado");
             logger.info("get[FIN] no se informaron todos los filtros: {}-{}", pkUbicacion, serieCandado);
@@ -223,82 +224,70 @@ public class CandadoBean implements CandadoBO
         pkCandado.setSerie(serieCandado);
         CandadoTO candado = candadoPO.getBySerie(pkCandado);
         
-        logger.info ("get[FIN] resultado busqueda: {}", candado );
-        return Respuesta.of(candado);
-    }
-
-    @Override
-    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion)
-    {
-        logger.info ("getVigentes[INI] pkUbicacion: {}", pkUbicacion );
-        
-        if(pkUbicacion == null || pkUbicacion.getId() == null)
+        if( candado == null )
         {
-            logger.info ("getVigentes[FIN] no se informaron todos los filtros: {}{}", pkUbicacion);
-            return new ArrayList<>();
+            rtdo.addMensaje(this.getClass(), "No existe candado con N° de serie #{1}", serieCandado);
         }
-
-        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, true);
         
-        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
-        return candados;
+        logger.info ("get[FIN] resultado búsqueda: {}", candado );
+        return Respuesta.of(rtdo, candado);
     }
 
     @Override
-    public List<CandadoTO> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona)
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion)
     {
-        logger.info ("getVigentes[INI] ubicacion: {}", pkUbicacion );
-        logger.info ("getVigentes[INI] persona: {}", pkPersona );
-
-        if( pkUbicacion == null || 
-            pkUbicacion.getId() == null ||
-            pkPersona == null ||
-            pkPersona.getRut() == null)
-        {
-            logger.info ("getVigentes[FIN] no se informaron todos los filtros: {} {}", pkUbicacion, pkPersona );
-            return new ArrayList<>();
-        }
-
-        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, pkPersona, true);
-        
-        logger.info ("getVigentes[FIN] cantidad registros encontrados: {}", candados.size() );
-        return candados;
+        return getTodos(pkUbicacion, Boolean.TRUE);
     }
 
     @Override
-    public List<CandadoTO> getTodos(UbicacionTO pkUbicacion)
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona)
+    {
+        return getTodos(pkUbicacion, pkPersona, Boolean.TRUE);
+    }
+
+    @Override
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia)
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
-
-        if( pkUbicacion == null || pkUbicacion.getId() == null)
+        logger.info ("getTodos[INI] vigencia: {}", vigencia );
+        
+        Resultado rtdo = new ResultadoProceso();
+        if( pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
-            logger.info ("getVigentes[FIN] no se informaron todos los filtros: {} {}", pkUbicacion );
-            return new ArrayList<>();
+            rtdo.addError(this.getClass(), "Debe informar la ubicación");
+            logger.info ("getTodos[FIN] no se informó la ubicación: {}", pkUbicacion );
+            return Respuesta.of(rtdo);
         }
 
-        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, null);
-        
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", candados.size() );
-        return candados;
+        List<CandadoTO> lista = candadoPO.getList(pkUbicacion, vigencia);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
+
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        return Respuesta.of(rtdo, lista);
     }
 
 	@Override
-	public List<CandadoTO> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona) {
+	public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia) {
         logger.info ("getTodos[INI] pkUbicacion: {}", pkUbicacion );
         logger.info ("getTodos[INI] pkPersona: {}", pkPersona );
+        logger.info ("getTodos[INI] vigencia: {}", vigencia);
+
+        Resultado rtdo = new ResultadoProceso();
 
         if( pkUbicacion == null || 
-            pkUbicacion.getId() == null ||
+            pkUbicacion.isKeyBlank() ||
             pkPersona == null ||
-            pkPersona.getRut() == null)
+            pkPersona.isKeyBlank())
         {
+            rtdo.addError(this.getClass(), "Debe informar la Ubicación y el R.U.T. de la persona");
             logger.info ("getTodos[FIN] no se informaron todos los filtros: {} {}", pkUbicacion, pkPersona );
-            return new ArrayList<>();
+            return Respuesta.of(rtdo);
         }
 
-        List<CandadoTO> candados = candadoPO.getList(pkUbicacion, pkPersona, null);
+        List<CandadoTO> lista = candadoPO.getList(pkUbicacion, pkPersona, vigencia);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", candados.size() );
-        return candados;
+        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        return Respuesta.of(rtdo, lista);
 	}
 }

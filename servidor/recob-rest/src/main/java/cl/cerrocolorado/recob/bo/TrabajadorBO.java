@@ -21,9 +21,10 @@ public interface TrabajadorBO
 
     public Respuesta<TrabajadorTO> get(TrabajadorTO pkTrabajador);
 
-    public List<TrabajadorTO> getVigentes();
-    public List<TrabajadorTO> getVigentes(EmpresaTO pkEmpresa);
+    public Respuesta<List<TrabajadorTO>> getTodos(Boolean vigencia);
+    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa, Boolean vigencia);
+
+    public Respuesta<List<TrabajadorTO>> getVigentes();
+    public Respuesta<List<TrabajadorTO>> getVigentes(EmpresaTO pkEmpresa);
     
-    public List<TrabajadorTO> getTodos();
-    public List<TrabajadorTO> getTodos(EmpresaTO pkEmpresa);
 }
