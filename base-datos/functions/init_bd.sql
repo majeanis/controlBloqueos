@@ -43,9 +43,12 @@ BEGIN
               ,localtimestamp )
     ;
 
+    -- Función para generar el Token
+    -- uuid_generate_v1()
     insert into rcb_tokn (tokn_id, ubic_id, audi_fech_crea)
-        values( uuid_generate_v1()
+        values( '9cc5882c-2dd9-11e5-ac59-080027465435' 
               , l_UbicacionId
               , localtimestamp );
+
 END;
 $$ LANGUAGE plpgsql;
