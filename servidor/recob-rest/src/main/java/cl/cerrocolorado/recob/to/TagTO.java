@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -18,6 +19,7 @@ public class TagTO extends EntidadTO
     private Boolean vigente;
     private Integer idEquipo;
 
+    @JsonIgnore
     public Integer getIdEquipo()
     {
         return idEquipo;

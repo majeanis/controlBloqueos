@@ -96,6 +96,6 @@ public class EmpresaPO implements BasePO<EmpresaTO>
         int relaciones = mapper.childsEmpresa(pk);
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones > 0;
+        return relaciones == 0;
     }
 }

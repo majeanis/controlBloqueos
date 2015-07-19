@@ -141,6 +141,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         int relaciones = mapper.childsCandado(pk);
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones > 0;
+        return relaciones == 0;
     }
 }

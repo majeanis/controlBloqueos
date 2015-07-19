@@ -101,6 +101,6 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
         int relaciones = mapper.childsCajaBloqueo(pk);
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones > 0;
+        return relaciones == 0;
     }
 }

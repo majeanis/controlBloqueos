@@ -91,7 +91,7 @@ public class EquipoPO implements BasePO<EquipoTO>
         int relaciones = mapper.childsEquipo(pk);
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones > 0;
+        return relaciones == 0;
     }
 
     public boolean esTagEliminable(TagTO pk)

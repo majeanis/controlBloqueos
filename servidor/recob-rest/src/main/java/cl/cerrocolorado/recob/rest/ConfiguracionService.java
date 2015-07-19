@@ -1,6 +1,5 @@
 package cl.cerrocolorado.recob.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import cl.cerrocolorado.recob.bo.FactoryBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.rest.utils.RespFactory;
+import cl.cerrocolorado.recob.rest.utils.RespGenerica;
 import cl.cerrocolorado.recob.rest.utils.RespRest;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
@@ -26,6 +26,9 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import javax.ws.rs.DELETE;
+import static javax.ws.rs.HttpMethod.PUT;
+import javax.ws.rs.PUT;
 
 
 @Path("configuracion")
@@ -39,7 +42,7 @@ public class ConfiguracionService
     private static final int VER_TODOS = 1;
     private static final int VER_VIGENTES = 2;
     private static final int VER_UNO = 3;
-
+    
     static
     {
         ubicacionBO = FactoryBO.getUbicacionBO();
@@ -48,202 +51,246 @@ public class ConfiguracionService
     @Path("cajasBloqueo/ver")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public RespRest<List<CajaBloqueoTO>> verCajasBloqueo(
+    public RespGenerica verCajasBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
     		@QueryParam("accion") Integer accion,
-    		@QueryParam("id") Integer numeroCaja)
+    		@QueryParam("id") String jsonPkCaja)
     {
-        logger.info ("listarCajasBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("listarCajasBloqueo[INI] accion: {}", accion);
-        logger.info ("listarCajasBloqueo[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("verCajasBloqueo[INI] token: {}", tokenUbicacion);
+        logger.info ("verCajasBloqueo[INI] accion: {}", accion);
+        logger.info ("verCajasBloqueo[INI] id: {}", jsonPkCaja);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("listarCajasBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
+            logger.info ("verCajasBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
         }
         
-        UbicacionTO ubicacion = respUbic.getContenido().get();
-        List<CajaBloqueoTO> lista = null;
-        Resultado rtdo = null;
-
+        UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
         switch( accion )
         {
         	case VER_TODOS:
         		Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,null);
-                rtdo = r1.getResultado();
-                lista = r1.getContenido().orElse(null);
-        		break;
+                logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
+                return RespGenerica.of(r1);
         		
         	case VER_VIGENTES:
         		Respuesta<List<CajaBloqueoTO>> r2 = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
-                rtdo = r2.getResultado();
-                lista = r2.getContenido().orElse(null);
-                break;
+                logger.info("verCajasBloqueo[FIN] retorno de registros vigentes: {}", r2);
+                return RespGenerica.of(r2);
 
         	case VER_UNO:
-                CajaBloqueoTO caja = new CajaBloqueoTO();
-                caja.setUbicacion(ubicacion);
-                caja.setNumero(numeroCaja);
-                Respuesta<CajaBloqueoTO> resp = FactoryBO.getCajaBloqueoBO().get(caja);
-                rtdo = resp.getResultado();
-        		if( resp.getContenido().isPresent())
-        		{
-        			lista = new ArrayList<>();
-        			lista.add(caja);
-        		}
+                CajaBloqueoTO caja = JsonUtils.fromJsonString(jsonPkCaja, CajaBloqueoTO.class);
+                if(caja!=null)
+                {
+                    caja.setUbicacion(ubicacion);
+                    Respuesta<CajaBloqueoTO> r3 = FactoryBO.getCajaBloqueoBO().get(caja);
+                    logger.info("verCajasBloqueo[FIN] retorno de un registro: {}", r3);
+                    return RespGenerica.of(r3);
+                }
         }
 
-        logger.info ("listarCajasBloqueo[FIN] cajas retornadas: {}", lista );        
-        return RespFactory.getRespRest(rtdo, lista);
+        logger.info("verCajasBloqueo[FIN] código de acción inválido: {}", accion);
+        return null;
     }
 
     @Path("cajasBloqueo/guardar")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @POST
-    public RespRest<CajaBloqueoTO> guardarCajaBloqueo(
+    @PUT
+    public RespGenerica guardarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
     		@QueryParam("caja") String jsonCaja)
     {
     	logger.info ("guardarCajaBloqueo[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
+
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
             logger.info ("guardarCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
+            return RespGenerica.of(respUbic);
         }
 
-    	Resultado rtdo = new ResultadoProceso();
+        UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+		CajaBloqueoTO caja = JsonUtils.fromJsonString(jsonCaja, CajaBloqueoTO.class);
+        if( caja == null )
+        {
+            logger.info("guardarCajaBloqueo[FIN] no se pudo parsearl el JSON: {}", jsonCaja);
+            return null;
+        }
+
         try 
         {
-			CajaBloqueoTO caja = JsonUtils.fromJsonString(jsonCaja, CajaBloqueoTO.class);
-			if( caja == null )
-			{
-				rtdo.addError(this.getClass(), "No se pudo parsear JSON con datos [caja]");
-				logger.info ("guardarCajaBloqueo[FIN] salida con error: {}", rtdo);
-				return RespFactory.getRespRest(rtdo);
-			}
+            caja.setUbicacion(ubicacion);
+            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().guardar(caja);
 
-			// Asignamos la Ubicación a la que debe pertenecer la Caja
-			caja.setUbicacion(respUbic.getContenido().get());
-			Respuesta<CajaBloqueoTO> resp = FactoryBO.getCajaBloqueoBO().guardar(caja);
-
-			logger.info ("guardarCajaBloqueo[FIN] resultado: {}", resp.getResultado());
-	        logger.info ("guardarCajaBloqueo[FIN] caja registrada: {}", resp.getContenido());
-			return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
-
+            logger.info("guardarCajaBloqueo[FIN] resultado registro caja: {}", r);
+            return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			rtdo.addException(this.getClass(), e);			
-			logger.error("guardarCajaBloqueo[FIN] salida con error:", e);
-			return RespFactory.getRespRest(this.getClass(), e);
+			logger.error("guardarCajaBloqueo[ERR] al guardar caja de bloqueo:", e);
+			return RespGenerica.of(this.getClass(), e);
         }
     }
 
-    @Path("equipos/listar")
+    @Path("cajasBloqueo/eliminar")
     @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    public RespRest<List<EquipoTO>> listarEquipos(
+    @Consumes(MediaType.APPLICATION_JSON)
+    @DELETE
+    public RespGenerica eliminarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("vigencia") Boolean vigencia)
+    		@QueryParam("id") String jsonPkCaja)
     {
-        logger.info ("listarEquipos[INI] token: {}", tokenUbicacion);
-        logger.info ("listarEquipos[INI] vigencia: {}", vigencia);
+        logger.info ("eliminarCajaBloqueo[INI] token: {}", tokenUbicacion);
+        logger.info ("eliminarCajaBloqueo[INI] id: {}", jsonPkCaja);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("listarEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
+            logger.info ("eliminarCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
         }
         
-        UbicacionTO ubicacion = respUbic.getContenido().get();
-        List<EquipoTO> lista;
+        UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+        CajaBloqueoTO caja = JsonUtils.fromJsonString(jsonPkCaja, CajaBloqueoTO.class);
+        caja.setUbicacion(ubicacion);
+        logger.debug("eliminarCajaBloqueo[001] después de parsear el JSON: {}", caja);
         
-        if( vigencia == null || vigencia == true)
+        try
         {
-        	lista = FactoryBO.getEquipoBO().getVigentes(ubicacion);
-        } else
-        {
-        	lista = FactoryBO.getEquipoBO().getTodos(ubicacion);
-        }
+            Resultado r = FactoryBO.getCajaBloqueoBO().eliminar(caja);
             
-        logger.info ("listarEquipos[FIN] equipos retornadas: {}", lista );        
-        return RespFactory.getRespRest(lista);
+            logger.info("eliminarCajaBloqueo[FIN] resultado de la eliminación: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("eliminarCajaBloqueo[ERR] al eliminar la caja:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
     }
     
     @Path("equipos/ver")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public RespRest<EquipoTO> verEquipo(
+    public RespGenerica verEquipos(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("id") String codigoEquipo)
+            @QueryParam("accion") Integer accion,
+    		@QueryParam("id") String jsonPkEquipo)
     {
-        logger.info ("verEquipo[INI] token: {}", tokenUbicacion);
-        logger.info ("verEquipo[INI] codigoEquipo: {}", codigoEquipo);
-
+        logger.info ("verEquipos[INI] token: {}", tokenUbicacion);
+        logger.info ("verEquipos[INI] accion: {}", accion);
+        logger.info ("verEquipos[INI] id: {}", jsonPkEquipo );
+        
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
             logger.info ("verEquipos[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
+            return RespGenerica.of(respUbic);
         }
         
         UbicacionTO ubicacion = respUbic.getContenido().get();
-        EquipoTO equipo = new EquipoTO();
-        equipo.setUbicacion(ubicacion);
-        equipo.setCodigo(codigoEquipo);
-        Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().get(equipo);
+        switch( accion )
+        {
+        	case VER_TODOS:
+                Respuesta<List<EquipoTO>> r1 = FactoryBO.getEquipoBO().getTodos(ubicacion,null);
+                logger.info("verEquipos[FIN] retorno de todos los registros: {}", r1);
+                return RespGenerica.of(r1);
+        		
+        	case VER_VIGENTES:
+        		Respuesta<List<EquipoTO>> r2 = FactoryBO.getEquipoBO().getVigentes(ubicacion);
+                logger.info("verEquipos[FIN] retorno de registros vigentes: {}", r2);
+                return RespGenerica.of(r2);
 
-        logger.info ("verEquipo[FIN] respuesta retornado: {}", resp );
-        return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
+        	case VER_UNO:
+                EquipoTO equipo = JsonUtils.fromJsonString(jsonPkEquipo, EquipoTO.class);
+                if(equipo != null)
+                {
+                    equipo.setUbicacion(ubicacion);
+                    Respuesta<EquipoTO> r3 = FactoryBO.getEquipoBO().get(equipo);
+                    logger.info("verEquipos[FIN] retorno de un registro: {}", r3);
+                    return RespGenerica.of(r3);
+                }
+        }
+
+        logger.info("verEquipos[FIN] código de acción inválido: {}", accion);
+        return null;
     }
-
+    
     @Path("equipos/guardar")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @POST
-    public RespRest<EquipoTO> guardarEquipo(
+    @PUT
+    public RespGenerica guardarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
     		@QueryParam("equipo") String jsonEquipo)
     {
     	logger.info ("guardarEquipo[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarEquipo[INI] equipo: {}", jsonEquipo);
+
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
             logger.info ("guardarEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespFactory.getRespRest(respUbic.getResultado());
+            return RespGenerica.of(respUbic);
         }
 
-        Resultado rtdo = new ResultadoProceso();
+        EquipoTO equipo = JsonUtils.fromJsonString(jsonEquipo, EquipoTO.class);
+        if( equipo == null )
+        {
+            logger.info ("guardarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
+            return null;
+        }
+
+        equipo.setUbicacion(respUbic.getContenido().orElse(null));
+        logger.debug("guardarEquipo[001] después de parsear el JSON: {}", equipo);
+
         try 
         {
-			EquipoTO equipo = JsonUtils.fromJsonString(jsonEquipo, EquipoTO.class);
-			if( equipo == null )
-			{
-				rtdo.addError(this.getClass(), "No se pudo parsear JSON con datos [equipo]");
-				logger.info ("guardarEquipo[FIN] salida con error: {}", rtdo);
-				return RespFactory.getRespRest(rtdo);
-			}
-
-			// Asignamos la Ubicación a la que debe pertenecer el Equipos
-            equipo.setUbicacion(respUbic.getContenido().get());
 			Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().guardar(equipo);
-
-			logger.info ("guardarEquipo[FIN] resultado: {}", resp.getResultado());
-	        logger.info ("guardarEquipo[FIN] equipo registrado: {}", resp.getContenido());
-			return RespFactory.getRespRest(resp.getResultado(), resp.getContenido());
-
+	        logger.info ("guardarEquipo[FIN] equipo registrado: {}", resp);
+			return RespGenerica.of(resp);
         } catch (Exception e) 
         {
-			rtdo.addException(this.getClass(), e);			
-			logger.info ("guardarEquipo[FIN] al guardar equipo:", e);
-			return RespFactory.getRespRest(this.getClass(), e);
+			logger.error("guardarEquipo[ERR] al guardar equipo:", e);
+			return RespGenerica.of(this.getClass(), e);
         }
     }
 
+    @Path("equipos/eliminar")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @DELETE
+    public RespGenerica eliminarEquipo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("id") String jsonPkEquipo)
+    {
+        logger.info ("eliminarEquipo[INI] token: {}", tokenUbicacion);
+        logger.info ("eliminarEquipo[INI] id: {}", jsonPkEquipo);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("eliminarEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+        
+        UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+        EquipoTO equipo = JsonUtils.fromJsonString(jsonPkEquipo, EquipoTO.class);
+        equipo.setUbicacion(ubicacion);
+        logger.debug("eliminarEquipo[001] después de parsear el JSON: {}", equipo);
+        
+        try
+        {
+            Resultado r = FactoryBO.getEquipoBO().eliminar(equipo);
+            
+            logger.info("eliminarEquipo[FIN] resultado de la eliminación: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("eliminarEquipo[ERR] al eliminar equipo:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
 }

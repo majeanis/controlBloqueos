@@ -26,13 +26,13 @@ public interface EquipoBO
 
     public Respuesta<TagTO> getTag(TagTO pk);
 
-    public List<EquipoTO> getVigentes(UbicacionTO pkUbicacion);
+    public Respuesta<List<EquipoTO>> getVigentes(UbicacionTO pkUbicacion);
     
-    public List<EquipoTO> getTodos(UbicacionTO pkUbicacion);
+    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
     
-    public List<TagTO> getTagsEnergiaCero(EquipoTO pk);
+    public Respuesta<List<TagTO>> getTagsEnergiaCero(EquipoTO pk);
     
-    public List<TagTO> getTagsVigentes(EquipoTO pk);
+    public Respuesta<List<TagTO>> getTagsVigentes(EquipoTO pk);
     
-    public List<TagTO> getTagsTodos(EquipoTO pk);
+    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, Boolean vigencia);
 }

@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,8 +97,10 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
         // Si llegamos a este punto la Caja puede ser Guardada
         cajaPO.guardar(cajaBloqueo);
+        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo guardada con éxito");
+        
         logger.info ("guardar[FIN] caja guardada con exito: {}", cajaBloqueo );
-        return Respuesta.of(cajaBloqueo);
+        return Respuesta.of(rtdo, cajaBloqueo);
     }
     
     @Transaccional
@@ -175,7 +178,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         }
 
         List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, vigencia);
-        rtdo.addMensaje(this.getClass(), "Se han encontrado #{1} registros", String.valueOf(cajas.size()));
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), cajas.size()));
 
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", cajas.size() );
         return Respuesta.of(rtdo, cajas);

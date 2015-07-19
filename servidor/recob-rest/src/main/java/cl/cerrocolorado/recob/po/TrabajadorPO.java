@@ -178,6 +178,6 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         int relaciones = mapper.childsTrabajador(pk);
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones > 0;
+        return relaciones == 0;
     }
 }
