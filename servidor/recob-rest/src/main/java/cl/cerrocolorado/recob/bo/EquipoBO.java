@@ -2,6 +2,7 @@ package cl.cerrocolorado.recob.bo;
 
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.EquipoTO;
+import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
@@ -14,6 +15,8 @@ import java.util.List;
  */
 public interface EquipoBO
 {
+    public Respuesta<EquipoTagsTO> guardar(EquipoTagsTO equipo) throws Exception;
+
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception;
 
     public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception;
@@ -22,7 +25,7 @@ public interface EquipoBO
 
     public Resultado eliminarTag(TagTO pk) throws Exception;
     
-    public Respuesta<EquipoTO> get(EquipoTO pk);
+    public Respuesta<EquipoTagsTO> get(EquipoTO pk);
 
     public Respuesta<TagTO> getTag(TagTO pk);
 

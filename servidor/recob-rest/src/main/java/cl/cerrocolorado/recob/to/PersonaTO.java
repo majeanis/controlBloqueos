@@ -44,7 +44,7 @@ public class PersonaTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return rut == null;
+        return (id==null || id==0) && (rut == null);
     }
 
 }

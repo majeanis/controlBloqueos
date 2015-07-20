@@ -49,6 +49,6 @@ public class EmpresaTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return Rut.isBlank(rut);
+        return (id == null || id == 0) && Rut.isBlank(rut);
     }    
 }

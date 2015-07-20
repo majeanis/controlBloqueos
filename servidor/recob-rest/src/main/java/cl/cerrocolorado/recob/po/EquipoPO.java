@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.EquipoTO;
+import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;
@@ -14,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -38,13 +35,13 @@ public class EquipoPO implements BasePO<EquipoTO>
     }
 
     @Override
-    public EquipoTO get(EquipoTO pk)
+    public EquipoTagsTO get(EquipoTO pk)
     {
         logger.info("get[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
-        parms.put("equipo"   , pk);
         parms.put("ubicacion", pk.getUbicacion());
+        parms.put("equipo"   , pk);
         logger.debug("get[001] parámetros del select: {}", parms);
         
         List<EquipoTO> lista = mapper.selectEquipos(parms);
@@ -56,10 +53,13 @@ public class EquipoPO implements BasePO<EquipoTO>
             return null;
         }
 
-        EquipoTO equipo = lista.get(0);
+        EquipoTagsTO equipo = new EquipoTagsTO();
+        BeanUtils.copyProperties(lista.get(0), equipo);
+        logger.debug("get[001] después copiar el objeto a EquipoTagsTO: {}", equipo);
+        
         List<TagTO> tags = getTags(equipo,null,null);
         logger.debug("get[002] después de buscar los tags: size {} {}", tags.size(), equipo);
-     
+        
         equipo.setTags(tags);
         logger.info("get[FIN] registro encontrado: {}", equipo);
         return equipo;
@@ -109,9 +109,9 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info("getTag[INI] tag: {}", pk);
         
         Map<String,Object> parms = new HashMap<>();
+        parms.put("ubicacion"  , pk.getEquipo().getUbicacion() );
+        parms.put("equipo"     , pk.getEquipo() );
         parms.put("tag"        , pk);
-        parms.put("equipo"     , new EquipoTO());
-        parms.put("ubicacion"  , new UbicacionTO());
         parms.put("energiaCero", null);
         parms.put("vigencia"   , null);
         logger.info("getTag[001] parámetros de la consulta: {}", parms);
@@ -134,9 +134,9 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info("getTags[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
-        parms.put("tag"        , new TagTO());
-        parms.put("equipo"     , pk);
         parms.put("ubicacion"  , pk.getUbicacion());
+        parms.put("equipo"     , pk);
+        parms.put("tag"        , new TagTO());
         parms.put("energiaCero", energiaCero);
         parms.put("vigencia"   , vigencia);
         logger.debug("getTags[001] parámetros del select: {}", parms);
@@ -185,8 +185,8 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("getList[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
-        parms.put("equipo", new EquipoTO());
         parms.put("ubicacion", pkUbicacion);
+        parms.put("equipo", new EquipoTO());
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms );
         

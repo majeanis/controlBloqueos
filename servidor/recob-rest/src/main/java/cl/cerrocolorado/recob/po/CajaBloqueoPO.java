@@ -81,8 +81,8 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
         logger.info ("getList[INI] vigencia: {}", vigencia );
         
         Map<String, Object> parms = new HashMap<>();
-        parms.put("caja", new CajaBloqueoTO());
         parms.put("ubicacion", pkUbicacion);
+        parms.put("caja", new CajaBloqueoTO());
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms);
 

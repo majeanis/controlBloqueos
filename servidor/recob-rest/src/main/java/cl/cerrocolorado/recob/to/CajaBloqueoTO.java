@@ -69,6 +69,6 @@ public class CajaBloqueoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return numero == null || numero == 0 || ubicacion == null || ubicacion.isKeyBlank();
+        return (id==null || id==0) && (numero == null || numero == 0 || ubicacion == null || ubicacion.isKeyBlank());
     }
 }

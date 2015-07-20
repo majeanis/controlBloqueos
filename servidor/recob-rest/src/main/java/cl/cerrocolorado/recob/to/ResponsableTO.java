@@ -57,6 +57,6 @@ public class ResponsableTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return trabajador == null || trabajador.isKeyBlank() || fechaInicio == null;
+        return (id==null || id==0) && (trabajador == null || trabajador.isKeyBlank() || fechaInicio == null);
     }
 }

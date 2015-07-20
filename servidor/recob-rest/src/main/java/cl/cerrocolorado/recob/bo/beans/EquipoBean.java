@@ -1,6 +1,5 @@
 package cl.cerrocolorado.recob.bo.beans;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +11,7 @@ import cl.cerrocolorado.recob.bo.EquipoBO;
 import cl.cerrocolorado.recob.bo.Transaccion;
 import cl.cerrocolorado.recob.po.EquipoPO;
 import cl.cerrocolorado.recob.to.EquipoTO;
+import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
@@ -35,6 +35,7 @@ public class EquipoBean implements EquipoBO
     @Autowired
     private EquipoPO equipoPO;
 
+    @Transaccional
     @Override
     public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception
     {
@@ -60,12 +61,30 @@ public class EquipoBean implements EquipoBO
             rtdo.addError(this.getClass(), "Debe informar el código del equipo");
         }
 
+        if(!rtdo.esExitoso())
+        {
+            logger.info("guardar[FIN] se detectaron errores de validación");
+            return Respuesta.of(rtdo);
+        }
+        
         EquipoTO otro = equipoPO.get(equipo);
         logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
         if (otro != null)
         {
             equipo.setId(otro.getId());
         }
+
+        equipoPO.guardar(equipo);
+        logger.debug("guardar[002] después de guardar el equipo: {}", equipo);
+        
+        rtdo.addMensaje(this.getClass(), "Equipo guardado con éxito");
+        return Respuesta.of(rtdo,equipo);
+    }
+    
+    @Override
+    public Respuesta<EquipoTagsTO> guardar(EquipoTagsTO equipo) throws Exception
+    {
+        logger.info("guardar[INI] equipo: {}", equipo);
 
         // Se utilizará control manual de transacciones, ya que internamente
         // llamaremos a un método que también será transaccional y eventualmente
@@ -75,20 +94,29 @@ public class EquipoBean implements EquipoBO
         try
         {
             txLocal.begin();
-            equipoPO.guardar(equipo);
-            logger.debug("guardar[002] después de guardar el equipo: {}", equipo);
+           
+            Respuesta<EquipoTO> re = guardar((EquipoTO) equipo);
+            if( !re.getResultado().esExitoso() )
+            {
+                txLocal.rollback();
+                logger.info("guardar[FIN] errores al guardar equipo: {}", re);
+                return Respuesta.of(re.getResultado());
+            }
             
+            logger.debug("guardar[001] después de guardar el equipo: {}", equipo);
+
+            Resultado rtdo = new ResultadoProceso();
             List<TagTO> tags = equipo.getTags();
             for(int i=0; i < tags.size(); i++ )
             {
                 TagTO tag = tags.get(i);
-                tag.setIdEquipo(equipo.getId());
+                tag.setEquipo(equipo);
 
-                Respuesta<TagTO> r = guardarTag(tag);
-                if(!r.getResultado().esExitoso())
+                Respuesta<TagTO> rt = guardarTag(tag);
+                if(!rt.getResultado().esExitoso())
                 {
                     logger.debug("guardar[003] errores al validar el TAG: {}", tag);
-                    rtdo.append(r.getResultado(), "[indice:" + (i + 1) + "]");
+                    rtdo.append(rt.getResultado(), " [indice:" + (i + 1) + "]");
                 }
             }
             
@@ -107,7 +135,7 @@ public class EquipoBean implements EquipoBO
         } catch(Exception e)
         {
             txLocal.rollback();
-            logger.error("guardar[ERR] ", e);
+            logger.error("guardar[ERR] exception ", e);
             throw e;
         }
     }
@@ -128,7 +156,7 @@ public class EquipoBean implements EquipoBO
     	
     	if(tag.getEnergiaCero() == null)
     	{
-    		rtdo.addError(this.getClass(), "Debe informar la energía cero" );
+    		rtdo.addError(this.getClass(), "Debe informar la energía cero del TAG" );
     	}
     	if(tag.getVigente() == null)
     	{
@@ -138,7 +166,7 @@ public class EquipoBean implements EquipoBO
     	{
     		rtdo.addError(this.getClass(), "Debe informar la descripción del TAG" );
 		}
-    	if(tag.getIdEquipo()==null)
+    	if(tag.getEquipo()==null || tag.getEquipo().isKeyBlank())
     	{
     		rtdo.addError(this.getClass(), "El TAG debe estar asociado a un equipo" );
     	}
@@ -188,7 +216,7 @@ public class EquipoBean implements EquipoBO
             return rtdo;
         }
         
-        EquipoTO equipo = equipoPO.get(pk);
+        EquipoTagsTO equipo = equipoPO.get(pk);
         if(equipo == null)
         {
             rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
@@ -266,7 +294,7 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<EquipoTO> get(EquipoTO pk)
+    public Respuesta<EquipoTagsTO> get(EquipoTO pk)
     {
         logger.info("get[INI] pk: {}", pk);
 
@@ -278,14 +306,14 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTO equipo = equipoPO.get(pk);
+        EquipoTagsTO equipo = equipoPO.get(pk);
         if( equipo == null )
         {
             rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
         }
 
         logger.info("get[FIN] registro encontrado: {}", equipo);
-        return Respuesta.of(equipo);
+        return Respuesta.of(rtdo, equipo);
     }
 
     @Override
@@ -384,4 +412,5 @@ public class EquipoBean implements EquipoBO
     {
         return getTagsTodos(pk, true);
     }
+
 }

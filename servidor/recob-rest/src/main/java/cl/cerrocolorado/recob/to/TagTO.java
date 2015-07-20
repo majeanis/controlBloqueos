@@ -17,17 +17,17 @@ public class TagTO extends EntidadTO
     private String descripcion;
     private Boolean energiaCero;
     private Boolean vigente;
-    private Integer idEquipo;
+    private EquipoTO equipo;
 
     @JsonIgnore
-    public Integer getIdEquipo()
+    public EquipoTO getEquipo()
     {
-        return idEquipo;
+        return equipo;
     }
 
-    public void setIdEquipo(Integer idEquipo)
+    public void setEquipo(EquipoTO equipo)
     {
-        this.idEquipo = idEquipo;
+        this.equipo = equipo;
     }
 
     public Integer getId()
@@ -93,6 +93,6 @@ public class TagTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return numero==null || numero==0 || idEquipo==null || idEquipo==0;
+        return (id==null || id==0) && (numero==null || numero==0 || equipo.isKeyBlank());
     }
 }

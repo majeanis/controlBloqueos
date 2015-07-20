@@ -1,11 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cl.cerrocolorado.recob.to;
-
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,17 +16,6 @@ public class EquipoTO extends EntidadTO
     private String codigo;
     private Boolean vigente;
     private UbicacionTO ubicacion;
-    private List<TagTO> tags;
-
-    public List<TagTO> getTags()
-    {
-        return tags;
-    }
-
-    public void setTags(List<TagTO> tags)
-    {
-        this.tags = tags;
-    }
     
     public Integer getId()
     {
@@ -78,7 +60,7 @@ public class EquipoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return StringUtils.isBlank(codigo) || ubicacion == null || ubicacion.isKeyBlank();
+        return (id == null || id==0) && (StringUtils.isBlank(codigo) || ubicacion == null || ubicacion.isKeyBlank());
     }    
 
 }
