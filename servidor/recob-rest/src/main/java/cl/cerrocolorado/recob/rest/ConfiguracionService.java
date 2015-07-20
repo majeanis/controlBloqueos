@@ -24,6 +24,7 @@ import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
+import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
@@ -655,4 +656,78 @@ public class ConfiguracionService
             return RespGenerica.of(this.getClass(), e);
         }
     }
+
+    @Path("trabajadores")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @DELETE
+    public RespGenerica eliminarTrabajador(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("rut") String rutTrabajador)
+    {
+        logger.info ("eliminarTrabajador[INI] token: {}", tokenUbicacion);
+        logger.info ("eliminarTrabajador[INI] rutEmpresa: {}", rutTrabajador);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("eliminarTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+        
+        try
+        {
+            TrabajadorTO trabajador = new TrabajadorTO();
+            trabajador.setRut(Rut.valueOf(rutTrabajador));
+        
+            Resultado r = FactoryBO.getTrabajadorBO().eliminar(trabajador);
+            
+            logger.info("eliminarTrabajador[FIN] resultado de la eliminación: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("eliminarTrabajador[ERR] al eliminar empresa:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("trabajadores")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public RespGenerica guardarTrabajador(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("trabajador") String jsonTrabajador)
+    {
+    	logger.info ("guardarTrabajador[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarTrabajador[INI] empresa: {}", jsonTrabajador);
+        
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("guardarTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try 
+        {
+            TrabajadorTO trabajador = JsonUtils.fromJson(jsonTrabajador, TrabajadorTO.class);
+            logger.debug("guardarTrabajador[001] después de parsear el JSON: {}", trabajador);
+            
+            if( trabajador == null )
+            {
+                logger.info ("guardarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
+                return null;
+            }
+
+            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().guardar(trabajador);
+	        logger.info ("guardarTrabajador[FIN] trabajador registrado: {}", r);
+			return RespGenerica.of(r);
+        } catch (Exception e) 
+        {
+			logger.error("guardarTrabajador[ERR] al guardar trabajador:", e);
+			return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
 }
