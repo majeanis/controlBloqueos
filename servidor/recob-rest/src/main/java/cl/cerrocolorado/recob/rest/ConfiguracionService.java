@@ -20,6 +20,7 @@ import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.rest.utils.RespGenerica;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.CandadoTO;
+import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
@@ -28,6 +29,7 @@ import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.Rut;
 import java.util.Arrays;
 import javax.ws.rs.PathParam;
 
@@ -236,7 +238,7 @@ public class ConfiguracionService
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @PUT
-    public RespGenerica guardarCandados(
+    public RespGenerica guardarCandado(
     		@HeaderParam("token") String tokenUbicacion,
     		@QueryParam("candado") String jsonCandado)
     {
@@ -530,4 +532,127 @@ public class ConfiguracionService
         return null;
     }
 
+    @Path("empresas")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verEmpresas(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("accion") Integer accion,
+    		@QueryParam("rut") String rutEmpresa)
+    {
+        logger.info ("verEmpresa[INI] token: {}", tokenUbicacion);
+        logger.info ("verEmpresa[INI] accion: {}", accion);
+        logger.info ("verEmpresa[INI] rut: {}", rutEmpresa);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            switch( accion )
+            {
+                case VER_TODOS:
+                    Respuesta<List<EmpresaTO>> r1 = FactoryBO.getEmpresaBO().getTodos(null);
+                    logger.info("verEmpresa[FIN] retorno de todos los registros: {}", r1.getResultado());
+                    return RespGenerica.of(r1);
+
+                case VER_VIGENTES:
+                    Respuesta<List<EmpresaTO>> r2 = FactoryBO.getEmpresaBO().getVigentes();
+                    logger.info("verEmpresa[FIN] retorno de registros vigentes: {}", r2.getResultado());
+                    return RespGenerica.of(r2);
+
+                case VER_UNO:
+                    EmpresaTO empresa = new EmpresaTO();
+                    empresa.setRut( Rut.valueOf(rutEmpresa) );
+                    Respuesta<EmpresaTO> r3 = FactoryBO.getEmpresaBO().get(empresa);
+
+                    logger.info("verEmpresa[FIN] retorno de un registro: {}", r3);
+                    return RespGenerica.of(r3);
+            }
+        } catch(Exception e)
+        {
+            logger.error("verEmpresa[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+
+        logger.info("verEmpresa[FIN] código de acción inválido: {}", accion);
+        return null;
+    }
+
+    @Path("empresas")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public RespGenerica guardarEmpresa(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("empresa") String jsonEmpresa)
+    {
+    	logger.info ("guardarEmpresa[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarEmpresa[INI] empresa: {}", jsonEmpresa);
+        
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("guardarEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try 
+        {
+            EmpresaTO empresa = JsonUtils.fromJsonString(jsonEmpresa, EmpresaTO.class);
+            if( empresa == null )
+            {
+                logger.info ("guardarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
+                return null;
+            }
+            
+            logger.debug("guardarEmpresa[001] después de parsear el JSON: {}", empresa);
+
+            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().guardar(empresa);
+	        logger.info ("guardarEmpresa[FIN] empresa registrada: {}", r);
+			return RespGenerica.of(r);
+        } catch (Exception e) 
+        {
+			logger.error("guardarEmpresa[ERR] al guardar empresa:", e);
+			return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("empresas")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @DELETE
+    public RespGenerica eliminarEmpresa(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("rut") String rutEmpresa)
+    {
+        logger.info ("eliminarEmpresa[INI] token: {}", tokenUbicacion);
+        logger.info ("eliminarEmpresa[INI] rutEmpresa: {}", rutEmpresa);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("eliminarEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+        
+        try
+        {
+            EmpresaTO empresa = new EmpresaTO();
+            empresa.setRut(Rut.valueOf(rutEmpresa));
+        
+            Resultado r = FactoryBO.getEmpresaBO().eliminar(empresa);
+            
+            logger.info("eliminarEmpresa[FIN] resultado de la eliminación: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("eliminarEmpresa[ERR] al eliminar empresa:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
 }
