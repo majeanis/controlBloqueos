@@ -46,7 +46,7 @@
     </resultMap>
 
     <resultMap id="trabajadorMap" type="TrabajadorTO" >
-        <id property="id" column="pers_id" />
+        <result property="id" column="pers_id" />
         <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" /> 
         <result property="nombre" column="pers_nomb" />
         <result property="cargo" column="trab_carg" />
@@ -307,6 +307,7 @@
               ,a.trab_vige
               ,c.empr_id
               ,c.empr_rut
+              ,c.empr_nomb
               ,c.empr_vige
         from   rcb_trab a inner join rcb_pers b
            on (a.pers_id = b.pers_id) inner join rcb_empr c
@@ -319,11 +320,13 @@
 	            <when test = "trabajador.rut != null" >
 	                b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
 	            </when>
+        	</choose>
+        	<choose>
 	            <when test = "empresa.id != null" >
-	                c.empr_id   = #{empresa.id}
+	                and c.empr_id   = #{empresa.id}
 	            </when>
 	            <when test = "empresa.rut != null" >
-	                c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
+	                and c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
 	            </when>
         	</choose>
             <if test="vigencia != null" >

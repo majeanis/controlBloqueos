@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.bo.TrabajadorBO;
+import cl.cerrocolorado.recob.po.EmpresaPO;
 import cl.cerrocolorado.recob.po.TrabajadorPO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
@@ -30,6 +31,9 @@ public class TrabajadorBean implements TrabajadorBO
     
     @Autowired
     private TrabajadorPO trabajadorPO;
+
+    @Autowired
+    private EmpresaPO empresaPO;
     
     @Override
     @Transaccional
@@ -74,6 +78,16 @@ public class TrabajadorBean implements TrabajadorBO
         if( trabajador.getEmpresa() == null || Rut.isBlank( trabajador.getEmpresa().getRut() ) )
         {
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la Empresa");
+        } else
+        {
+            EmpresaTO empresa = empresaPO.get(trabajador.getEmpresa());
+            if( empresa == null )
+            {
+                rtdo.addError(this.getClass(), "No existe empresa con R.U.T. #{1}", trabajador.getEmpresa().getRut().toText() );
+            } else
+            {
+                trabajador.setEmpresa(empresa);
+            }
         }
 
         if(!rtdo.esExitoso())
@@ -173,7 +187,7 @@ public class TrabajadorBean implements TrabajadorBO
         }
         
         TrabajadorTO trabajador;
-        if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
+        if( pkTrabajador.getEmpresa()==null || pkTrabajador.getEmpresa().isKeyBlank())
         {
             trabajador = trabajadorPO.getVigente(pkTrabajador);
             logger.debug("get[001] después de buscar al registro actualmente vigente: {}", trabajador);

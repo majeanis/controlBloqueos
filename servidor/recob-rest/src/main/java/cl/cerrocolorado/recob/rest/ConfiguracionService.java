@@ -730,4 +730,54 @@ public class ConfiguracionService
         }
     }
 
+    @Path("trabajadores")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verTrabajadores(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("accion") Integer accion,
+    		@QueryParam("rut") String rutTrabajador)
+    {
+        logger.info ("verTrabajadores[INI] token: {}", tokenUbicacion);
+        logger.info ("verTrabajadores[INI] accion: {}", accion);
+        logger.info ("verTrabajadores[INI] rutTrabajador: {}", rutTrabajador);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verTrabajadores[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            switch( accion )
+            {
+                case VER_TODOS:
+                    Respuesta<List<TrabajadorTO>> r1 = FactoryBO.getTrabajadorBO().getTodos(null);
+                    logger.info("verTrabajadores[FIN] retorno de todos los registros: {}", r1.getResultado());
+                    return RespGenerica.of(r1);
+
+                case VER_VIGENTES:
+                    Respuesta<List<TrabajadorTO>> r2 = FactoryBO.getTrabajadorBO().getVigentes();
+                    logger.info("verTrabajadores[FIN] retorno de registros vigentes: {}", r2.getResultado());
+                    return RespGenerica.of(r2);
+
+                case VER_UNO:
+                    TrabajadorTO trabajador = new TrabajadorTO();
+                    trabajador.setRut( Rut.valueOf(rutTrabajador) );
+                    Respuesta<TrabajadorTO> r3 = FactoryBO.getTrabajadorBO().get(trabajador);
+
+                    logger.info("verTrabajadores[FIN] retorno de un registro: {}", r3);
+                    return RespGenerica.of(r3);
+            }
+        } catch(Exception e)
+        {
+            logger.error("verTrabajadores[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+
+        logger.info("verTrabajadores[FIN] código de acción inválido: {}", accion);
+        return null;
+    }
 }
