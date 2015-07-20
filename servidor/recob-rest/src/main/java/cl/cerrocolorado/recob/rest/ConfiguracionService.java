@@ -124,7 +124,7 @@ public class ConfiguracionService
         try 
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            CajaBloqueoTO caja = JsonUtils.fromJsonString(jsonCaja, CajaBloqueoTO.class);
+            CajaBloqueoTO caja = JsonUtils.fromJson(jsonCaja, CajaBloqueoTO.class);
             if( caja == null )
             {
                 logger.info("guardarCajaBloqueo[FIN] no se pudo parsear el JSON: {}", jsonCaja);
@@ -255,7 +255,7 @@ public class ConfiguracionService
         try 
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            CandadoTO candado = JsonUtils.fromJsonString(jsonCandado, CandadoTO.class);
+            CandadoTO candado = JsonUtils.fromJson(jsonCandado, CandadoTO.class);
             if( candado == null )
             {
                 logger.info("guardarCandado[FIN] no se pudo parsear el JSON: {}", jsonCandado);
@@ -413,7 +413,7 @@ public class ConfiguracionService
 
         try 
         {
-            EquipoTagsTO equipo = JsonUtils.fromJsonString(jsonEquipo, EquipoTagsTO.class);
+            EquipoTagsTO equipo = JsonUtils.fromJson(jsonEquipo, EquipoTagsTO.class);
             if( equipo == null )
             {
                 logger.info ("guardarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
@@ -421,7 +421,7 @@ public class ConfiguracionService
             }
             if( jsonTags != null )
             {
-                TagTO[] tags = JsonUtils.fromJsonString(jsonTags, TagTO[].class);
+                TagTO[] tags = JsonUtils.fromJson(jsonTags, TagTO[].class);
                 equipo.setTags(Arrays.asList(tags));
             }
             
@@ -603,7 +603,7 @@ public class ConfiguracionService
 
         try 
         {
-            EmpresaTO empresa = JsonUtils.fromJsonString(jsonEmpresa, EmpresaTO.class);
+            EmpresaTO empresa = JsonUtils.fromJson(jsonEmpresa, EmpresaTO.class);
             if( empresa == null )
             {
                 logger.info ("guardarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);

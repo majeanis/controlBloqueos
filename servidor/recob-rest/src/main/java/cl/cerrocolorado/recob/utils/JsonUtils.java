@@ -3,8 +3,10 @@ package cl.cerrocolorado.recob.utils;
 import java.text.SimpleDateFormat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class JsonUtils 
 {
@@ -12,10 +14,14 @@ public class JsonUtils
 	
 	static
 	{
+        SimpleModule sm = new SimpleModule();
+        sm.addSerializer(Rut.class, new RutSerializer());
+        
 		mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+        mapper.registerModule(sm);
 	}
 
 	public static String toJsonString(Object obj)
@@ -28,7 +34,7 @@ public class JsonUtils
 		}
 	}
 	
-	public static <T> T fromJsonString(String json, Class<T> clazz)
+	public static <T> T fromJson(String json, Class<T> clazz)
 	{
 		try {
 			return mapper.readValue(json, clazz);
