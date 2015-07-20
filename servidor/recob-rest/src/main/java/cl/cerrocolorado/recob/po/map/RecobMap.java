@@ -8,6 +8,7 @@ import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public interface RecobMap
     public void deleteCandado(CandadoTO candado);
     public int  childsCandado(CandadoTO candado);    
     public List<CandadoTO> selectCandados( Map<String,Object> parms );
+    public List<UsoCandadoTO> selectUsosCandado( Map<String,Object> parms);
     /**/
     
     /*

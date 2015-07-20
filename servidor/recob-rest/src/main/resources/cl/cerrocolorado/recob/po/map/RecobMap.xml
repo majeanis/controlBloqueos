@@ -25,12 +25,11 @@
         <association property="ubicacion" resultMap="ubicacionMap" />
     </resultMap> 
 
-    <resultMap id="usoCandadoMap" type="ValorDominioTO" >
+    <resultMap id="usoCandadoMap" type="UsoCandadoTO" >
         <id property="id" column="dval_id" />
         <result property="codigo" column="dval_codi" />
         <result property="nombre" column="dval_nomb" />
         <result property="vigente" column="dval_vige" />
-        <result property="dominio" column="dval_domi" />
     </resultMap>
     
     <resultMap id="personaMap" type="PersonaTO" >
@@ -210,7 +209,7 @@
            on (a.dval_id_uso = b.dval_id) left join rcb_pers c
            on (a.pers_id = c.pers_id) inner join rcb_ubic d
            on (a.ubic_id = d.ubic_id) inner join rcb_tokn e
-           on (d.tokn_id = e.tokn_id)
+           on (d.ubic_id = e.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
             <when test="candado.id != null" >
@@ -551,5 +550,24 @@
         delete from rcb_tags_eqpo
         where  eqpo_id = #{id}
     </delete>
-    
+
+    <select id="selectUsosCandado" parameterType="map" resultMap="usoCandadoMap" >
+        select a.dval_id
+              ,a.dval_codi
+              ,a.dval_nomb
+              ,a.dval_vige
+        from   rcb_domi_valo a
+        where  dval_domi = 'uso.candado'
+        <choose>
+            <when test="uso.id != null" >
+                and a.dval_id = #{uso.id}
+            </when>
+            <when test="uso.codigo != null" >
+                and a.dval_codi = #{uso.codigo}
+            </when>
+        </choose>
+        <if test="vigencia != null" >
+            and a.dval_vige = #{vigencia}
+        </if>
+    </select>    
 </mapper>

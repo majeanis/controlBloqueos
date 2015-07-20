@@ -4,6 +4,7 @@ import cl.cerrocolorado.recob.po.map.RecobMap;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,17 +59,18 @@ public class CandadoPO implements BasePO<CandadoTO>
     {
         logger.info ("get[INI] pkCandado: {}", pkCandado );
         
-        Map<String, Object> params = new HashMap<>();
-        params.put( "ubicacion", pkCandado.getUbicacion() );
-        params.put( "candado", pkCandado );
-        logger.debug ("get[001] parametros: {}", params);
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", pkCandado.getUbicacion() );
+        parms.put( "candado", pkCandado );
+        parms.put( "persona", new PersonaTO());
+        logger.debug ("get[001] parametros: {}", parms);
         
-        List<CandadoTO> candados = mapper.selectCandados( params );
+        List<CandadoTO> candados = mapper.selectCandados( parms );
         logger.debug ("get[002] despues de ejecutar el select: {}", candados.size() );
         
         if(candados.isEmpty())
         {
-            logger.info ("get[FIN] no se encontró registro del candado: {}", params );
+            logger.info ("get[FIN] no se encontró registro del candado: {}", parms );
             return null;
         }
         
@@ -105,6 +107,8 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
+        parms.put("candado", new CandadoTO());
+        parms.put("persona", new PersonaTO());
         parms.put("vigencia", vigencia);
         logger.debug("get[001] parametros: {}", parms);
         
@@ -122,6 +126,7 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
+        parms.put("candado", new CandadoTO());        
         parms.put("persona", pkPersona);
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms);
@@ -142,5 +147,42 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
+    }
+    
+    public List<UsoCandadoTO> getUsosCandado(Boolean vigencia)
+    {
+        logger.info ("getUsosCandado[INI] vigencia: {}", vigencia);
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("uso", new UsoCandadoTO());
+        parms.put("vigencia", vigencia);
+        logger.debug("getUsosCandado[001] parametros: {}", parms);
+
+        List<UsoCandadoTO> lista = mapper.selectUsosCandado( parms );
+        logger.debug("getUsosCandados[002] despues de ejecutar el select: {}", lista.size() );
+        
+        logger.info ("getUsosCandados[FIN] candado encontrado: {}", lista.size() );
+        return lista;
+    }
+
+    public UsoCandadoTO getUsoCandado(UsoCandadoTO pk)
+    {
+        logger.info ("getUsoCandado[INI] pk: {}", pk);
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put("uso", pk);
+        logger.debug("getUsoCandado[001] parametros: {}", parms);
+
+        List<UsoCandadoTO> lista = mapper.selectUsosCandado( parms );
+        logger.debug("getUsoCandado[002] despues de ejecutar el select: {}", lista.size() );
+        
+        if( lista.isEmpty() )
+        {
+            logger.info ("getUsoCandado[FIN] no se encontró registro para: {}", pk );
+            return null;
+        }
+        
+        logger.info ("getUsoCandado[FIN] registro encontrado: {}", lista.get(0));
+        return lista.get(0);
     }
 }

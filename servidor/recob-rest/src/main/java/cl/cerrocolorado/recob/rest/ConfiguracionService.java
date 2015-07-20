@@ -19,10 +19,12 @@ import cl.cerrocolorado.recob.bo.FactoryBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.rest.utils.RespGenerica;
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
@@ -173,6 +175,164 @@ public class ConfiguracionService
         } catch(Exception e)
         {
             logger.error("eliminarCajaBloqueo[ERR] al eliminar la caja:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("candados")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verCandados(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("accion") Integer accion,
+    		@QueryParam("numero") Integer numeroCandado)
+    {
+        logger.info ("verCandados[INI] token: {}", tokenUbicacion);
+        logger.info ("verCandados[INI] accion: {}", accion);
+        logger.info ("verCandados[INI] numeroCandado: {}", numeroCandado);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verCandados[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            switch( accion )
+            {
+                case VER_TODOS:
+                    Respuesta<List<CandadoTO>> r1 = FactoryBO.getCandadoBO().getTodos(ubicacion,null);
+                    logger.info("verCandados[FIN] retorno de todos los registros: {}", r1);
+                    return RespGenerica.of(r1);
+
+                case VER_VIGENTES:
+                    Respuesta<List<CandadoTO>> r2 = FactoryBO.getCandadoBO().getVigentes(ubicacion);
+                    logger.info("verCandados[FIN] retorno de registros vigentes: {}", r2);
+                    return RespGenerica.of(r2);
+
+                case VER_UNO:
+                    CandadoTO candado = new CandadoTO();
+                    candado.setNumero(numeroCandado);
+                    candado.setUbicacion(ubicacion);
+                    Respuesta<CandadoTO> r3 = FactoryBO.getCandadoBO().get(candado);
+
+                    logger.info("verCandados[FIN] retorno de un registro: {}", r3);
+                    return RespGenerica.of(r3);
+            }
+        } catch(Exception e)
+        {
+            logger.error("verCandados[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+
+        logger.info("verCandados[FIN] código de acción inválido: {}", accion);
+        return null;
+    }
+
+    @Path("candados")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PUT
+    public RespGenerica guardarCandados(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("candado") String jsonCandado)
+    {
+    	logger.info ("guardarCandado[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarCandado[INI] jsonCandado: {}", jsonCandado);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("guardarCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try 
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            CandadoTO candado = JsonUtils.fromJsonString(jsonCandado, CandadoTO.class);
+            if( candado == null )
+            {
+                logger.info("guardarCandado[FIN] no se pudo parsear el JSON: {}", jsonCandado);
+                return null;
+            }
+
+            candado.setUbicacion(ubicacion);
+            logger.debug("guardarCandado[001] después de parsear el JSON: {}", candado);
+
+            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().guardar(candado);
+
+            logger.info("guardarCandado[FIN] resultado del guardado: {}", r);
+            return RespGenerica.of(r);
+        } catch (Exception e) 
+        {
+			logger.error("guardarCandado[ERR] al guardar candado:", e);
+			return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("candados")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @DELETE
+    public RespGenerica eliminarCandado(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("numero") Integer numeroCandado)
+    {
+        logger.info ("eliminarCandado[INI] token: {}", tokenUbicacion);
+        logger.info ("eliminarCandado[INI] numeroCandado: {}", numeroCandado);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("eliminarCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+        
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            CandadoTO candado = new CandadoTO();
+            candado.setNumero(numeroCandado);
+            candado.setUbicacion(ubicacion);
+
+            Resultado r = FactoryBO.getCandadoBO().eliminar(candado);
+            
+            logger.info("eliminarCandado[FIN] resultado de la eliminación: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("eliminarCandado[ERR] al eliminar el candado:", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("candados/usos")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verUsosCandado(
+            @HeaderParam("token") String tokenUbicacion)
+    {
+        logger.info ("verUsosCandado[INI] token: {}", tokenUbicacion);
+        
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verUsosCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            Respuesta<List<UsoCandadoTO>> r1 = FactoryBO.getCandadoBO().getUsosCandado(Boolean.TRUE);
+            logger.info("verUsosCandado[FIN] registros retornados: {}", r1);
+            return RespGenerica.of(r1);
+        } catch(Exception e)
+        {
+            logger.error("verUsosCandado[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
     }

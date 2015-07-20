@@ -20,7 +20,6 @@ public class ValorDominioTO extends EntidadTO
     private String  codigo;
     private String  nombre;
     private Boolean vigente;
-    private String  dominio;
 
     public Integer getId()
     {
@@ -62,19 +61,9 @@ public class ValorDominioTO extends EntidadTO
         this.vigente = vigente;
     }
 
-    public String getDominio()
-    {
-        return dominio;
-    }
-
-    public void setDominio(String dominio)
-    {
-        this.dominio = dominio;
-    }
-
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && (StringUtils.isBlank(codigo) || StringUtils.isBlank(dominio));
+        return (id==null || id==0) && StringUtils.isBlank(codigo);
     }
 }

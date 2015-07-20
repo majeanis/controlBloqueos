@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
@@ -71,9 +72,16 @@ public class CandadoBean implements CandadoBO
             rtdo.addError(this.getClass(), "Debe informar vigencia del candado");
         }
 
-        if( candado.getUso() == null || candado.getUso().getId() == null)
+        if( candado.getUso() == null || candado.getUso().isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar el uso del candado" );
+        } else
+        {
+            UsoCandadoTO uso = candadoPO.getUsoCandado(candado.getUso());
+            if(uso==null)
+            {
+                rtdo.addError(this.getClass(), "No existe uso de candado con código #{1}", candado.getUso().getCodigo());
+            }
         }
 
         if( candado.getUbicacion() == null || candado.getUbicacion().getId() == null )
@@ -290,4 +298,19 @@ public class CandadoBean implements CandadoBO
         logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
         return Respuesta.of(rtdo, lista);
 	}
+
+    @Override
+    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Boolean vigencia)
+    {
+        logger.info ("getUsosCandado[INI] vigencia: {}", vigencia);
+        
+        Resultado rtdo = new ResultadoProceso();
+        List<UsoCandadoTO> lista = candadoPO.getUsosCandado(vigencia);
+        logger.debug("getUsosCandado[001] cantidad registros encontrados: {}", lista.size());
+        
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
+            
+        logger.info ("getUsosCandado[FIN] cantidad registros encontrados: {}", lista.size());
+        return Respuesta.of(rtdo, lista);
+    }
 }

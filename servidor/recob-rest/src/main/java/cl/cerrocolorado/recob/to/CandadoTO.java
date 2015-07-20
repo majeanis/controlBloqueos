@@ -14,7 +14,7 @@ public class CandadoTO extends EntidadTO
     private Integer numero;
     private String serie;
     private Boolean vigente;
-    private ValorDominioTO uso;
+    private UsoCandadoTO uso;
     private PersonaTO persona;
     private UbicacionTO ubicacion;
 
@@ -58,12 +58,12 @@ public class CandadoTO extends EntidadTO
         this.vigente = vigente;
     }
 
-    public ValorDominioTO getUso()
+    public UsoCandadoTO getUso()
     {
         return uso;
     }
 
-    public void setUso(ValorDominioTO uso)
+    public void setUso(UsoCandadoTO uso)
     {
         this.uso = uso;
     }

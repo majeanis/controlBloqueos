@@ -4,6 +4,7 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Transaccional;
 
@@ -32,4 +33,6 @@ public interface CandadoBO
     public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion);
     
     public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
+    
+    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Boolean vigencia);
 }
