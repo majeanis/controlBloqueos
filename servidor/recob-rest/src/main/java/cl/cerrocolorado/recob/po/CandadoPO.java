@@ -82,17 +82,18 @@ public class CandadoPO implements BasePO<CandadoTO>
     {
         logger.info ("getBySerie[INI] pkCandado: {}", pkCandado );
         
-        Map<String, Object> params = new HashMap<>();
-        params.put( "ubicacion", pkCandado.getUbicacion() );
-        params.put( "serie", pkCandado.getSerie() );
-        logger.debug ("getBySerie[001] parametros: {}", params);
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "candado", new CandadoTO());
+        parms.put( "ubicacion", pkCandado.getUbicacion() );
+        parms.put( "serie", pkCandado.getSerie() );
+        logger.debug ("getBySerie[001] parametros: {}", parms);
 
-        List<CandadoTO> candados = mapper.selectCandados( params );
+        List<CandadoTO> candados = mapper.selectCandados( parms );
         logger.debug ("getBySerie[002] despues de ejecutar el select: {}", candados.size() );
         
         if(candados.isEmpty())
         {
-            logger.info ("getBySerie[FIN] no se encontró registro del candado: {}", params );
+            logger.info ("getBySerie[FIN] no se encontró registro del candado: {}", parms );
             return null;
         }
         

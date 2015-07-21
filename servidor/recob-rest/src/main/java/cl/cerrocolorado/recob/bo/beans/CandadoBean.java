@@ -81,6 +81,9 @@ public class CandadoBean implements CandadoBO
             if(uso==null)
             {
                 rtdo.addError(this.getClass(), "No existe uso de candado con código #{1}", candado.getUso().getCodigo());
+            } else
+            {
+                candado.setUso(uso);
             }
         }
 
@@ -93,7 +96,10 @@ public class CandadoBean implements CandadoBO
 	        if( ubicacion == null )
 	        {
 	            rtdo.addError(this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(candado.getUbicacion().getId()));
-	        }
+	        } else
+            {
+                candado.setUbicacion(ubicacion);
+            }
         }
 
         if( candado.getPersona() == null || Rut.isBlank(candado.getPersona().getRut() ) )
@@ -105,7 +111,10 @@ public class CandadoBean implements CandadoBO
 	        if( persona == null )
 	        {
 	            rtdo.addError(CandadoBean.class, "Persona informada no existe [RUT: #{1}]", candado.getPersona().getRut().toText());
-	        }
+	        } else
+            {
+                candado.setPersona(persona);
+            }
         }
         
         if( !rtdo.esExitoso() )

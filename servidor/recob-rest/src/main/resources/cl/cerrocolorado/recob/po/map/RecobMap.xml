@@ -219,7 +219,7 @@
                 and a.cand_nume  = #{candado.numero}
             </when>
             <when test="serie != null" >
-                and a.cand_serie = #{serie}
+                and a.cand_seri = #{serie}
             </when>
             <when test="persona.rut != null" >
                 c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
