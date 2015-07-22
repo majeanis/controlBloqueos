@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Sunday, July 19, 2015 01:54:40
+-- Date Created : Tuesday, July 21, 2015 21:45:18
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -252,10 +252,11 @@ COMMENT ON TABLE rcb_pers IS 'Personas'
 
 CREATE TABLE rcb_resp(
     resp_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(14, 0)    NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
-    resp_fech_inic    timestamp         NOT NULL,
-    resp_fech_fina    timestamp,
+    resp_fech_ingr    timestamp         NOT NULL,
+    resp_fech_sali    timestamp,
     CONSTRAINT resp_pk PRIMARY KEY (resp_id)
 )
 ;
@@ -441,7 +442,7 @@ CREATE UNIQUE INDEX pers_uk ON rcb_pers(pers_rut)
 -- INDEX: resp_uk 
 --
 
-CREATE UNIQUE INDEX resp_uk ON rcb_resp(pers_id, empr_id, resp_fech_inic)
+CREATE UNIQUE INDEX resp_uk ON rcb_resp(pers_id, empr_id, resp_fech_ingr)
 ;
 -- 
 -- INDEX: taeq_uk 
@@ -556,6 +557,11 @@ ALTER TABLE rcb_libr_ctrl_bloq ADD CONSTRAINT lcbl_cabl_fk
 ALTER TABLE rcb_resp ADD CONSTRAINT resp_trab_fk 
     FOREIGN KEY (pers_id, empr_id)
     REFERENCES rcb_trab(pers_id, empr_id)
+;
+
+ALTER TABLE rcb_resp ADD CONSTRAINT resp_ubic_fk 
+    FOREIGN KEY (ubic_id)
+    REFERENCES rcb_ubic(ubic_id)
 ;
 
 

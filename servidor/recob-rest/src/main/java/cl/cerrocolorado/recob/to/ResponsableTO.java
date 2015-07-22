@@ -10,10 +10,42 @@ import java.util.Date;
 public class ResponsableTO extends EntidadTO
 {
     private Integer id;
-    private TrabajadorTO trabajador;
+    private PersonaTO persona;
+    private EmpresaTO empresa;
     private Date fechaInicio;
     private Date fechaTermino;
+    private UbicacionTO ubicacion;
 
+    public PersonaTO getPersona()
+    {
+        return persona;
+    }
+
+    public void setPersona(PersonaTO persona)
+    {
+        this.persona = persona;
+    }
+
+    public EmpresaTO getEmpresa()
+    {
+        return empresa;
+    }
+
+    public void setEmpresa(EmpresaTO empresa)
+    {
+        this.empresa = empresa;
+    }
+
+    public UbicacionTO getUbicacion()
+    {
+        return ubicacion;
+    }
+
+    public void setUbicacion(UbicacionTO ubicacion)
+    {
+        this.ubicacion = ubicacion;
+    }
+    
     public Integer getId()
     {
         return id;
@@ -22,16 +54,6 @@ public class ResponsableTO extends EntidadTO
     public void setId(Integer id)
     {
         this.id = id;
-    }
-
-    public TrabajadorTO getTrabajador()
-    {
-        return trabajador;
-    }
-
-    public void setTrabajador(TrabajadorTO trabajador)
-    {
-        this.trabajador = trabajador;
     }
 
     public Date getFechaInicio()
@@ -57,6 +79,6 @@ public class ResponsableTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && (trabajador == null || trabajador.isKeyBlank() || fechaInicio == null);
+        return (id==null || id==0) && (persona == null || persona.isKeyBlank() || fechaInicio == null);
     }
 }

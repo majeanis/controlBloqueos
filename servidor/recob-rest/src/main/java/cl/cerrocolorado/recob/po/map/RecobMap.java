@@ -5,6 +5,7 @@ import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
+import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
@@ -92,5 +93,13 @@ public interface RecobMap
     public int  childsTag(TagTO tag);
     public List<TagTO> selectTags( Map<String,Object> parms );
     public int  deleteTags(EquipoTO equipo);
-    
+ 
+    /*
+     * Manipulación de Responsables
+     */
+    public void insertResponsable(ResponsableTO responsable);
+    public void updateResponsable(ResponsableTO responsable);
+    public void deleteResponsable(ResponsableTO responsable);
+    public int  childsResponsable(ResponsableTO responsable);
+    public List<ResponsableTO> selectResponsables( Map<String,Object> parms );
 }

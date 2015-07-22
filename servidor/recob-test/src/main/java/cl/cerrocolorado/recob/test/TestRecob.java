@@ -5,13 +5,22 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import cl.cerrocolorado.recob.bo.FactoryBO;
+import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Rut;
+import static cl.cerrocolorado.recob.utils.ToStringUtils.toString;
+import cl.cerrocolorado.recob.utils.ValidUtils;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class TestRecob
 {
-    public static void testEmpresa()
+    public static void testEmpresa() throws Exception
     {
         EmpresaTO empr = new EmpresaTO();
 
@@ -47,9 +56,71 @@ public class TestRecob
     	System.out.println( localDateTime + ":" + json[2] );
     }
 
+    public static void testRest()
+    {
+  	  try {
+			URL url = new URL("http://localhost:5080/recobWS/rest/configuracion/cajasBloqueo/listar?todos=false");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println("{"+output+"}");
+			}
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+    }
+
+    public static String toString(String textoBase, final Object... valores)
+    {
+        if (textoBase == null)
+            return "";
+
+        String textoFormateado = textoBase.trim();
+
+        if (valores == null)
+            return textoFormateado;
+
+        for (int i = 0; i < valores.length; i++)
+        {
+            String values = valores[i].toString();  String.valueOf(valores[i]);
+            textoFormateado = textoFormateado.replace("#{" + (i + 1) + "}", values);
+        }
+
+        /*
+         * Una vez puestos los valores en el texto base, se procede a eliminar
+         * todas las posibles marcas que no fueron reemplazadas, producto que no
+         * se dieron todos los valores necesarios, de tal manera que en el
+         * String resultante no queden cadenas del tipo "#{n}".
+         */
+        textoFormateado = textoFormateado.replaceAll("\\#\\{[1-9]+\\}", "");
+        textoFormateado = textoFormateado.replace("  ", " ");
+
+        return textoFormateado;
+    }
+
     public static void main(String[] args)
     {
-        testJson();
+        CajaBloqueoTO caja = null;
+        caja = new CajaBloqueoTO();
+        System.out.println(ValidUtils.isPropertyBlank(caja, "nombre"));
+        
+//        testRest();
 //      
 //      CajaBloqueoTO caja = new CajaBloqueoTO();
 //      CajaBloqueoBO bo = FactoryBO.getCajaBloqueoBO();

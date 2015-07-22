@@ -90,6 +90,15 @@
         <collection property="tags" javaType="ArrayList" ofType="TagTO" resultMap="tagMap" />
     </resultMap>
     
+    <resultMap id="responsableMap" type="ResponsableTO" >
+        <id property="id" column="resp_id" />
+        <result property="fechaInicio" column="resp_fech_inic" />
+        <result property="fechaTermino" column="resp_fech_fina" />
+        <association property="persona" resultMap="personaMap" />
+        <association property="empresa" resultMap="empresaMap" />
+        <association property="ubicacion" resultMap="ubicacionMap" />
+    </resultMap>
+
     <select id="selectUbicacion" parameterType="UbicacionTO" resultMap="ubicacionMap" >
         select a.ubic_id
               ,a.ubic_nomb
@@ -572,5 +581,91 @@
         <if test="vigencia != null" >
             and a.dval_vige = #{vigencia}
         </if>
-    </select>    
+    </select>
+    
+    <select id="selectResponsables" resultMap="responsableMap" >
+        select a.resp_id
+              ,a.resp_fech_ingr
+              ,a.resp_fech_sali
+              ,b.pers_id
+              ,b.pers_rut
+              ,b.pers_nomb
+              ,b.pers_vige
+              ,c.trab_carg
+              ,c.trab_curs_bloq
+              ,c.trab_vige
+              ,d.empr_id
+              ,d.empr_rut
+              ,d.empr_nomb
+              ,d.empr_vige
+              ,e.ubic_id
+              ,e.ubic_nomb
+              ,e.ubiv_vige
+        from   rcb_resp a inner join rcb_pers b
+           on (a.pers_id = b.pers_id) inner join rcb_trab c
+           on (a.pers_id = c.pers_id) inner join rcb_empr d
+           on (c.pers_id = d.pers_id
+           and c.empr_id = d.empr_id) inner join rcb_ubic e
+           on (a.ubic_id = e.ubic_id)
+        where  a.ubic_id = #{ubicacion.id}
+        <choose>
+            <when test="persona.id!=null">
+                and  b.pers_id = #{trabajador.id}
+            </when>
+            <when test="persona.rut!=null">
+                and  b.pers_rut = #{trabajador.rut}
+            </when>
+        </choose>
+        <choose>
+            <when test="empresa.id!=null">
+                and  d.empr_id = #{empresa.id}
+            </when>
+            <when test="empresa.rut!=null">
+                and  d.empr_rut = #{empresa.rut}
+            </when>
+        </choose>
+        <if test="vigente != null">
+            and a.resp_fech_fina is null
+        </if>
+        order by c.empr_rut, b.pers_rut, a.pers_fech_ingr
+    </select>
+    
+    <select id="childsResponsable" parameterType="ResponsableTO" resultType="int" >
+        select count(*)
+        from   rcb_resp a inner join rcb_libr_ctrl_bloq b
+           on (a.resp_fech_ini >= b.lcbl_fech )
+        where  a.ubic_id = #{ubicacion.id}
+        <choose>
+            <when test="id != null" >
+                a.resp_id = #{id}
+            </when>
+            <when test="persona != null and persona.id" >
+                a.pers_id = #{persona.id}
+            </when>
+        </choose>
+    </select>
+    
+    <insert id="insertResponsable" parameterType="ResponsableTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_resp(resp_id, pers_id, empr_id, ubic_id, resp_fech_ingr, resp_fech_sali)
+             values(#{id},#{persona.id},#{empresa.id},#{ubicacion.id},#{fechaIngreso},#{fechaSalida});
+    </insert>
+
+    <update id="updateResponsable" parameterType="ResponsableTO" >
+        update rcp_resp set
+               perd_id = #{persona.id}
+              ,empr_id = #{empresa.id}
+              ,ubic_id = #{ubicacion.id}
+              ,resp_fech_inic = #{fechaInicio,jdbcType=TIMESTAMP}
+              ,resp_fech_fina = #{fechaTermino,jdbcType=TIMESTAMP}
+        where  resp_id = #{id}
+    </update>
+
+    <delete id="deleteResponsable" parameterType="ResponsableTO" >
+        delete from rcb_resp
+        where resp_id = #{id}
+    </delete>
+
 </mapper>
