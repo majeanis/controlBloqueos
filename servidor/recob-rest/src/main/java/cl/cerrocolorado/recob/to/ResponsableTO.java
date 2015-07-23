@@ -12,8 +12,8 @@ public class ResponsableTO extends EntidadTO
     private Integer id;
     private PersonaTO persona;
     private EmpresaTO empresa;
-    private Date fechaInicio;
-    private Date fechaTermino;
+    private Date fechaIngreso;
+    private Date fechaSalida;
     private UbicacionTO ubicacion;
 
     public PersonaTO getPersona()
@@ -56,29 +56,29 @@ public class ResponsableTO extends EntidadTO
         this.id = id;
     }
 
-    public Date getFechaInicio()
+    public Date getFechaIngreso()
     {
-        return fechaInicio;
+        return fechaIngreso;
     }
 
-    public void setFechaInicio(Date fechaInicio)
+    public void setFechaIngeso(Date fechaIngreso)
     {
-        this.fechaInicio = fechaInicio;
+        this.fechaIngreso = fechaIngreso;
     }
 
-    public Date getFechaTermino()
+    public Date getFechaSalida()
     {
-        return fechaTermino;
+        return fechaSalida;
     }
 
-    public void setFechaTermino(Date fechaTermino)
+    public void setFechaSalida(Date fechaSalida)
     {
-        this.fechaTermino = fechaTermino;
+        this.fechaSalida = fechaSalida;
     }
     
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && (persona == null || persona.isKeyBlank() || fechaInicio == null);
+        return (id==null || id==0) && (persona == null || persona.isKeyBlank() || fechaIngreso == null);
     }
 }

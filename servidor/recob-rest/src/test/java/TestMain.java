@@ -1,5 +1,5 @@
 
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.utils.Rut;
@@ -18,11 +18,11 @@ public class TestMain
 {
     public static void main(String[] args)
     {
-        CajaBloqueoTO caja = null;
+        ResponsableTO caja = null;
         CandadoTO candado = null;
         PersonaTO persona = new PersonaTO();
         persona.setRut(Rut.valueOf("13005188-K"));
-        caja = new CajaBloqueoTO();
+        caja = new ResponsableTO();
 //        
 //        caja.setId(1);
 //        System.out.println(ValidUtils.isPropertyBlank(persona, "rut"));

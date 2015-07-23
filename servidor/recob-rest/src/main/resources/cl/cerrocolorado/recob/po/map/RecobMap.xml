@@ -609,24 +609,30 @@
            on (a.ubic_id = e.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="persona.id!=null">
+            <when test="persona != null and persona.id!=null">
                 and  b.pers_id = #{trabajador.id}
             </when>
-            <when test="persona.rut!=null">
+            <when test="persona != null and persona.rut!=null">
                 and  b.pers_rut = #{trabajador.rut}
             </when>
         </choose>
         <choose>
-            <when test="empresa.id!=null">
+            <when test="empresa != null and empresa.id!=null">
                 and  d.empr_id = #{empresa.id}
             </when>
-            <when test="empresa.rut!=null">
+            <when test="empresa != null and empresa.rut!=null">
                 and  d.empr_rut = #{empresa.rut}
             </when>
         </choose>
+
+        <if test="fechaIngreso != null" >
+            and a.resp_fech_ingr = #{fechaIngreso}
+        </if>
+        
         <if test="vigente != null">
             and a.resp_fech_fina is null
         </if>
+
         order by c.empr_rut, b.pers_rut, a.pers_fech_ingr
     </select>
     
