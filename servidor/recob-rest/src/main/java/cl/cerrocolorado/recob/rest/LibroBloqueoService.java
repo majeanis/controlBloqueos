@@ -34,10 +34,10 @@ import cl.cerrocolorado.recob.utils.Rut;
 import java.util.Arrays;
 import javax.ws.rs.PathParam;
 
-@Path("configuracion")
-public class ConfiguracionService
+@Path("libroBloqueo")
+public class LibroBloqueoService
 {
-    private static final Logger logger = LogManager.getLogger(ConfiguracionService.class);
+    private static final Logger logger = LogManager.getLogger(LibroBloqueoService.class);
     
     private static final UbicacionBO ubicacionBO;
     // private static final String token = "ec4b8544-1c73-11e5-9840-080027465435";

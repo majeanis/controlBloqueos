@@ -1,5 +1,6 @@
 package cl.cerrocolorado.recob.bo;
 
+import cl.cerrocolorado.recob.bo.utils.BeansFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -18,13 +19,13 @@ public class Transaccion
     public Transaccion(String nombre)
     {
         this.nombre = nombre;
-        this.txManager = FactoryBO.getTransactionManager();
+        this.txManager = BeansFactory.getTransactionManager();
     }
 
     public Transaccion()
     {
         this.nombre = "";
-        this.txManager = FactoryBO.getTransactionManager();
+        this.txManager = BeansFactory.getTransactionManager();
     }
 
     public String getNombre()
