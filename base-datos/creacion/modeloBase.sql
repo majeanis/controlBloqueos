@@ -2,31 +2,9 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Tuesday, July 21, 2015 21:45:18
+-- Date Created : Friday, July 24, 2015 17:06:04
 -- Target DBMS : PostgreSQL 9.x
 --
-
--- 
--- TABLE: rcb_bloq_depa 
---
-
-CREATE TABLE rcb_bloq_depa(
-    blde_id           numeric(14, 0)    NOT NULL,
-    blde_nomb         varchar(40)       NOT NULL,
-    blde_maxi         numeric(2, 0),
-    blde_vige         boolean           NOT NULL,
-    audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT blde_pk PRIMARY KEY (blde_id) USING INDEX TABLESPACE recob_ind 
-)
-;
-
-
-
-COMMENT ON COLUMN rcb_bloq_depa.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
-;
-COMMENT ON TABLE rcb_bloq_depa IS 'Bloqueos Departamentales'
-;
 
 -- 
 -- TABLE: rcb_caja_bloq 
@@ -39,8 +17,7 @@ CREATE TABLE rcb_caja_bloq(
     cabl_vige         boolean           NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT cabl_pk PRIMARY KEY (cabl_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -64,8 +41,7 @@ CREATE TABLE rcb_cand(
     pers_id           numeric(14, 0)    NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT cand_pk PRIMARY KEY (cand_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -87,8 +63,7 @@ CREATE TABLE rcb_domi_valo(
     dval_codi    varchar(40),
     dval_nomb    varchar(60)       NOT NULL,
     dval_vige    boolean           NOT NULL,
-    dval_domi    varchar(40)       NOT NULL,
-    CONSTRAINT dval_id PRIMARY KEY (dval_id) USING INDEX TABLESPACE recob_ind 
+    dval_domi    varchar(40)       NOT NULL
 )
 ;
 
@@ -103,15 +78,14 @@ COMMENT ON TABLE rcb_domi_valo IS 'Dominio de Valores'
 
 CREATE TABLE rcb_dota_lcbl(
     lcbl_id           varchar(20)       NOT NULL,
-    blde_id           numeric(14, 0)    NOT NULL,
+    fubl_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
     cand_id           numeric(14, 0),
     pers_id_bloq      numeric(14, 0)    NOT NULL,
     pers_id_desb      numeric(14, 0)    NOT NULL,
     dolc_fech_bloq    timestamp,
-    dolc_fech_desb    timestamp,
-    CONSTRAINT dblq_pk PRIMARY KEY (lcbl_id, pers_id, empr_id, blde_id) USING INDEX TABLESPACE recob_ind 
+    dolc_fech_desb    timestamp
 )
 ;
 
@@ -130,8 +104,7 @@ CREATE TABLE rcb_empr(
     empr_nomb         varchar(60)       NOT NULL,
     empr_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT empr_pk PRIMARY KEY (empr_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -148,8 +121,7 @@ COMMENT ON TABLE rcb_empr IS 'Empresas'
 
 CREATE TABLE rcb_enrg_lcbl(
     lcbl_id         varchar(20)       NOT NULL,
-    dval_id_item    numeric(14, 0)    NOT NULL,
-    CONSTRAINT enlc_pk PRIMARY KEY (lcbl_id, dval_id_item) USING INDEX TABLESPACE recob_ind 
+    dval_id_item    numeric(14, 0)    NOT NULL
 )
 ;
 
@@ -166,8 +138,7 @@ CREATE TABLE rcb_eqpo(
     eqpo_vige         boolean           NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT eqpo_pk PRIMARY KEY (eqpo_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -187,8 +158,7 @@ CREATE TABLE rcb_estc(
     estc_nomb         varchar(60)       NOT NULL,
     estc_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT estc_pk PRIMARY KEY (estc_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -197,6 +167,27 @@ CREATE TABLE rcb_estc(
 COMMENT ON COLUMN rcb_estc.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_estc IS 'Estaciones'
+;
+
+-- 
+-- TABLE: rcb_func_bloq 
+--
+
+CREATE TABLE rcb_func_bloq(
+    fubl_id           numeric(14, 0)    NOT NULL,
+    fubl_nomb         varchar(40)       NOT NULL,
+    fubl_maxi         numeric(2, 0),
+    fubl_vige         boolean           NOT NULL,
+    audi_fech_crea    timestamp         NOT NULL,
+    audi_fech_modi    timestamp
+)
+;
+
+
+
+COMMENT ON COLUMN rcb_func_bloq.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
+COMMENT ON TABLE rcb_func_bloq IS 'Bloqueos Departamentales'
 ;
 
 -- 
@@ -211,8 +202,7 @@ CREATE TABLE rcb_libr_ctrl_bloq(
     lcbl_fech_cerr    timestamp,
     cabl_id           numeric(14, 0),
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT lcbl_pk PRIMARY KEY (lcbl_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -234,8 +224,7 @@ CREATE TABLE rcb_pers(
     pers_rut          varchar(11)       NOT NULL,
     pers_nomb         varchar(60)       NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT pers_pk PRIMARY KEY (pers_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -256,8 +245,7 @@ CREATE TABLE rcb_resp(
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     resp_fech_ingr    timestamp         NOT NULL,
-    resp_fech_sali    timestamp,
-    CONSTRAINT resp_pk PRIMARY KEY (resp_id)
+    resp_fech_sali    timestamp
 )
 ;
 
@@ -271,17 +259,21 @@ COMMENT ON TABLE rcb_resp IS 'Registro Históricos de Responsables'
 --
 
 CREATE TABLE rcb_resp_lcbl(
+    relc_id           numeric(14, 0)    NOT NULL,
     lcbl_id           varchar(20)       NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     relc_fech_ingr    timestamp         NOT NULL,
     relc_fech_sali    timestamp,
-    CONSTRAINT relc_pk PRIMARY KEY (lcbl_id, pers_id, empr_id, relc_fech_ingr) USING INDEX TABLESPACE recob_ind 
+    audi_fech_crea    timestamp         NOT NULL,
+    aud_fech_modi     timestamp
 )
 ;
 
 
 
+COMMENT ON COLUMN rcb_resp_lcbl.aud_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
 COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de Bloqueos'
 ;
 
@@ -292,8 +284,7 @@ COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de
 CREATE TABLE rcb_taeq_lcbl(
     lcbl_id           varchar(20)       NOT NULL,
     taeq_id           numeric(14, 0)    NOT NULL,
-    audi_fech_crea    timestamp         NOT NULL,
-    CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, taeq_id)
+    audi_fech_crea    timestamp         NOT NULL
 )
 ;
 
@@ -315,8 +306,7 @@ CREATE TABLE rcb_tags_eqpo(
     taeq_vige         boolean           NOT NULL,
     eqpo_id           numeric(14, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT taeq_pk PRIMARY KEY (taeq_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -334,8 +324,7 @@ COMMENT ON TABLE rcb_tags_eqpo IS 'TAGs de los Equipos'
 CREATE TABLE rcb_tokn(
     tokn_id           varchar(40)       NOT NULL,
     ubic_id           numeric(14, 0)    NOT NULL,
-    audi_fech_crea    timestamp         NOT NULL,
-    CONSTRAINT tokn_pk PRIMARY KEY (tokn_id)
+    audi_fech_crea    timestamp         NOT NULL
 )
 ;
 
@@ -355,8 +344,7 @@ CREATE TABLE rcb_trab(
     trab_curs_bloq    boolean           NOT NULL,
     trab_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT trab_pk PRIMARY KEY (pers_id, empr_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -378,8 +366,7 @@ CREATE TABLE rcb_ubic(
     ubic_vige         boolean           NOT NULL,
     estc_id           numeric(14, 0),
     audi_fech_crea    timestamp         NOT NULL,
-    audi_fech_modi    timestamp,
-    CONSTRAINT ubic_pk PRIMARY KEY (ubic_id) USING INDEX TABLESPACE recob_ind 
+    audi_fech_modi    timestamp
 )
 ;
 
@@ -445,11 +432,161 @@ CREATE UNIQUE INDEX pers_uk ON rcb_pers(pers_rut)
 CREATE UNIQUE INDEX resp_uk ON rcb_resp(pers_id, empr_id, resp_fech_ingr)
 ;
 -- 
+-- INDEX: relc_uk 
+--
+
+CREATE UNIQUE INDEX relc_uk ON rcb_resp_lcbl(lcbl_id, empr_id, pers_id, relc_fech_ingr)
+;
+-- 
 -- INDEX: taeq_uk 
 --
 
 CREATE UNIQUE INDEX taeq_uk ON rcb_tags_eqpo(eqpo_id, taeq_nume)
 ;
+-- 
+-- TABLE: rcb_caja_bloq 
+--
+
+ALTER TABLE rcb_caja_bloq ADD 
+    CONSTRAINT cabl_pk PRIMARY KEY (cabl_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_cand 
+--
+
+ALTER TABLE rcb_cand ADD 
+    CONSTRAINT cand_pk PRIMARY KEY (cand_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_domi_valo 
+--
+
+ALTER TABLE rcb_domi_valo ADD 
+    CONSTRAINT dval_id PRIMARY KEY (dval_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_dota_lcbl 
+--
+
+ALTER TABLE rcb_dota_lcbl ADD 
+    CONSTRAINT dblq_pk PRIMARY KEY (lcbl_id, pers_id, empr_id, fubl_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_empr 
+--
+
+ALTER TABLE rcb_empr ADD 
+    CONSTRAINT empr_pk PRIMARY KEY (empr_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_enrg_lcbl 
+--
+
+ALTER TABLE rcb_enrg_lcbl ADD 
+    CONSTRAINT enlc_pk PRIMARY KEY (lcbl_id, dval_id_item) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_eqpo 
+--
+
+ALTER TABLE rcb_eqpo ADD 
+    CONSTRAINT eqpo_pk PRIMARY KEY (eqpo_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_estc 
+--
+
+ALTER TABLE rcb_estc ADD 
+    CONSTRAINT estc_pk PRIMARY KEY (estc_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_func_bloq 
+--
+
+ALTER TABLE rcb_func_bloq ADD 
+    CONSTRAINT fubl_pk PRIMARY KEY (fubl_id)
+;
+
+-- 
+-- TABLE: rcb_libr_ctrl_bloq 
+--
+
+ALTER TABLE rcb_libr_ctrl_bloq ADD 
+    CONSTRAINT lcbl_pk PRIMARY KEY (lcbl_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_pers 
+--
+
+ALTER TABLE rcb_pers ADD 
+    CONSTRAINT pers_pk PRIMARY KEY (pers_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_resp 
+--
+
+ALTER TABLE rcb_resp ADD 
+    CONSTRAINT resp_pk PRIMARY KEY (resp_id)
+;
+
+-- 
+-- TABLE: rcb_resp_lcbl 
+--
+
+ALTER TABLE rcb_resp_lcbl ADD 
+    CONSTRAINT relc_pk PRIMARY KEY (relc_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_taeq_lcbl 
+--
+
+ALTER TABLE rcb_taeq_lcbl ADD 
+    CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, taeq_id)
+;
+
+-- 
+-- TABLE: rcb_tags_eqpo 
+--
+
+ALTER TABLE rcb_tags_eqpo ADD 
+    CONSTRAINT taeq_pk PRIMARY KEY (taeq_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_tokn 
+--
+
+ALTER TABLE rcb_tokn ADD 
+    CONSTRAINT tokn_pk PRIMARY KEY (tokn_id)
+;
+
+-- 
+-- TABLE: rcb_trab 
+--
+
+ALTER TABLE rcb_trab ADD 
+    CONSTRAINT trab_pk PRIMARY KEY (pers_id, empr_id) USING INDEX TABLESPACE recob_ind 
+;
+
+-- 
+-- TABLE: rcb_ubic 
+--
+
+ALTER TABLE rcb_ubic ADD 
+    CONSTRAINT ubic_pk PRIMARY KEY (ubic_id) USING INDEX TABLESPACE recob_ind 
+;
+
 -- 
 -- TABLE: rcb_caja_bloq 
 --
@@ -484,14 +621,14 @@ ALTER TABLE rcb_cand ADD CONSTRAINT cand_usoc_fk
 -- TABLE: rcb_dota_lcbl 
 --
 
-ALTER TABLE rcb_dota_lcbl ADD CONSTRAINT dolc_blde_fk 
-    FOREIGN KEY (blde_id)
-    REFERENCES rcb_bloq_depa(blde_id)
-;
-
 ALTER TABLE rcb_dota_lcbl ADD CONSTRAINT dolc_cand_fk 
     FOREIGN KEY (cand_id)
     REFERENCES rcb_cand(cand_id)
+;
+
+ALTER TABLE rcb_dota_lcbl ADD CONSTRAINT dolc_fubl_fk 
+    FOREIGN KEY (fubl_id)
+    REFERENCES rcb_func_bloq(fubl_id)
 ;
 
 ALTER TABLE rcb_dota_lcbl ADD CONSTRAINT dolc_lcbl_fk 

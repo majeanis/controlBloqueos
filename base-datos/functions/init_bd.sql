@@ -5,18 +5,19 @@ DECLARE
     l_EstacionId    rcb_estc.estc_id%type;
     l_UbicacionId   rcb_ubic.ubic_id%type;
 BEGIN
+    --
     -- Bloqueos Departamentales
     --
-    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+    insert into rcb_func_bloq(fubl_id, fubl_nomb, fubl_maxi, fubl_vige, audi_fech_crea)
       values(1, 'RESP. DEPTO. ELECTRICO', 1, true, localtimestamp );
 
-    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+    insert into rcb_func_bloq(fubl_id, fubl_nomb, fubl_maxi, fubl_vige, audi_fech_crea)
       values(2, 'RESP. DEPTO. OPERACIONES', 1, true, localtimestamp );
 
-    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+    insert into rcb_func_bloq(fubl_id, fubl_nomb, fubl_maxi, fubl_vige, audi_fech_crea)
       values(3, 'RESP. DEPTO. EJECUTOR', 1, true, localtimestamp );
 
-    insert into rcb_bloq_depa(blde_id, blde_nomb, blde_maxi, blde_vige, audi_fech_crea)
+    insert into rcb_func_bloq(fubl_id, fubl_nomb, fubl_maxi, fubl_vige, audi_fech_crea)
       values(4, 'EJECUTOR TRABAJO', null, true, localtimestamp );
     ---
     
@@ -43,6 +44,7 @@ BEGIN
               ,localtimestamp )
     ;
 
+    --
     -- Función para generar el Token
     -- uuid_generate_v1()
     insert into rcb_tokn (tokn_id, ubic_id, audi_fech_crea)
