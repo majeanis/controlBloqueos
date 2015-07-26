@@ -787,6 +787,9 @@
         <if test="fechaLibro != null" >
             and a.lcbl_fech >= #{fechaLibro,jdbcType=TIMESTAMP}
         </if>
+        <if test="fechaCierre != null" >
+            and a.lcbl_fech_cerr >= #{fechaCierre,jdbcType=TIMESTAMP}
+        </if>
 
         order by b.ubic_id, b.cabl_nume, a.lcbl_nume
     </select>
@@ -870,7 +873,10 @@
                 and d.taeq_nume = #{tag.numero}
             </when>
         </choose>
-            
+        <if test="energiaCero!=null" >
+            and d.taeq_enrg_cero = #{energiaCero}
+        </if>
+
         order by e.eqpo_codi, d.taeq_nume
     </select>
     

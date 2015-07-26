@@ -94,7 +94,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
             return null;
         }
         
-        List<TagLibroTO> tags = getTags(pk);
+        List<TagLibroTO> tags = getTags(pk, Optional.empty());
         List<EnergiaLibroTO> energias = getEnergias(pk);
         List<DotacionLibroTO> dotacion = getDotaciones(pk);
         List<RespLibroTO> responsables = getResponsables(pk);
@@ -117,7 +117,8 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
 
     public List<LibroBloqueoTO> getList(CajaBloqueoTO pkCaja, 
                                         Optional<Boolean> vigencia, 
-                                        Optional<Date> fechaLibro)
+                                        Optional<Date> fechaLibro,
+                                        Optional<Date> fechaCierre)
     {
         logger.info ("getList[INI] pkCaja: {}", pkCaja);
         logger.info ("getList[INI] vigencia: {}", vigencia );
@@ -128,6 +129,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         parms.put( "caja", pkCaja);
         parms.put( "vigencia", vigencia.orElse(null));
         parms.put( "fechaLibro", fechaLibro.orElse(null));
+        parms.put( "fechaCierre", fechaCierre.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
 
         List<LibroBloqueoTO> lista = mapper.selectLibros( parms );
@@ -148,12 +150,16 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         return relaciones == 0;
     }
     
-    public List<TagLibroTO> getTags(LibroBloqueoTO pk)
+    public List<TagLibroTO> getTags(LibroBloqueoTO pk,
+                                    Optional<Boolean> energiaCero)
     {
         logger.info ("getTags[INI] pkLibro: {}", pk);
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
+        parms.put("energiaCero", energiaCero.orElse(true));
+        logger.debug("getTags[001] parámetros de la consulta: {}", parms);
+
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
 
         logger.info ("getTags[FIN] registros encontrados: {}", lista);
