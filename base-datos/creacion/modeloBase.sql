@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Friday, July 24, 2015 17:06:04
+-- Date Created : Saturday, July 25, 2015 21:08:52
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -85,12 +85,16 @@ CREATE TABLE rcb_dota_lcbl(
     pers_id_bloq      numeric(14, 0)    NOT NULL,
     pers_id_desb      numeric(14, 0)    NOT NULL,
     dolc_fech_bloq    timestamp,
-    dolc_fech_desb    timestamp
+    dolc_fech_desb    timestamp,
+    aud_fech_crea     timestamp         NOT NULL,
+    aud_fech_modi     timestamp
 )
 ;
 
 
 
+COMMENT ON COLUMN rcb_dota_lcbl.aud_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+;
 COMMENT ON TABLE rcb_dota_lcbl IS 'Dotación registrada en el Libro de Control de Bloqueos'
 ;
 
@@ -120,8 +124,9 @@ COMMENT ON TABLE rcb_empr IS 'Empresas'
 --
 
 CREATE TABLE rcb_enrg_lcbl(
-    lcbl_id         varchar(20)       NOT NULL,
-    dval_id_item    numeric(14, 0)    NOT NULL
+    lcbl_id          varchar(20)       NOT NULL,
+    dval_id_item     numeric(14, 0)    NOT NULL,
+    aud_fech_crea    timestamp         NOT NULL
 )
 ;
 
