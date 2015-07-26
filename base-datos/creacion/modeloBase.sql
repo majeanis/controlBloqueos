@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Saturday, July 25, 2015 21:08:52
+-- Date Created : Saturday, July 25, 2015 22:51:41
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -77,23 +77,24 @@ COMMENT ON TABLE rcb_domi_valo IS 'Dominio de Valores'
 --
 
 CREATE TABLE rcb_dota_lcbl(
+    dolc_id           numeric(14, 0)    NOT NULL,
     lcbl_id           varchar(20)       NOT NULL,
-    fubl_id           numeric(14, 0)    NOT NULL,
     empr_id           numeric(14, 0)    NOT NULL,
     pers_id           numeric(14, 0)    NOT NULL,
     cand_id           numeric(14, 0),
+    fubl_id           numeric(14, 0)    NOT NULL,
     pers_id_bloq      numeric(14, 0)    NOT NULL,
     pers_id_desb      numeric(14, 0)    NOT NULL,
     dolc_fech_bloq    timestamp,
     dolc_fech_desb    timestamp,
-    aud_fech_crea     timestamp         NOT NULL,
-    aud_fech_modi     timestamp
+    audi_fech_crea    timestamp         NOT NULL,
+    audi_fech_modi    timestamp
 )
 ;
 
 
 
-COMMENT ON COLUMN rcb_dota_lcbl.aud_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+COMMENT ON COLUMN rcb_dota_lcbl.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_dota_lcbl IS 'Dotación registrada en el Libro de Control de Bloqueos'
 ;
@@ -124,9 +125,9 @@ COMMENT ON TABLE rcb_empr IS 'Empresas'
 --
 
 CREATE TABLE rcb_enrg_lcbl(
-    lcbl_id          varchar(20)       NOT NULL,
-    dval_id_item     numeric(14, 0)    NOT NULL,
-    aud_fech_crea    timestamp         NOT NULL
+    lcbl_id           varchar(20)       NOT NULL,
+    dval_id_item      numeric(14, 0)    NOT NULL,
+    audi_fech_crea    timestamp         NOT NULL
 )
 ;
 
@@ -271,13 +272,13 @@ CREATE TABLE rcb_resp_lcbl(
     relc_fech_ingr    timestamp         NOT NULL,
     relc_fech_sali    timestamp,
     audi_fech_crea    timestamp         NOT NULL,
-    aud_fech_modi     timestamp
+    audi_fech_modi    timestamp
 )
 ;
 
 
 
-COMMENT ON COLUMN rcb_resp_lcbl.aud_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
+COMMENT ON COLUMN rcb_resp_lcbl.audi_fech_modi IS 'Fecha de la última modificación del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de Bloqueos'
 ;
@@ -407,6 +408,12 @@ CREATE UNIQUE INDEX cand_nume_uk ON rcb_cand(cand_nume, ubic_id)
 CREATE UNIQUE INDEX dval_uk ON rcb_domi_valo(dval_domi, dval_codi)
 ;
 -- 
+-- INDEX: dolc_uk 
+--
+
+CREATE UNIQUE INDEX dolc_uk ON rcb_dota_lcbl(lcbl_id, pers_id)
+;
+-- 
 -- INDEX: empr_uk 
 --
 
@@ -477,7 +484,7 @@ ALTER TABLE rcb_domi_valo ADD
 --
 
 ALTER TABLE rcb_dota_lcbl ADD 
-    CONSTRAINT dblq_pk PRIMARY KEY (lcbl_id, pers_id, empr_id, fubl_id) USING INDEX TABLESPACE recob_ind 
+    CONSTRAINT dolc_pk PRIMARY KEY (dolc_id) USING INDEX TABLESPACE recob_ind 
 ;
 
 -- 
