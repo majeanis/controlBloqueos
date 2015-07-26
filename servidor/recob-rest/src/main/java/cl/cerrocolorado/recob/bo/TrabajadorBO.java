@@ -7,6 +7,7 @@ import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Transaccional;
+import java.util.Optional;
 
 /**
  * @author mauricio.camara
@@ -21,8 +22,10 @@ public interface TrabajadorBO
 
     public Respuesta<TrabajadorTO> get(TrabajadorTO pkTrabajador);
 
-    public Respuesta<List<TrabajadorTO>> getTodos(Boolean vigencia);
-    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa, Boolean vigencia);
+    public Respuesta<List<TrabajadorTO>> getTodos(Optional<Boolean> vigencia);
+
+    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa, 
+                                                  Optional<Boolean> vigencia);
 
     public Respuesta<List<TrabajadorTO>> getVigentes();
     public Respuesta<List<TrabajadorTO>> getVigentes(EmpresaTO pkEmpresa);

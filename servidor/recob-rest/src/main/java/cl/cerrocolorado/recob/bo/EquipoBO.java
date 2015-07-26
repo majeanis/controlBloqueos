@@ -8,6 +8,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -31,11 +32,13 @@ public interface EquipoBO
 
     public Respuesta<List<EquipoTO>> getVigentes(UbicacionTO pkUbicacion);
     
-    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
+    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                              Optional<Boolean> vigencia);
     
     public Respuesta<List<TagTO>> getTagsEnergiaCero(EquipoTO pk);
     
     public Respuesta<List<TagTO>> getTagsVigentes(EquipoTO pk);
     
-    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, Boolean vigencia);
+    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, 
+                                               Optional<Boolean> vigencia);
 }

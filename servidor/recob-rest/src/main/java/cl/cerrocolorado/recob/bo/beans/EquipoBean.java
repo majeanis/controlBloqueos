@@ -19,6 +19,7 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
+import java.util.Optional;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -317,7 +318,8 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia)
+    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                              Optional<Boolean> vigencia)
     {
         logger.info("getTodos[INI] pkUbicacion: {}", pkUbicacion);
         logger.info("getTodos[INI] vigencia: {}", vigencia);
@@ -340,7 +342,7 @@ public class EquipoBean implements EquipoBO
     @Override
     public Respuesta<List<EquipoTO>> getVigentes(UbicacionTO pkUbicacion)
     {
-        return getTodos(pkUbicacion, true);
+        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
     }
     
     @Override
@@ -379,7 +381,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        List<TagTO> lista = equipoPO.getTags(pk, Boolean.TRUE, Boolean.TRUE);
+        List<TagTO> lista = equipoPO.getTags(pk, Optional.of(Boolean.TRUE), Optional.of(Boolean.TRUE));
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getTagsEnergiaCero[FIN] registros retornados: {}", lista );
@@ -387,7 +389,8 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, Boolean vigencia)
+    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, 
+                                               Optional<Boolean> vigencia)
     {
         logger.info("getTagsTodos[INI] pk: {}", pk);
         logger.info("getTagsTodos[INI] vigencia: {}", vigencia);
@@ -400,7 +403,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        List<TagTO> lista = equipoPO.getTags(pk, null, vigencia);
+        List<TagTO> lista = equipoPO.getTags(pk, Optional.empty(), vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getTagsTodos[FIN] registros retornados: {}", lista.size());
@@ -410,7 +413,6 @@ public class EquipoBean implements EquipoBO
     @Override
     public Respuesta<List<TagTO>> getTagsVigentes(EquipoTO pk)
     {
-        return getTagsTodos(pk, true);
+        return getTagsTodos(pk, Optional.of(Boolean.TRUE));
     }
-
 }

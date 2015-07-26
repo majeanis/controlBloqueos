@@ -32,6 +32,7 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Rut;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.ws.rs.PathParam;
 
 @Path("libroBloqueo")
@@ -330,7 +331,7 @@ public class LibroBloqueoService
 
         try
         {
-            Respuesta<List<UsoCandadoTO>> r1 = FactoryBO.getCandadoBO().getUsosCandado(Boolean.TRUE);
+            Respuesta<List<UsoCandadoTO>> r1 = FactoryBO.getCandadoBO().getUsosCandado(Optional.of(Boolean.TRUE));
             logger.info("verUsosCandado[FIN] registros retornados: {}", r1);
             return RespGenerica.of(r1);
         } catch(Exception e)

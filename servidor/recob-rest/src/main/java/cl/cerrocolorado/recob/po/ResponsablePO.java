@@ -1,8 +1,6 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;

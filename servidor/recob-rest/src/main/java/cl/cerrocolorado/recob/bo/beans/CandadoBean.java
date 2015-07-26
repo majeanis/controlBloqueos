@@ -16,6 +16,7 @@ import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -253,17 +254,17 @@ public class CandadoBean implements CandadoBO
     @Override
     public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion)
     {
-        return getTodos(pkUbicacion, Boolean.TRUE);
+        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
     }
 
     @Override
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona)
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, Optional<PersonaTO> pkPersona)
     {
-        return getTodos(pkUbicacion, pkPersona, Boolean.TRUE);
+        return getTodos(pkUbicacion, pkPersona, Optional.of(Boolean.TRUE));
     }
 
     @Override
-    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia)
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
         logger.info ("getTodos[INI] vigencia: {}", vigencia );
@@ -284,17 +285,21 @@ public class CandadoBean implements CandadoBO
     }
 
 	@Override
-	public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia) {
+	public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                               Optional<PersonaTO> pkPersona, 
+                                               Optional<Boolean> vigencia) 
+    {
         logger.info ("getTodos[INI] pkUbicacion: {}", pkUbicacion );
         logger.info ("getTodos[INI] pkPersona: {}", pkPersona );
         logger.info ("getTodos[INI] vigencia: {}", vigencia);
 
         Resultado rtdo = new ResultadoProceso();
-
+        PersonaTO persona = pkPersona.orElse(null);
+        
         if( pkUbicacion == null || 
             pkUbicacion.isKeyBlank() ||
-            pkPersona == null ||
-            pkPersona.isKeyBlank())
+            persona == null ||
+            persona.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar la Ubicación y el R.U.T. de la persona");
             logger.info ("getTodos[FIN] no se informaron todos los filtros: {} {}", pkUbicacion, pkPersona );
@@ -309,7 +314,7 @@ public class CandadoBean implements CandadoBO
 	}
 
     @Override
-    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Boolean vigencia)
+    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Optional<Boolean> vigencia)
     {
         logger.info ("getUsosCandado[INI] vigencia: {}", vigencia);
         

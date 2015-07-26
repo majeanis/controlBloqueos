@@ -7,6 +7,7 @@ import cl.cerrocolorado.recob.to.TrabajadorTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,14 +98,15 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         return lista.get(0);
     }
     
-    public List<TrabajadorTO> getList(EmpresaTO pkEmpresa, Boolean vigencia)
+    public List<TrabajadorTO> getList(EmpresaTO pkEmpresa, 
+                                      Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] pkEmpresa: {}", pkEmpresa);
         logger.info ("getList[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
         parms.put("empresa", pkEmpresa);
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
         
         List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );
@@ -114,12 +116,12 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         return lista;
     }
 
-    public List<TrabajadorTO> getList(Boolean vigencia)
+    public List<TrabajadorTO> getList(Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
         
         List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );

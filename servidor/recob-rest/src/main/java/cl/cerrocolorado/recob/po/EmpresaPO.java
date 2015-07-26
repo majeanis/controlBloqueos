@@ -5,6 +5,7 @@ import cl.cerrocolorado.recob.to.EmpresaTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,12 +74,12 @@ public class EmpresaPO implements BasePO<EmpresaTO>
         return lista.get(0);
     }
     
-    public List<EmpresaTO> getList(Boolean vigencia)
+    public List<EmpresaTO> getList(Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms );
         
         List<EmpresaTO> lista = mapper.selectEmpresas( parms );

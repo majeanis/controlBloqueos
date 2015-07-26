@@ -8,6 +8,7 @@ import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,14 +101,14 @@ public class CandadoPO implements BasePO<CandadoTO>
         return candados.get(0);
     }
     
-    public List<CandadoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
+    public List<CandadoTO> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
     {
         logger.info ("get[INI] pkUbicacion: {}", pkUbicacion);
         logger.info ("get[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("get[001] parametros: {}", parms);
         
         List<CandadoTO> candados = mapper.selectCandados( parms );
@@ -117,15 +118,17 @@ public class CandadoPO implements BasePO<CandadoTO>
         return candados;
     }
     
-    public List<CandadoTO> getList(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia)
+    public List<CandadoTO> getList(UbicacionTO pkUbicacion, 
+                                   Optional<PersonaTO> pkPersona, 
+                                   Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] pkUbicacion: {}", pkUbicacion);
         logger.info ("getList[INI] pkPersona: {}", pkPersona);
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("persona", pkPersona);
-        parms.put("vigencia", vigencia);
+        parms.put("persona", pkPersona.orElse(null));
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
 
         List<CandadoTO> candados = mapper.selectCandados( parms );
@@ -146,12 +149,12 @@ public class CandadoPO implements BasePO<CandadoTO>
         return relaciones == 0;
     }
     
-    public List<UsoCandadoTO> getUsosCandado(Boolean vigencia)
+    public List<UsoCandadoTO> getUsosCandado(Optional<Boolean> vigencia)
     {
         logger.info ("getUsosCandado[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getUsosCandado[001] parametros: {}", parms);
 
         List<UsoCandadoTO> lista = mapper.selectUsosCandado( parms );

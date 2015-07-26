@@ -11,6 +11,7 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +165,8 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     }
 
     @Override
-    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia)
+    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                                   Optional<Boolean> vigencia)
     {
         logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
         logger.info ("getTodos[INI] vigencia: {}", vigencia);
@@ -187,6 +189,6 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     @Override
     public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion)
     {
-        return getTodos(pkUbicacion, Boolean.TRUE);
+        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
     }
 }

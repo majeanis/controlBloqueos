@@ -6,6 +6,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,14 +76,14 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
         return cajas.get(0);
     }
     
-    public List<CajaBloqueoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
+    public List<CajaBloqueoTO> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] pkUbicacion: {}", pkUbicacion);
         logger.info ("getList[INI] vigencia: {}", vigencia );
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
 
         List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( parms );

@@ -10,6 +10,7 @@ import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -136,7 +137,7 @@ public class EmpresaBean implements EmpresaBO
     }
 
     @Override
-    public Respuesta<List<EmpresaTO>> getTodos(Boolean vigencia)
+    public Respuesta<List<EmpresaTO>> getTodos(Optional<Boolean> vigencia)
     {
         logger.info ("getTodos[INI] vigencia: {}", vigencia );
 
@@ -151,7 +152,7 @@ public class EmpresaBean implements EmpresaBO
     @Override
     public Respuesta<List<EmpresaTO>> getVigentes()
     {
-        return getTodos(true);
+        return getTodos(Optional.of(Boolean.TRUE));
     }
 
 }

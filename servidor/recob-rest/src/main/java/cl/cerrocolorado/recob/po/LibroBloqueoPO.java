@@ -116,17 +116,17 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     }
 
     public List<LibroBloqueoTO> getList(CajaBloqueoTO pkCaja, 
-                                        Optional<Boolean> libroCerrado, 
+                                        Optional<Boolean> vigencia, 
                                         Optional<Date> fechaLibro)
     {
         logger.info ("getList[INI] pkCaja: {}", pkCaja);
-        logger.info ("getList[INI] libroCerrado: {}", libroCerrado );
+        logger.info ("getList[INI] vigencia: {}", vigencia );
         logger.info ("getList[INI] fechaLibro: {}", fechaLibro );
         
         Map<String, Object> parms = new HashMap<>();
         parms.put( "ubicacion", pkCaja.getUbicacion());
         parms.put( "caja", pkCaja);
-        parms.put( "libroCerrado", libroCerrado.orElse(null));
+        parms.put( "vigencia", vigencia.orElse(null));
         parms.put( "fechaLibro", fechaLibro.orElse(null));
         logger.debug("getList[001] parametros: {}", parms);
 
@@ -279,7 +279,6 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         {
             mapper.updateDotacionLibro(pk);
         }
-
 
         logger.info ("guardarDotacion[FIN] registro guardado con éxito: {}", pk);
         return pk;

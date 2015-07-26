@@ -776,9 +776,14 @@
                 and  b.cabl_nume = #{caja.numero}                
             </if>
         </choose>
-        <if test="libroCerrado != null" >
-            and a.lcbl_cerr = true
-        </if>
+        <choose>
+            <when test="vigencia!=null and vigencia==true">
+                and a.lcbl_cerr = false
+            </when>
+            <when test="vigencia!=null and vigencia==false">
+                and a.lcbl_cerr = true
+            </when>
+        </choose>
         <if test="fechaLibro != null" >
             and a.lcbl_fech >= #{fechaLibro,jdbcType=TIMESTAMP}
         </if>

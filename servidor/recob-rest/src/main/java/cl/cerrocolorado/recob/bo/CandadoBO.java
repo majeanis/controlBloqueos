@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Transaccional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -26,13 +27,17 @@ public interface CandadoBO
     
     public Respuesta<CandadoTO> get(UbicacionTO pkUbicacion, String serieCandado);
     
-    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                               Optional<Boolean> vigencia);
 
-    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, PersonaTO pkPersona, Boolean vigencia);
+    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                               Optional<PersonaTO> pkPersona, 
+                                               Optional<Boolean> vigencia);
 
     public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion);
     
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, PersonaTO pkPersona);
+    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion,
+                                                  Optional<PersonaTO> pkPersona);
     
-    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Boolean vigencia);
+    public Respuesta<List<UsoCandadoTO>> getUsosCandado(Optional<Boolean> vigencia);
 }

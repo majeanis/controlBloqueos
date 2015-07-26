@@ -12,6 +12,7 @@ import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -204,17 +205,17 @@ public class TrabajadorBean implements TrabajadorBO
     @Override
     public Respuesta<List<TrabajadorTO>> getVigentes()
     {
-        return getTodos(Boolean.TRUE);
+        return getTodos(Optional.of(Boolean.TRUE));
     }
 
     @Override
     public Respuesta<List<TrabajadorTO>> getVigentes(EmpresaTO pkEmpresa)
     {
-        return getTodos(pkEmpresa, Boolean.TRUE);
+        return getTodos(pkEmpresa, Optional.of(Boolean.TRUE));
     }
 
     @Override
-    public Respuesta<List<TrabajadorTO>> getTodos(Boolean vigencia)
+    public Respuesta<List<TrabajadorTO>> getTodos(Optional<Boolean> vigencia)
     {
         logger.info("getTodos[INI] vigencia: {}", vigencia);
 
@@ -227,7 +228,8 @@ public class TrabajadorBean implements TrabajadorBO
     }
 
     @Override
-    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa, Boolean vigencia)
+    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa,
+                                                  Optional<Boolean> vigencia)
     {
         logger.info("getTodos[INI] pkEmpresa: {}", pkEmpresa);
         logger.info("getTodos[INI] vigencia: {}", vigencia);
@@ -240,7 +242,7 @@ public class TrabajadorBean implements TrabajadorBO
             return Respuesta.of(rtdo);
         }
         
-        List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, null);
+        List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, Optional.empty());
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
         logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());

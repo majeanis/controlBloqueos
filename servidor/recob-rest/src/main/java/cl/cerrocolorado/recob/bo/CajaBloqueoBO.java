@@ -7,6 +7,7 @@ import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Transaccional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -22,7 +23,8 @@ public interface CajaBloqueoBO
 
     public Respuesta<CajaBloqueoTO> get(CajaBloqueoTO pkCaja);
 
-    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, Boolean vigencia);
+    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, 
+                                                   Optional<Boolean> vigencia);
 
     public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion);
 }

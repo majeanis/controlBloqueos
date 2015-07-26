@@ -8,6 +8,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -129,15 +130,17 @@ public class EquipoPO implements BasePO<EquipoTO>
         return lista.get(0);
     }
     
-    public List<TagTO> getTags(EquipoTO pk, Boolean energiaCero, Boolean vigencia)
+    public List<TagTO> getTags(EquipoTO pk, 
+                               Optional<Boolean> energiaCero, 
+                               Optional<Boolean> vigencia)
     {
         logger.info("getTags[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("ubicacion"  , pk.getUbicacion());
         parms.put("equipo"     , pk);
-        parms.put("energiaCero", energiaCero);
-        parms.put("vigencia"   , vigencia);
+        parms.put("energiaCero", energiaCero.orElse(null));
+        parms.put("vigencia"   , vigencia.orElse(null));
         logger.debug("getTags[001] parámetros del select: {}", parms);
         
         List<TagTO> tags = mapper.selectTags(parms);
@@ -179,13 +182,14 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info ("eliminarTags[FIN] tags eliminados con éxito: {}", pk);
     }
 
-    public List<EquipoTO> getList(UbicacionTO pkUbicacion, Boolean vigencia)
+    public List<EquipoTO> getList(UbicacionTO pkUbicacion, 
+                                  Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] vigencia: {}", vigencia);
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("vigencia", vigencia);
+        parms.put("vigencia", vigencia.orElse(null));
         logger.debug("getList[001] parametros: {}", parms );
         
         List<EquipoTO> lista = mapper.selectEquipos(parms);
