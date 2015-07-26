@@ -2,10 +2,15 @@ package cl.cerrocolorado.recob.po.map;
 
 import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.CandadoTO;
+import cl.cerrocolorado.recob.to.DotacionLibroTO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
+import cl.cerrocolorado.recob.to.EnergiaLibroTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
+import cl.cerrocolorado.recob.to.LibroBloqueoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
+import cl.cerrocolorado.recob.to.RespLibroTO;
 import cl.cerrocolorado.recob.to.ResponsableTO;
+import cl.cerrocolorado.recob.to.TagLibroTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
@@ -101,5 +106,44 @@ public interface RecobMap
     public void updateResponsable(ResponsableTO responsable);
     public void deleteResponsable(ResponsableTO responsable);
     public int  childsResponsable(ResponsableTO responsable);
-    public List<ResponsableTO> selectResponsables( Map<String,Object> parms );
+    public List<ResponsableTO> selectResponsables(Map<String,Object> parms );
+
+    /*
+     * Manipulación de Libros de Bloqueos
+     */
+    public void insertLibro(LibroBloqueoTO libro);
+    public void updateLibro(LibroBloqueoTO libro);
+    public void deleteLibro(LibroBloqueoTO libro);
+    public int  childsLibro(LibroBloqueoTO libro);
+    public List<LibroBloqueoTO> selectLibros(Map<String,Object> parms);
+    
+    /* 
+     * Manipulación de TAGs en Libros de Bloqueo
+     */
+    public void insertTagLibro(TagLibroTO tag);
+    public void deleteTagLibro(TagLibroTO tag);
+    public List<TagLibroTO> selectTagsLibro(Map<String,Object> parms);
+
+    /*
+     * Manipulación de Energías en el Libro
+     */
+    public void insertEnergiaLibro(EnergiaLibroTO energia);
+    public void deleteEnergiaLibro(EnergiaLibroTO energia);
+    public List<EnergiaLibroTO> selectEnergiasLibro(Map<String,Object> parms);
+
+    /*
+     * Manipulación de Dotación en el Libro
+     */
+    public void insertDotacionLibro(DotacionLibroTO dotacion);
+    public void updateDotacionLibro(DotacionLibroTO dotacion);
+    public void deleteDotacionLibro(DotacionLibroTO dotacion);
+    public List<DotacionLibroTO> selectDotacionLibro(Map<String,Object> parms);
+
+    /*
+     * Manipulación de Responsables en el Libro
+     */
+    public void insertRespLibro(RespLibroTO responsable);
+    public void updateRespLibro(RespLibroTO responsable);
+    public List<RespLibroTO> selectRespLibro(Map<String,Object> parms);
+
 }

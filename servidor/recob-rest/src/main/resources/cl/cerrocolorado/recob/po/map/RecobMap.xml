@@ -46,9 +46,9 @@
     </resultMap>
 
     <resultMap id="trabajadorMap" type="TrabajadorTO" >
-        <result property="id" column="pers_id" />
-        <result property="rut" column="pers_rut" typeHandler="RutTypeHandler" /> 
-        <result property="nombre" column="pers_nomb" />
+        <result property="id" column="trab_id" />
+        <result property="rut" column="trab_rut" typeHandler="RutTypeHandler" /> 
+        <result property="nombre" column="trab_nomb" />
         <result property="cargo" column="trab_carg" />
         <result property="tieneCursoBloqueo" column="trab_curs_bloq" />
         <result property="vigente" column="trab_vige" />
@@ -97,6 +97,74 @@
         <association property="persona" resultMap="personaMap" />
         <association property="empresa" resultMap="empresaMap" />
         <association property="ubicacion" resultMap="ubicacionMap" />
+    </resultMap>
+    
+    <resultMap id="tagLibroMap" type="TagLibroTO" >
+        <association property="libro" resultMap="libroBloqueoMap" />
+        <result property="id" column="taeq_id" />
+        <result property="numero" column="taeq_nume" />
+        <result property="nombre" column="taeq_nomb" />
+        <result property="descripcion" column="taeq_desc" />
+        <result property="energiaCero" column="taeq_enrg_cero" />
+        <result property="vigente" column="taeq_vige" />
+        <association property="equipo" resultMap="equipoMap" />
+    </resultMap>
+    
+    <resultMap id="energiaLibroMap" type="EnergiaLibroTO" >
+        <association property="libro" resultMap="libroBloqueoMap" />
+        <result property="id" resultMap="dval_id" />
+        <result property="codigo" resultMap="dval_codi" />
+        <result property="nombre" resultMap="dval_nomb" />
+        <result property="vigente" resultMap="dval_vige" />
+    </resultMap>
+
+    <resultMap id="funcionBloqueoMap" type="FuncionBloqueoTO" >
+        <id property="id" column="fubl_id" />
+        <result property="nombre" column="fubl_nomb" />
+        <result property="maximo" column="fubl_maxi" />
+        <result property="vigente" column="fubl_vige" />
+    </resultMap>
+    
+    <resultMap id="dotacionLibroMap" type="DotacionLibroTO" >
+        <id property="id" column="dolc_id" />
+        <result property="fechaBloqueo" column="dolc_fech_bloq" />
+        <result property="fechaDesbloqueo" column="dolc_fech_desb" />
+        <association property="libro" resultMap="libroBloqueoMap" />
+        <association property="funcion" resultMap="funcionBloqueoMap" />
+        <association property="trabajador" resultMap="trabajadorMap" />
+        <association property="candado" resultMap="candadoMap" />
+        <association property="autorizaBloqueo" resultMap="personaMap" columnPrefix="bloq_" />
+        <association property="autorizaDesbloqueo" resultMap="personaMap" columnPrefix="desb_" />
+    </resultMap>
+
+    <resultMap id="respLibroMap" type="RespLibroTO" >
+        <id property="id" column="relc_id" />
+        <association property="libro" resultMap="libroBloqueoMap" />
+        <association property="trabajador" resultMap="trabajadorMap" />
+        <result property="fechaIngreso" column="relc_fech_ingr" />
+        <result property="fechaSalida" column="relc_fech_sali" />
+    </resultMap>
+
+    <resultMap id="libroBloqueoMap" type="LibroBloqueoTO" >
+        <id property="id" column="lcbl_id" />
+        <result property="numero" column="lcbl_nume" />
+        <result property="fecha" column="lcbl_fech" />
+        <result property="cerrado" column="lcbl_cerr" />
+        <result property="fechaCierre" column="lcbl_fech_cerr" />
+        <association property="caja" resultMap="cajaBloqueoMap" />
+    </resultMap>
+
+    <resultMap id="libroBloqueoInfoMap" type="LibroBloqueoInfoTO" >
+        <id property="id" column="lcbl_id" />
+        <result property="numero" column="lcbl_nume" />
+        <result property="fecha" column="lcbl_fech" />
+        <result property="cerrado" column="lcbl_cerr" />
+        <result property="fechaCierre" column="lcbl_fech_cerr" />
+        <association property="caja" resultMap="cajaBloqueoMap" />
+        <collection property="tags" javaType="ArrayList" ofType="TagLibroTO" resultMap="tagLibroMap" />
+        <collection property="energias" javaType="ArrayList" ofType="EnergiaLibroTO" resultMap="energiaLibroMap" />
+        <collection property="dotacion" javaType="ArrayList" ofType="DotacionLibroTO" resultMap="dotacionLibroMap" />
+        <collection property="responsables" javaType="ArrayList" ofType="RespLibroTO" resultMap="respLibroMap" />
     </resultMap>
 
     <select id="selectUbicacion" parameterType="UbicacionTO" resultMap="ubicacionMap" >
@@ -308,9 +376,9 @@
     </update>
     
     <select id="selectTrabajadores" parameterType="map" resultMap="trabajadorMap" >
-        select b.pers_id
-              ,b.pers_rut
-              ,b.pers_nomb
+        select b.pers_id    trab_id
+              ,b.pers_rut   trab_rut
+              ,b.pers_nomb  trab_nomb
               ,a.trab_carg
               ,a.trab_curs_bloq
               ,a.trab_vige
@@ -626,7 +694,7 @@
         </choose>
 
         <if test="fechaIngreso != null" >
-            and a.resp_fech_ingr = #{fechaIngreso}
+            and a.resp_fech_ingr = #{fechaIngreso,jdbcType=TIMESTAMP}
         </if>
         
         <if test="vigente != null">
@@ -656,7 +724,7 @@
             select get_nuevo_id()
         </selectKey>
         insert into rcb_resp(resp_id, pers_id, empr_id, ubic_id, resp_fech_ingr, resp_fech_sali)
-             values(#{id},#{persona.id},#{empresa.id},#{ubicacion.id},#{fechaIngreso},#{fechaSalida});
+             values(#{id},#{persona.id},#{empresa.id},#{ubicacion.id},#{fechaIngreso,jdbcType=TIMESTAMP},#{fechaSalida,jdbcType=TIMESTAMP});
     </insert>
 
     <update id="updateResponsable" parameterType="ResponsableTO" >
@@ -673,5 +741,363 @@
         delete from rcb_resp
         where resp_id = #{id}
     </delete>
+    
+    <select id="selectLibros" parameterType="map" resultMap="libroBloqueoMap" >
+        select a.lcbl_id
+              ,a.lcbl_nume
+              ,a.lcbl_fech
+              ,a.lcbl_cerr
+              ,a.lcbl_fech_cerr
+              ,b.cabl_id
+              ,b.cabl_nume
+              ,b.cabl_nomb
+              ,b.cabl_vige
+              ,c.ubic_id
+              ,c.ubic_nomb
+              ,c.ubic_desc
+              ,c.ubic_vige 
+        from   rcb_libr_ctrl_bloq a inner join rcb_caja_bloq b
+           on (a.cabl_id = b.cabl_id) inner join rcb_ubic c
+           on (b.ubic_id = c.ubic_id) 
+        where  c.ubic_id = #{ubicacion.id}
+        <choose>
+            <if test="libro != null and libro.id!=null" >
+                and  a.lcbl_id   = #{libro.id}                
+            </if>
+            <if test="libro != null and libro.numero!=null" >
+                and  b.lcbl_nume = #{libro.numero}                
+            </if>
+        </choose>
+        <choose>
+            <if test="caja != null and caja.id!=null" >
+                and  b.cabl_id = #{caja.id}                
+            </if>
+            <if test="caja != null and caja.numero!=null" >
+                and  b.cabl_nume = #{caja.numero}                
+            </if>
+        </choose>
+        <if test="libroCerrado != null" >
+            and a.lcbl_cerr = true
+        </if>
+        <if test="fechaLibro != null" >
+            and a.lcbl_fech >= #{fechaLibro,jdbcType=TIMESTAMP}
+        </if>
 
+        order by b.ubic_id, b.cabl_nume, a.lcbl_nume
+    </select>
+    
+    <select id="childsLibro" parameterType="LibroBloqueoTO" resultType="int" >
+        select sum(*)
+        from
+        (
+            select count(*)
+            from   rcb_taeq_lcbl a
+            where  a.lcbl_id = #{id}
+            union all
+            select count(*)
+            from   rcb_enrg_lcbl a
+            where  a.lcbl_id = #{id}
+            union all
+            select count(*)
+            from   rcb_dota_lcbl a
+            where  a.lcbl_id = #{id}
+            select count(*)
+            from   rcb_resp_lcbl a
+            where  a.lcbl_id = #{id}
+        ) as todo
+    </select>
+
+    <insert id="insertLibro" parameterType="LibroBloqueoTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_libr_ctrl_bloq(lcbl_id, lcbl_nume, lcbl_fech, lcbl_cerr, lcbl_fech_cerr, cabl_id, audi_fech_crea )
+             values(#{id},#{numero},#{fecha},#{cerrado},#{fechaCierre,jdbcType=TIMESTAMP},#{caja.id},localtimestamp)
+    </insert>
+    
+    <update id="updateLibro" parameterType="LibroBloqueoTO" >
+        update rcb_libr_ctrl_bloq set
+               lcbl_nume      = #{numero}
+              ,lcbl_fech      = #{fecha}
+              ,lcbl_cerr      = #{cerrado}
+              ,lcbl_fech_cerr = #{fechaCierre,jdbcType=TIMESTAMP}
+              ,cabl_id        = #{caja.id}
+              ,audi_fech_modi = localtimestamp
+        where  lcbl_id = #{id}
+    </update>
+    
+    <delete id="deleteLibro" parameterType="LibroBloqueoTO" >
+        delete from rcb_libr_ctrl_bloq 
+        where  lcbl_id = #{id}
+    </delete>
+    
+    <select id="selectTagsLibro" parameterType="map" resultMap="tagLibroMap" >
+        select a.lcbl_id
+              ,a.lcbl_nume
+              ,a.lcbl_fech
+              ,a.lcbl_cerr
+              ,a.lcbl_fech_cerr
+              ,b.cabl_id
+              ,b.cabl_nume
+              ,b.cabl_nomb
+              ,b.cabl_vige
+              ,b.ubic_id
+              ,d.taeq_id
+              ,d.taeq_nume
+              ,d.taeq_nomb
+              ,d.taeq_desc
+              ,d.taeq_enrg_cero
+              ,d.taeq_vige
+              ,e.eqpo_id
+              ,e.eqpo_codi
+              ,e.eqpo_vige
+        from   rcb_libr_ctrl_bloq a   inner join rcb_caja_bloq b
+           on (a.cabl_id = b.cabl_id) inner join rcb_taeq_lcbl c
+           on (a.lcbl_id = c.lcbl_id) inner join rcb_tags_eqpo d
+           on (c.taeq_id = d.taeq_id) inner join rcb_eqpo      e
+           on (e.eqpo_id = e.eqpo_id)
+        where  a.lcbl_id = #{libro.id}
+        <choose>
+            <when test="tag!=null and tag.id!=null" >
+                and d.taeq_id = #{tag.id}
+            </when>
+            <when test="tag!=null and tag.numero!=null" >
+                and d.taeq_nume = #{tag.numero}
+            </when>
+        </choose>
+            
+        order by e.eqpo_codi, d.taeq_nume
+    </select>
+    
+    <insert id="insertTagLibro" parameterType="TagLibroTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_taeq_lcbl(lcbl_id, taeq_id, audi_fech_crea )
+             values(#{libro.id},#{id},localtimestamp)
+    </insert>
+
+    <delete id="deleteTagLibro" parameterType="TagLibroTO" >
+        delete from rcb_taeq_lcbl
+        where  lcbl_id = #{libro.id}
+          and  taeq_id = #{id}
+    </delete>
+
+    <select id="selectEnergiasLibro" parameterType="map" resultMap="energiaLibroMap" >
+        select a.lcbl_id
+              ,a.lcbl_nume
+              ,a.lcbl_fech
+              ,a.lcbl_cerr
+              ,a.lcbl_fech_cerr
+              ,b.cabl_id
+              ,b.cabl_nume
+              ,b.cabl_nomb
+              ,b.cabl_vige
+              ,b.ubic_id
+              ,d.dval_id
+              ,d.dval_codi
+              ,d.dval_nomb
+              ,d.dval_vige
+        from   rcb_libr_ctrl_bloq a   inner join rcb_caja_bloq b
+           on (a.cabl_id = b.cabl_id) inner join rcb_enrg_lcbl c
+           on (a.lcbl_id = c.lcbl_id) inner join rcb_domi_valo d
+           on (c.dval_id_item = d.dval_id)
+        where  a.lcbl_id = #{id}
+        <choose>
+            <when test="energia!=null and energia.id!=null" >
+                and d.dval_id = #{energia.id}
+            </when>
+            <when test="energia!=null and energia.codigo!=null" >
+                and d.dval_codi = #e{energia.codigo}
+            </when>
+        </choose>
+        order by d.dval_domi, d.dval_codi
+    </select>
+    
+    <insert id="insertEnergiaLibro" parameterType="EnergiaLibroTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_enrg_lcbl(lcbl_id, dval_id_item, audi_fech_crea )
+             values(#{libro.id},#{id},localtimestamp)
+    </insert>
+    
+    <delete id="deleteEnergiaLibro" parameterType="EnergiaLibroTo" >
+        delete from rcb_enrg_lcbl
+        where  lcbl_id = #{libro.id}
+          and  dval_id_item = #{id}
+    </delete>
+
+    <select id="selectDotacionLibro" parameterType="LibroBloqueoTO" resultMap="dotacionLibroMap" >
+        select a.lcbl_id
+              ,a.lcbl_nume
+              ,a.lcbl_fech
+              ,a.lcbl_cerr
+              ,a.lcbl_fech_cerr
+              ,b.cabl_id
+              ,b.cabl_nume
+              ,b.cabl_nomb
+              ,b.cabl_vige
+              ,b.ubic_id
+              ,c.dolc_id
+              ,c.dolc_fech_bloq
+              ,c.dolc_fech_desb
+              ,d.fubl_id
+              ,d.fubl_nomb
+              ,d.fubl_maxi
+              ,d.fubl_vige
+              ,g.pers_id         trab_id
+              ,g.pers_rut        trab_rut 
+              ,g.pers_nomb       trab_nomb
+              ,e.trab_carg
+              ,e.trab_curs_bloq
+              ,e.trab_vige
+              ,f.empr_id
+              ,f.empr_rut
+              ,f.empr_nomb
+              ,f.empr_vige
+              ,j.cand_id
+              ,j.cand_nume
+              ,j.cand_seri
+              ,j.cand_vige
+              ,j.dval_id_uso
+              ,h.pers_id          bloq_pers_id
+              ,h.pers_rut         bloq_pers_rut
+              ,h.pers_nomb        bloq_pers_nomb
+              ,i.pers_id          desb_pers_id
+              ,i.pers_rut         desb_pers_rut
+              ,i.pers_nomb        desb_pers_nomb
+        from   rcb_libr_ctrl_bloq a   inner join rcb_caja_bloq b
+           on (a.cabl_id = b.cabl_id) inner join rcb_dota_lcbl c
+           on (a.lcbl_id = c.lcbl_id) inner join rcb_func_bloq d
+           on (c.fubl_id = d.fubl_id) inner join rcb_trab      e
+           on (c.pers_id = e.pers_id
+           and c.empr_id = e.empr_id) inner join rcb_empr      f
+           on (e.empr_id = f.empr_id) inner join rcb_pers      g
+           on (e.pers_id = g.pers_id) left  join rcb_pers      h
+           on (c.pers_id_bloq = h.pers_id) left join rcb_pers  i
+           on (c.pers_id_desb = i.pers_id) inner join rcb_cand j
+           on (c.cand_id = j.cand_id)
+        where  a.lcbl_id = #{id}
+        <choose>
+            <when test="dotacion!=null and dotacion.id!=null" >
+                and c.dolc_id = #{dotacion.id}
+            </when>
+            <when test="trabajador!=null and trabajador.id!=null" >
+                and g.pers_id = #{trabajador.id}
+            </when>
+            <when test="trabajador!=null and trabajador.rut!=null" >
+                and g.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
+            </when>
+        </choose>
+        order by g.rut
+    </select>
+
+    <insert id="insertDotacionLibro" parameterType="DotacionLibroTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        insert into rcb_dota_lcbl(dolc_id, lcbl_id, fubl_id, empr_id, pers_id, cand_id, pers_id_bloq, 
+                                  pers_id_desb, dolc_fech_bloq, dolc_fech_desb, audi_fech_crea)
+            values(#{id},
+                   #{libro.id},
+                   #{funcion.id},
+                   #{trabajador.empresa.id},
+                   #{trabajador.id},
+                   #{candado.id},
+                   #{autorizaBloqueo.id},
+                   #{autorizaDesbloqueo.id},
+                   #{fechaBloqueo,jdbcType=TIMESTAMP},
+                   #{fechaDesbloqueo,jdbcType=TIMESTAMP},localtimestamp)
+    </insert>
+
+    <update id="updateDotacionLibro" parameterType="DotacionLibroTO" >
+        update rcb_dota_lcbl set
+               fubl_id        = #{funcion.id}  
+              ,empr_id        = #{trabajador.empresa.id} 
+              ,pers_id        = #{trabajador.id}
+              ,cand_id        = #{candado.id}
+              ,pers_id_bloq   = #{autorizaBloqueo.id}
+              ,pers_id_desb   = #{autorizaDesbloqueo.id} 
+              ,dolc_fech_bloq = #{fechaBloqueo,jdbcType=TIMESTAMP}  
+              ,dolc_fech_desb = #{fechaDesbloqueo,jdbcType=TIMESTAMP}
+              ,audi_fech_modi = localtimestamp
+        where  dolc_id = {id}
+    </update>
+    
+    <delete id="deleteDotacionLibro" parameterType="DotacionLibroTO" >
+        delete from rcb_dota_lcbl
+        where  dolc_id = #{id}
+    </delete>
+
+    <select id="selectRespLibro" parameterType="map" resultMap="respLibroMap" >
+        select a.lcbl_id
+              ,a.lcbl_nume
+              ,a.lcbl_fech
+              ,a.lcbl_cerr
+              ,a.lcbl_fech_cerr
+              ,b.cabl_id
+              ,b.cabl_nume
+              ,b.cabl_nomb
+              ,b.cabl_vige
+              ,b.ubic_id
+              ,c.relc_id
+              ,c.relc_fech_ingr
+              ,c.relc_fech_sali
+              ,f.pers_id         trab_id
+              ,f.pers_rut        trab_rut
+              ,f.pers_nomb       trab_nomb
+              ,d.trab_carg
+              ,d.trab_curs_bloq
+              ,d.trab_vige
+              ,e.empr_id        
+              ,e.empr_rut
+              ,e.empr_nomb
+              ,e.empr_vige
+        from   rcb_libr_ctrl_bloq a   inner join rcb_caja_bloq b
+           on (a.cabl_id = b.cabl_id) inner join rcb_resp_lcbl c
+           on (c.lcbl_id = c.lcbl_id) inner join rcb_trab d
+           on (c.pers_id = d.pers_id
+           and d.empr_id = d.empr_id) inner join rcb_empr e
+           on (d.empr_id = e.empr_id) inner join rcb_pers f
+           on (d.pers_id = f.pers_id) 
+        where  a.lcbl_id = #{libro.id}
+
+        <choose>
+            <when test="responsable!=null and responsable.id!=null" >
+                and c.relc_id = #{responsable.id}
+            </when>
+            <when test="trabajador!=null and trabajador.id!=null" >
+                and f.pers_id = #{trabajador.id}
+                and c.relc_fech_ingr = #{responsable.fechaIngreso,jdbcType=TIMESTAMP}
+            </when>
+            <when test="trabajador!=null and trabajador.rut!=null" >
+                and f.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
+                and c.relc_fech_ingr = #{responsable.fechaIngreso,jdbcType=TIMESTAMP}
+            </when>
+        </choose>
+
+        <if test="vigente!=null" >
+            and c.relc_fech_sali is null
+        </if>
+
+        order by c.relc_fech_ingr, f.pers_rut
+    </select>
+    
+    <insert id="insertRespLibro" parameterType="RespLibroTO" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
+            select get_nuevo_id()
+        </selectKey>
+        
+        insert into rcb_resp_lcbl(relc_id,lcbl_id,pers_id,empr_id,relc_fech_ingr,relc_fech_sali,audi_fech_crea)
+            values(#{id},#{libro.id},#{trabajador.id},#{trabajador.empresa.id},
+                   #{fechaIngreso,jdbcType=TIMESTAMP},#{fechaSalida,jdbcType=TIMESTAMP},localtimestamp)
+    </insert>
+    
+    <update id="updateRespLibro" parameterType="RespLibroTO" >
+        update rcb_resp_lcbl set
+               relc_fech_sali = #{fechaSalida}
+              ,audi_fech_modi = localtimestamp
+        where  relc_id = #{id}
+    </update>
 </mapper>

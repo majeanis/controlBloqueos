@@ -1,9 +1,9 @@
 package cl.cerrocolorado.recob.to;
 
 /**
-  * @author mauricio.camara
+ * @author mauricio.camara
  */
-public class UsoCandadoTO extends ValorDominioTO
+public class EnergiaTO extends ValorDominioTO
 {
     private static final long serialVersionUID = 1L;
 }

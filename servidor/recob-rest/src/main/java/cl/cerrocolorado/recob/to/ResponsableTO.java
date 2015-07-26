@@ -9,6 +9,8 @@ import java.util.Date;
  */
 public class ResponsableTO extends EntidadTO
 {
+    private static final long serialVersionUID = 1L;
+
     private Integer id;
     private PersonaTO persona;
     private EmpresaTO empresa;

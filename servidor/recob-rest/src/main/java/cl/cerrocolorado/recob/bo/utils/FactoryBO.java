@@ -6,9 +6,6 @@ import cl.cerrocolorado.recob.bo.EmpresaBO;
 import cl.cerrocolorado.recob.bo.EquipoBO;
 import cl.cerrocolorado.recob.bo.TrabajadorBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  *

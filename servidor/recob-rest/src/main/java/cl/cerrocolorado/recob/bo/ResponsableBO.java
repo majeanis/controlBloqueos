@@ -1,13 +1,10 @@
 package cl.cerrocolorado.recob.bo;
 
-import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Transaccional;
-import java.util.Date;
-
-import java.util.List;
 
 /**
  *

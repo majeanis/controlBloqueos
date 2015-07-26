@@ -1,23 +1,23 @@
 package cl.cerrocolorado.recob.bo.beans;
 
-import cl.cerrocolorado.recob.utils.Transaccional;
-import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.bo.ResponsableBO;
-import cl.cerrocolorado.recob.po.EmpresaPO;
-import cl.cerrocolorado.recob.po.ResponsablePO;
-import cl.cerrocolorado.recob.po.TrabajadorPO;
-import cl.cerrocolorado.recob.po.UbicacionPO;
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.ResponsableTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.utils.Resultado;
-import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import cl.cerrocolorado.recob.bo.ResponsableBO;
+import cl.cerrocolorado.recob.po.EmpresaPO;
+import cl.cerrocolorado.recob.po.ResponsablePO;
+import cl.cerrocolorado.recob.po.TrabajadorPO;
+import cl.cerrocolorado.recob.to.EmpresaTO;
+import cl.cerrocolorado.recob.to.ResponsableTO;
+import cl.cerrocolorado.recob.to.TrabajadorTO;
+import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.utils.Respuesta;
+import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.Transaccional;
 
 /**
  *
@@ -31,9 +31,6 @@ public class ResponsableBean implements ResponsableBO
     
     @Autowired
     private ResponsablePO responsablePO;
-
-    @Autowired
-    private UbicacionPO ubicacionPO;
 
     @Autowired
     private EmpresaPO empresaPO;
