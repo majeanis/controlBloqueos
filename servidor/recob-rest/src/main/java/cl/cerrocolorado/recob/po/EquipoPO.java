@@ -136,7 +136,6 @@ public class EquipoPO implements BasePO<EquipoTO>
         Map<String,Object> parms = new HashMap<>();
         parms.put("ubicacion"  , pk.getUbicacion());
         parms.put("equipo"     , pk);
-        parms.put("tag"        , new TagTO());
         parms.put("energiaCero", energiaCero);
         parms.put("vigencia"   , vigencia);
         logger.debug("getTags[001] parámetros del select: {}", parms);
@@ -186,7 +185,6 @@ public class EquipoPO implements BasePO<EquipoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("equipo", new EquipoTO());
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms );
         

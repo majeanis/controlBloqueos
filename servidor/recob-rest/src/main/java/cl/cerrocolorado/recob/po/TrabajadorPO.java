@@ -104,7 +104,6 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
 
         Map<String, Object> parms = new HashMap<>();
         parms.put("empresa", pkEmpresa);
-        parms.put("trabajador", new TrabajadorTO());
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms);
         
@@ -120,8 +119,6 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         logger.info ("getList[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
-        parms.put("trabajador", new TrabajadorTO());
-        parms.put("empresa", new EmpresaTO());
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms);
         
@@ -159,7 +156,6 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("trabajador", pkTrabajador);
-        parms.put("empresa", new EmpresaTO());
         parms.put("vigencia", true);
         logger.debug("getVigente[001] parámetros para la query: {}", parms);
         

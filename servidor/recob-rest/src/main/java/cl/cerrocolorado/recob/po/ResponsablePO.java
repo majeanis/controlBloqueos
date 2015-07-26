@@ -75,8 +75,6 @@ public class ResponsablePO implements BasePO<ResponsableTO>
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("ubicacion", pk);
-        parms.put("persona", new PersonaTO());
-        parms.put("empresa", new EmpresaTO());
         parms.put("vigente", true);
         logger.debug("getVigente[001] parametros de búsqueda: {}", parms);
         

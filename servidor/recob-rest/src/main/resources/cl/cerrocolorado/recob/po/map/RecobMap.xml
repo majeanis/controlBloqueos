@@ -209,10 +209,10 @@
            on (b.ubic_id = d.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="caja.id != null" >
+            <when test="caja!=null and caja.id != null" >
                 and a.cabl_id = #{caja.id}
             </when>
-            <when test="caja.numero != null" >
+            <when test="caja!=null and caja.numero != null" >
                 and a.cabl_nume = #{caja.numero}
             </when>
         </choose>
@@ -289,16 +289,16 @@
            on (d.ubic_id = e.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="candado.id != null" >
+            <when test="candado!=null and candado.id!=null" >
                 and a.cand_id = #{candado.id}
             </when>
-            <when test="candado.numero != null" >
+            <when test="candado!=null and candado.numero!=null" >
                 and a.cand_nume  = #{candado.numero}
             </when>
-            <when test="serie != null" >
+            <when test="serie!=null" >
                 and a.cand_seri = #{serie}
             </when>
-            <when test="persona.rut != null" >
+            <when test="persona!=null and persona.rut!=null" >
                 c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
             </when>
         </choose>
@@ -348,10 +348,10 @@
         from   rcb_pers a
         <where>
             <choose>
-                <when test = "persona.id != null" >
+                <when test = "persona != null and persona.id != null" >
                     a.pers_id  = #{persona.id}
                 </when>
-                <when test = "persona.rut != null" >
+                <when test = "persona != null and persona.rut != null" >
                     a.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
                 </when>
             </choose>
@@ -391,18 +391,18 @@
            on (a.empr_id = c.empr_id)
         <where>
         	<choose>
-	            <when test = "trabajador.id != null" >
+	            <when test = "trabajador!=null and trabajador.id!=null" >
 	                b.pers_id = #{trabajador.id}
 	            </when>
-	            <when test = "trabajador.rut != null" >
+	            <when test = "trabajador!=null and trabajador.rut!=null" >
 	                b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
 	            </when>
         	</choose>
         	<choose>
-	            <when test = "empresa.id != null" >
+	            <when test = "empresa!=null and empresa.id!=null" >
 	                and c.empr_id   = #{empresa.id}
 	            </when>
-	            <when test = "empresa.rut != null" >
+	            <when test = "empresa!=null and empresa.rut!=null" >
 	                and c.empr_rut  = #{empresa.rut,typeHandler=RutTypeHandler}
 	            </when>
         	</choose>
@@ -569,17 +569,17 @@
            on (a.eqpo_id = b.eqpo_id)
         where  b.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="tag.id != null" >
+            <when test="tag!=null and tag.id != null" >
                 and a.taeq_id = #{tag.id}
             </when>
-            <when test="tag.numero != null and equipo.id != null" >
+            <when test="tag!=null and tag.numero!=null and equipo!=null and equipo.id!=null" >
                 and a.eqpo_id   = #{equipo.id}
                 and a.taeq_nume = #{tag.numero}
             </when>
-            <when test="equipo.id != null" >
+            <when test="equipo!=null and equipo.id!=null" >
                 and a.eqpo_id = #{equipo.id}
             </when>
-            <when test="equipo.codigo != null" >
+            <when test="equipo!=null and equipo.codigo!=null" >
                 and b.eqpo_codi = #{equipo.codigo}
             </when>
         </choose>
@@ -639,10 +639,10 @@
         from   rcb_domi_valo a
         where  dval_domi = 'uso.candado'
         <choose>
-            <when test="uso.id != null" >
+            <when test="uso!=null and uso.id != null" >
                 and a.dval_id = #{uso.id}
             </when>
-            <when test="uso.codigo != null" >
+            <when test="uso!=null and uso.codigo != null" >
                 and a.dval_codi = #{uso.codigo}
             </when>
         </choose>

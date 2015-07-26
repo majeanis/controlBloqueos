@@ -62,7 +62,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         Map<String, Object> parms = new HashMap<>();
         parms.put( "ubicacion", pkCandado.getUbicacion() );
         parms.put( "candado", pkCandado );
-        parms.put( "persona", new PersonaTO());
         logger.debug ("get[001] parametros: {}", parms);
         
         List<CandadoTO> candados = mapper.selectCandados( parms );
@@ -108,8 +107,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("candado", new CandadoTO());
-        parms.put("persona", new PersonaTO());
         parms.put("vigencia", vigencia);
         logger.debug("get[001] parametros: {}", parms);
         
@@ -127,7 +124,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put("ubicacion", pkUbicacion);
-        parms.put("candado", new CandadoTO());        
         parms.put("persona", pkPersona);
         parms.put("vigencia", vigencia);
         logger.debug("getList[001] parametros: {}", parms);
@@ -155,7 +151,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         logger.info ("getUsosCandado[INI] vigencia: {}", vigencia);
 
         Map<String, Object> parms = new HashMap<>();
-        parms.put("uso", new UsoCandadoTO());
         parms.put("vigencia", vigencia);
         logger.debug("getUsosCandado[001] parametros: {}", parms);
 
