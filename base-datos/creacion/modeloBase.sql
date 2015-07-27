@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Saturday, July 25, 2015 22:51:41
+-- Date Created : Sunday, July 26, 2015 20:38:49
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -23,7 +23,7 @@ CREATE TABLE rcb_caja_bloq(
 
 
 
-COMMENT ON COLUMN rcb_caja_bloq.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_caja_bloq.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_caja_bloq IS 'Cajas de Bloqueo'
 ;
@@ -47,9 +47,9 @@ CREATE TABLE rcb_cand(
 
 
 
-COMMENT ON COLUMN rcb_cand.cand_nume IS 'N鷐ero del Candado'
+COMMENT ON COLUMN rcb_cand.cand_nume IS 'N煤mero del Candado'
 ;
-COMMENT ON COLUMN rcb_cand.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_cand.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_cand IS 'Candados'
 ;
@@ -94,9 +94,9 @@ CREATE TABLE rcb_dota_lcbl(
 
 
 
-COMMENT ON COLUMN rcb_dota_lcbl.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_dota_lcbl.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
-COMMENT ON TABLE rcb_dota_lcbl IS 'Dotaci髇 registrada en el Libro de Control de Bloqueos'
+COMMENT ON TABLE rcb_dota_lcbl IS 'Dotaci贸n registrada en el Libro de Control de Bloqueos'
 ;
 
 -- 
@@ -115,7 +115,7 @@ CREATE TABLE rcb_empr(
 
 
 
-COMMENT ON COLUMN rcb_empr.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_empr.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_empr IS 'Empresas'
 ;
@@ -150,7 +150,7 @@ CREATE TABLE rcb_eqpo(
 
 
 
-COMMENT ON COLUMN rcb_eqpo.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_eqpo.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_eqpo IS 'Equipos'
 ;
@@ -170,7 +170,7 @@ CREATE TABLE rcb_estc(
 
 
 
-COMMENT ON COLUMN rcb_estc.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_estc.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_estc IS 'Estaciones'
 ;
@@ -191,7 +191,7 @@ CREATE TABLE rcb_func_bloq(
 
 
 
-COMMENT ON COLUMN rcb_func_bloq.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_func_bloq.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_func_bloq IS 'Bloqueos Departamentales'
 ;
@@ -214,9 +214,9 @@ CREATE TABLE rcb_libr_ctrl_bloq(
 
 
 
-COMMENT ON COLUMN rcb_libr_ctrl_bloq.lcbl_nume IS 'N鷐ero del Libro'
+COMMENT ON COLUMN rcb_libr_ctrl_bloq.lcbl_nume IS 'N煤mero del Libro'
 ;
-COMMENT ON COLUMN rcb_libr_ctrl_bloq.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_libr_ctrl_bloq.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_libr_ctrl_bloq IS 'Libros de Control de Bloqueos'
 ;
@@ -236,7 +236,7 @@ CREATE TABLE rcb_pers(
 
 
 
-COMMENT ON COLUMN rcb_pers.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_pers.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_pers IS 'Personas'
 ;
@@ -257,7 +257,7 @@ CREATE TABLE rcb_resp(
 
 
 
-COMMENT ON TABLE rcb_resp IS 'Registro Hist髍icos de Responsables'
+COMMENT ON TABLE rcb_resp IS 'Registro Hist贸ricos de Responsables'
 ;
 
 -- 
@@ -278,7 +278,7 @@ CREATE TABLE rcb_resp_lcbl(
 
 
 
-COMMENT ON COLUMN rcb_resp_lcbl.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_resp_lcbl.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de Bloqueos'
 ;
@@ -288,14 +288,20 @@ COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de
 --
 
 CREATE TABLE rcb_taeq_lcbl(
-    lcbl_id           varchar(20)       NOT NULL,
-    taeq_id           numeric(14, 0)    NOT NULL,
-    audi_fech_crea    timestamp         NOT NULL
+    talc_id                numeric(14, 0)    NOT NULL,
+    lcbl_id                varchar(20)       NOT NULL,
+    taeq_id                numeric(14, 0)    NOT NULL,
+    talc_enrg_cero         boolean           NOT NULL,
+    talc_fech_enrg_cero    timestamp,
+    audi_fech_crea         timestamp         NOT NULL,
+    audi_fech_modi         timestamp
 )
 ;
 
 
 
+COMMENT ON COLUMN rcb_taeq_lcbl.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
+;
 COMMENT ON TABLE rcb_taeq_lcbl IS 'Equipos registrados en el Libro de Control de Bloqueos'
 ;
 
@@ -318,7 +324,7 @@ CREATE TABLE rcb_tags_eqpo(
 
 
 
-COMMENT ON COLUMN rcb_tags_eqpo.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_tags_eqpo.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_tags_eqpo IS 'TAGs de los Equipos'
 ;
@@ -336,7 +342,7 @@ CREATE TABLE rcb_tokn(
 
 
 
-COMMENT ON TABLE rcb_tokn IS 'Toke para identificaci髇 de Ubicaciones'
+COMMENT ON TABLE rcb_tokn IS 'Toke para identificaci贸n de Ubicaciones'
 ;
 
 -- 
@@ -356,7 +362,7 @@ CREATE TABLE rcb_trab(
 
 
 
-COMMENT ON COLUMN rcb_trab.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_trab.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
 COMMENT ON TABLE rcb_trab IS 'Trabajadores'
 ;
@@ -378,9 +384,9 @@ CREATE TABLE rcb_ubic(
 
 
 
-COMMENT ON COLUMN rcb_ubic.audi_fech_modi IS 'Fecha de la 鷏tima modificaci髇 del registro en la tabla'
+COMMENT ON COLUMN rcb_ubic.audi_fech_modi IS 'Fecha de la 煤ltima modificaci贸n del registro en la tabla'
 ;
-COMMENT ON TABLE rcb_ubic IS 'Estaci髇'
+COMMENT ON TABLE rcb_ubic IS 'Estaci贸n'
 ;
 
 -- 
@@ -390,16 +396,16 @@ COMMENT ON TABLE rcb_ubic IS 'Estaci髇'
 CREATE UNIQUE INDEX cabl_uk ON rcb_caja_bloq(ubic_id, cabl_nume)
 ;
 -- 
--- INDEX: cand_uk 
---
-
-CREATE UNIQUE INDEX cand_uk ON rcb_cand(cand_seri)
-;
--- 
 -- INDEX: cand_nume_uk 
 --
 
 CREATE UNIQUE INDEX cand_nume_uk ON rcb_cand(cand_nume, ubic_id)
+;
+-- 
+-- INDEX: cand_uk 
+--
+
+CREATE UNIQUE INDEX cand_uk ON rcb_cand(cand_seri)
 ;
 -- 
 -- INDEX: dval_uk 
@@ -448,6 +454,12 @@ CREATE UNIQUE INDEX resp_uk ON rcb_resp(pers_id, empr_id, resp_fech_ingr)
 --
 
 CREATE UNIQUE INDEX relc_uk ON rcb_resp_lcbl(lcbl_id, empr_id, pers_id, relc_fech_ingr)
+;
+-- 
+-- INDEX: talc_uk 
+--
+
+CREATE UNIQUE INDEX talc_uk ON rcb_taeq_lcbl(lcbl_id, taeq_id)
 ;
 -- 
 -- INDEX: taeq_uk 
@@ -564,7 +576,7 @@ ALTER TABLE rcb_resp_lcbl ADD
 --
 
 ALTER TABLE rcb_taeq_lcbl ADD 
-    CONSTRAINT eqlc_pk PRIMARY KEY (lcbl_id, taeq_id)
+    CONSTRAINT talc_pk PRIMARY KEY (talc_id)
 ;
 
 -- 
