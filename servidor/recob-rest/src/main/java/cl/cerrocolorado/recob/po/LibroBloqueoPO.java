@@ -166,19 +166,19 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         return lista;
     }
 
-    public TagLibroTO getTag(TagLibroTO pk)
+    public TagLibroTO getTag(TagLibroTO tag)
     {
-        logger.info ("getTag[INI] pkTag: {}", pk);
+        logger.info ("getTag[INI] pkTag: {}", tag);
         
         Map<String,Object> parms = new HashMap<>();
-        parms.put("libro", pk.getLibro());
-        parms.put("tag", pk.getTag());
-        parms.put("id", pk.getId());
+        parms.put("libro", tag.getLibro());
+        parms.put("tag", tag.getTag());
+        parms.put("id", tag.getId());
         
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getTags[FIN] no se encontró registro: {}", pk);
+            logger.info ("getTags[FIN] no se encontró registro: {}", tag);
             return null;
         }
         logger.info ("getTags[FIN] registro encontrado: {}", lista.get(0));

@@ -100,22 +100,19 @@
     </resultMap>
     
     <resultMap id="tagLibroMap" type="TagLibroTO" >
+        <id property="id" column="talc_id" />
+        <result property="energiaCero" column="talc_enrg_cero" />
+        <result property="fechaEnergiaCero" column="talc_fech_enrg_cero" />
         <association property="libro" resultMap="libroBloqueoMap" />
-        <result property="id" column="taeq_id" />
-        <result property="numero" column="taeq_nume" />
-        <result property="nombre" column="taeq_nomb" />
-        <result property="descripcion" column="taeq_desc" />
-        <result property="energiaCero" column="taeq_enrg_cero" />
-        <result property="vigente" column="taeq_vige" />
-        <association property="equipo" resultMap="equipoMap" />
+        <association property="tag" resultMap="tagMap" />
     </resultMap>
     
     <resultMap id="energiaLibroMap" type="EnergiaLibroTO" >
+        <result property="id" column="dval_id" />
+        <result property="codigo" column="dval_codi" />
+        <result property="nombre" column="dval_nomb" />
+        <result property="vigente" column="dval_vige" />
         <association property="libro" resultMap="libroBloqueoMap" />
-        <result property="id" resultMap="dval_id" />
-        <result property="codigo" resultMap="dval_codi" />
-        <result property="nombre" resultMap="dval_nomb" />
-        <result property="vigente" resultMap="dval_vige" />
     </resultMap>
 
     <resultMap id="funcionBloqueoMap" type="FuncionBloqueoTO" >
@@ -139,10 +136,10 @@
 
     <resultMap id="respLibroMap" type="RespLibroTO" >
         <id property="id" column="relc_id" />
-        <association property="libro" resultMap="libroBloqueoMap" />
-        <association property="trabajador" resultMap="trabajadorMap" />
         <result property="fechaIngreso" column="relc_fech_ingr" />
         <result property="fechaSalida" column="relc_fech_sali" />
+        <association property="libro" resultMap="libroBloqueoMap" />
+        <association property="trabajador" resultMap="trabajadorMap" />
     </resultMap>
 
     <resultMap id="libroBloqueoMap" type="LibroBloqueoTO" >
@@ -151,6 +148,7 @@
         <result property="fecha" column="lcbl_fech" />
         <result property="cerrado" column="lcbl_cerr" />
         <result property="fechaCierre" column="lcbl_fech_cerr" />
+        <association property="ubicacion" resultMap="ubicacionMap" />
         <association property="caja" resultMap="cajaBloqueoMap" />
     </resultMap>
 
@@ -160,11 +158,12 @@
         <result property="fecha" column="lcbl_fech" />
         <result property="cerrado" column="lcbl_cerr" />
         <result property="fechaCierre" column="lcbl_fech_cerr" />
+        <association property="ubicacion" resultMap="ubicacionMap" />
         <association property="caja" resultMap="cajaBloqueoMap" />
-        <collection property="tags" javaType="ArrayList" ofType="TagLibroTO" resultMap="tagLibroMap" />
+<!--        <collection property="tags" javaType="ArrayList" ofType="TagLibroTO" resultMap="tagLibroMap" />
         <collection property="energias" javaType="ArrayList" ofType="EnergiaLibroTO" resultMap="energiaLibroMap" />
         <collection property="dotacion" javaType="ArrayList" ofType="DotacionLibroTO" resultMap="dotacionLibroMap" />
-        <collection property="responsables" javaType="ArrayList" ofType="RespLibroTO" resultMap="respLibroMap" />
+        <collection property="responsables" javaType="ArrayList" ofType="RespLibroTO" resultMap="respLibroMap" />-->
     </resultMap>
 
     <select id="selectUbicacion" parameterType="UbicacionTO" resultMap="ubicacionMap" >
@@ -741,6 +740,20 @@
         delete from rcb_resp
         where resp_id = #{id}
     </delete>
+  
+    <select id="selectFuncionesBloqueo" parameterType="map" resultMap="funcionBloqueoMap" >
+        select a.fubl_id
+              ,a.fubl_nomb
+              ,a.fubl_maxi
+              ,a.fubl_vige
+        from   rcb_func_bloq a
+        <where>
+            <if test="vigencia!=null" >
+                a.fubl_vige = #{vigencia}
+            </if>
+        </where>
+        order by a.fubl_nomb
+    </select>  
     
     <select id="selectLibros" parameterType="map" resultMap="libroBloqueoMap" >
         select a.lcbl_id
@@ -761,20 +774,20 @@
            on (b.ubic_id = c.ubic_id) 
         where  c.ubic_id = #{ubicacion.id}
         <choose>
-            <if test="libro != null and libro.id!=null" >
+            <when test="libro != null and libro.id!=null" >
                 and  a.lcbl_id   = #{libro.id}                
-            </if>
-            <if test="libro != null and libro.numero!=null" >
-                and  b.lcbl_nume = #{libro.numero}                
-            </if>
+            </when>
+            <when test="libro != null and libro.numero!=null" >
+                and  a.lcbl_nume = #{libro.numero}                
+            </when>
         </choose>
         <choose>
-            <if test="caja != null and caja.id!=null" >
+            <when test="caja != null and caja.id!=null" >
                 and  b.cabl_id = #{caja.id}                
-            </if>
-            <if test="caja != null and caja.numero!=null" >
+            </when>
+            <when test="caja != null and caja.numero!=null" >
                 and  b.cabl_nume = #{caja.numero}                
-            </if>
+            </when>
         </choose>
         <choose>
             <when test="vigencia!=null and vigencia==true">
@@ -815,9 +828,13 @@
         ) as todo
     </select>
 
+    <select id="selectNumeroLibro" resultType="int" >
+        select nextval( 'SEQ_NUME_LIBR' )
+    </select>
+    
     <insert id="insertLibro" parameterType="LibroBloqueoTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="String" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_libr_ctrl_bloq(lcbl_id, lcbl_nume, lcbl_fech, lcbl_cerr, lcbl_fech_cerr, cabl_id, audi_fech_crea )
              values(#{id},#{numero},#{fecha},#{cerrado},#{fechaCierre,jdbcType=TIMESTAMP},#{caja.id},localtimestamp)
@@ -850,6 +867,9 @@
               ,b.cabl_nomb
               ,b.cabl_vige
               ,b.ubic_id
+              ,c.talc_id
+              ,c.talc_enrg_cero
+              ,c.talc_fech_enrg_cero
               ,d.taeq_id
               ,d.taeq_nume
               ,d.taeq_nomb
@@ -866,6 +886,9 @@
            on (e.eqpo_id = e.eqpo_id)
         where  a.lcbl_id = #{libro.id}
         <choose>
+            <when test="id!=null" >
+                and c.talc_id = #{id}
+            </when>
             <when test="tag!=null and tag.id!=null" >
                 and d.taeq_id = #{tag.id}
             </when>
@@ -874,7 +897,7 @@
             </when>
         </choose>
         <if test="energiaCero!=null" >
-            and d.taeq_enrg_cero = #{energiaCero}
+            and c.talc_enrg_cero = #{energiaCero}
         </if>
 
         order by e.eqpo_codi, d.taeq_nume
@@ -884,14 +907,21 @@
         <selectKey keyProperty="id" resultType="int" order="BEFORE" >
             select get_nuevo_id()
         </selectKey>
-        insert into rcb_taeq_lcbl(lcbl_id, taeq_id, audi_fech_crea )
-             values(#{libro.id},#{id},localtimestamp)
+        insert into rcb_taeq_lcbl(talc_id, lcbl_id, taeq_id, talc_enrg_cero, talc_fech_enrg_cero, audi_fech_crea )
+             values(#{id},#{libro.id},#{tag.id},#{energiaCero},#{fechaEnergiaCero,jdbcType=TIMESTAMP},localtimestamp)
     </insert>
+
+    <update id="updateTagLibro" parameterType="TagLibroTO" >
+        update rcb_taeq_lcbl set
+               talc_enrg_cero = #{energiaCero}
+              ,talc_fech_enrg_cero = #{fechaEnergiaCero,jdbcType=TIMESTAMP}
+              ,audi_fech_modi = localtimestamp
+        where  talc_id = #{id}
+    </update>
 
     <delete id="deleteTagLibro" parameterType="TagLibroTO" >
         delete from rcb_taeq_lcbl
-        where  lcbl_id = #{libro.id}
-          and  taeq_id = #{id}
+        where  talc_id = #{id}
     </delete>
 
     <select id="selectEnergiasLibro" parameterType="map" resultMap="energiaLibroMap" >
@@ -1001,7 +1031,7 @@
                 and g.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
             </when>
         </choose>
-        order by g.rut
+        order by g.pers_rut
     </select>
 
     <insert id="insertDotacionLibro" parameterType="DotacionLibroTO" >

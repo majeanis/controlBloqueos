@@ -129,6 +129,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         return Respuesta.of(libro);
     }
 
+    @Deprecated
     @Override
     @Transaccional    
     public Respuesta<LibroBloqueoInfoTO> guardarLibro(LibroBloqueoInfoTO libro) throws Exception
@@ -222,12 +223,14 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         Resultado rtdo = new ResultadoProceso();
         if(pk==null || pk.isKeyBlank())
         {
-            rtdo.addError(this.getClass(),  "Debe informar la identificación del TAG" );
+            rtdo.addError(this.getClass(), "Debe informar la identificación del TAG" );
             logger.info("getTag[FIN] no se informaron los datos de la pk: {}", pk);
             return Respuesta.of(rtdo);
         }
         
+        TagLibroTO tag = libroBloqueoPO.getTag(pk);
         logger.info("getTag[FIN] registro retornado: {}", tag);
+        return Respuesta.of(rtdo,tag);
     }
 
     @Override
@@ -268,7 +271,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         TagLibroTO tag = libroBloqueoPO.getTag(pk);
         if(tag==null)
         {
-            rtdo.addError(this.getClass(),  "No existe TAG con N° #{1}", String.valueOf(pk.getTag().getNumero()));
+            rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getTag().getNumero()));
             logger.info("eliminarTag[FIN] no existe el TAG que se desea eliminar: {}", pk);
             return rtdo;
         }
@@ -300,6 +303,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         return Respuesta.of(rtdo,lista);
     }
 
+    @Deprecated
     @Override
     @Transaccional
     public Respuesta<List<EnergiaLibroTO>> guardarEnergias(List<EnergiaLibroTO> energias) throws Exception
@@ -355,13 +359,14 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         return Respuesta.of(rtdo,lista);
     }
 
+    @Deprecated
     @Override
     @Transaccional
     public Respuesta<DotacionLibroTO> guardarDotacion(DotacionLibroTO dotacion) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     @Transaccional
     public Resultado eliminarDotacion(DotacionLibroTO pk)
@@ -419,6 +424,56 @@ public class LibroBloqueoBean implements LibroBloqueoBO
 
     @Override
     public Respuesta<TagLibroTO> guardarTag(TagLibroTO tag) throws Exception
+    {
+        logger.info("guardarTag[INI] tag: {}", tag);
+        Resultado rtdo = new ResultadoProceso();
+        
+        if( tag==null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar los datos del TAG");
+            logger.info("guardarTag[FIN] no se informaron los datos del TAG");
+            return Respuesta.of(rtdo);
+        }
+ 
+        if(tag.getLibro()==null|| tag.getLibro().isKeyBlank())
+        {
+            rtdo.addError(this.getClass(),"Debe informar el Libro al cual está asociado el TAG");
+        }
+        if(tag.getTag()==null || tag.getTag().isKeyBlank())
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación del TAG");
+        }
+        if(tag.getEnergiaCero()==null)
+        {
+            rtdo.addError(this.getClass(), "Debe informar el atributo Energía Cero");
+        }
+        if(!rtdo.esExitoso())
+        {
+            logger.info("guardarTag[FIN] se encontraron errores de validación: {}", rtdo);
+            return Respuesta.of(rtdo);
+        }
+        
+        libroBloqueoPO.getTag(tag);
+        rtdo.addMensaje(this.getClass(), "Registro guardado con éxito");
+
+        logger.info("guardarTag[INI] registro guardado con éxito: {}", tag);
+        return Respuesta.of(rtdo);
+    }
+
+    @Override
+    public Respuesta<List<TagLibroTO>> guardarTags(List<TagLibroTO> tags) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<EnergiaLibroTO> guardarEnergia(LibroBloqueoTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<EnergiaLibroTO> getEnergia(EnergiaLibroTO pk)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
