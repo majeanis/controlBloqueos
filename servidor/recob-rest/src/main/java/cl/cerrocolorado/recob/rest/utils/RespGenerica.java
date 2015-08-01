@@ -1,5 +1,6 @@
 package cl.cerrocolorado.recob.rest.utils;
 
+import cl.cerrocolorado.recob.utils.Mensaje;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
@@ -60,4 +61,16 @@ public class RespGenerica
 		rtdo.addException(clazz, exception);
 		return new RespGenerica(rtdo,null);
 	}
+
+  	public static RespGenerica of(Class<?> clazz, Mensaje mensaje)
+	{
+    	Resultado rtdo = new ResultadoProceso();
+		rtdo.addMensaje(mensaje);
+		return new RespGenerica(rtdo,null);
+	}
+
+    public static RespGenerica exitosa()
+    {
+		return new RespGenerica(new ResultadoProceso(),null);
+    }
 }

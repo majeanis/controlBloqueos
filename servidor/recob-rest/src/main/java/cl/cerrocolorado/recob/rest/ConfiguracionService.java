@@ -23,6 +23,7 @@ import cl.cerrocolorado.recob.to.CandadoTO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.EquipoTagsTO;
+import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
 import cl.cerrocolorado.recob.to.TagTO;
 import cl.cerrocolorado.recob.to.TrabajadorTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
@@ -31,6 +32,7 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Rut;
+import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.ws.rs.PathParam;
@@ -419,7 +421,7 @@ public class ConfiguracionService
             if( equipo == null )
             {
                 logger.info ("guardarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
-                return null;
+                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Equipo"));
             }
             if( jsonTags != null )
             {
@@ -609,7 +611,7 @@ public class ConfiguracionService
             if( empresa == null )
             {
                 logger.info ("guardarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
-                return null;
+                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Empresa"));
             }
             
             logger.debug("guardarEmpresa[001] después de parsear el JSON: {}", empresa);
@@ -718,7 +720,7 @@ public class ConfiguracionService
             if( trabajador == null )
             {
                 logger.info ("guardarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
-                return null;
+                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Trabajador"));
             }
 
             Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().guardar(trabajador);
@@ -779,6 +781,48 @@ public class ConfiguracionService
         }
 
         logger.info("verTrabajadores[FIN] código de acción inválido: {}", accion);
+        return null;
+    }
+
+    
+    @Path("funcionesBloqueo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verFuncionesBloqueo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("accion") Integer accion)
+    {
+        logger.info ("verFuncionesBloqueo[INI] token: {}", tokenUbicacion);
+        logger.info ("verFuncionesBloqueo[INI] accion: {}", accion);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verFuncionesBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            switch( accion )
+            {
+                case VER_TODOS:
+                    Respuesta<List<FuncionBloqueoTO>> r1 = FactoryBO.getUbicacionBO().getFunciones(Optional.empty());
+                    logger.info("verFuncionesBloqueo[FIN] retorno de todos los registros: {}", r1.getResultado());
+                    return RespGenerica.of(r1);
+
+                case VER_VIGENTES:
+                    Respuesta<List<FuncionBloqueoTO>> r2 = FactoryBO.getUbicacionBO().getFunciones(Optional.of(Boolean.TRUE));
+                    logger.info("verFuncionesBloqueo[FIN] retorno de registros vigentes: {}", r2.getResultado());
+                    return RespGenerica.of(r2);
+            }
+        } catch(Exception e)
+        {
+            logger.error("verFuncionesBloqueo[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+
+        logger.info("verFuncionesBloqueo[FIN] código de acción inválido: {}", accion);
         return null;
     }
 }

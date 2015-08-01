@@ -2,10 +2,16 @@ package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
+import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,5 +66,21 @@ public class UbicacionBean implements UbicacionBO
         
         logger.info ("validarToken[FIN] resultado validación: {}-{}", rtdo, ubicacion );
         return Respuesta.of(rtdo,ubicacion);
+    }
+
+    @Override
+    public Respuesta<List<FuncionBloqueoTO>> getFunciones(Optional<Boolean> vigencia)
+    {
+        logger.info("getFunciones[INI] vigencia: {}", vigencia);
+        Resultado rtdo = new ResultadoProceso();
+        
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("vigencia", vigencia.orElse(null));
+        
+        List<FuncionBloqueoTO> lista = ubicacionPO.getFunciones(vigencia);
+        rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
+
+        logger.info("getFunciones[FIN] cantidad de registros retornados: {}", lista.size());
+        return Respuesta.of(rtdo,lista);
     }
 }

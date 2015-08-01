@@ -1,7 +1,9 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -9,22 +11,34 @@ import java.util.Date;
  */
 public class LibroBloqueoTO extends EntidadTO
 {
-
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    @JsonIgnore
+    private UbicacionTO ubicacion;
+    
+    private String id;
     private Integer numero;
     private Date fecha;
     private Boolean cerrado;
     private Date fechaCierre;
     private CajaBloqueoTO caja;
 
-    public Integer getId()
+    public UbicacionTO getUbicacion()
+    {
+        return ubicacion;
+    }
+
+    public void setUbicacion(UbicacionTO ubicacion)
+    {
+        this.ubicacion = ubicacion;
+    }
+
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }
@@ -82,6 +96,8 @@ public class LibroBloqueoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id == null || id == 0) || (numero==null || numero == 0 || caja == null || caja.isKeyBlank());
+        if( !StringUtils.isBlank(id) ) 
+            return false;
+        return numero==null || numero == 0 || caja == null || caja.isKeyBlank();
     }
 }

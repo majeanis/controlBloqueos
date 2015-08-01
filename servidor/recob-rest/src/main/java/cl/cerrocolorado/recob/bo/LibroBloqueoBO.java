@@ -21,37 +21,28 @@ import java.util.Optional;
 public interface LibroBloqueoBO
 {
     public Respuesta<LibroBloqueoTO> guardar(LibroBloqueoTO libro) throws Exception;
-
     public Respuesta<LibroBloqueoTO> get(LibroBloqueoTO pk);
-
+    public Respuesta<LibroBloqueoInfoTO> guardarLibro(LibroBloqueoInfoTO libro) throws Exception;;
     public Respuesta<LibroBloqueoInfoTO> getLibro(LibroBloqueoTO pk);
-    
-    public Respuesta<List<LibroBloqueoTO>> getVigentes(CajaBloqueoTO pk,
-                                                       Optional<Date> fechaLibro);
+    public Respuesta<List<LibroBloqueoTO>> getVigentes(CajaBloqueoTO pk, Optional<Date> fechaLibro);
+    public Respuesta<List<LibroBloqueoTO>> getCerrados(CajaBloqueoTO pk, Optional<Date> fechaCierre);
 
-    public Respuesta<List<LibroBloqueoTO>> getCerrados(CajaBloqueoTO pk,
-                                                       Optional<Date> fechaCierre);
+    public Respuesta<TagLibroTO> getTag(TagLibroTO pk);
+    public Respuesta<TagLibroTO> guardarTag(TagLibroTO tag) throws Exception;
+    public Respuesta<List<TagLibroTO>> getTags(LibroBloqueoTO pk, Optional<Boolean> energiaCero);
+    public Respuesta<List<TagLibroTO>> guardarTags(List<TagLibroTO> tags) throws Exception;
+    public Resultado eliminarTag(TagLibroTO pk) throws Exception;
     
-    public Respuesta<List<TagLibroTO>> getTags(LibroBloqueoTO pk,
-                                               Optional<Boolean> energiaCero);
-    
-    public Respuesta<TagLibroTO> agregarTag(TagLibroTO tag);
-
-    public Resultado eliminarTag(TagLibroTO pk);
-    
+    public Respuesta<EnergiaLibroTO> guardarEnergia(LibroBloqueoTO pk);
+    public Respuesta<EnergiaLibroTO> getEnergia(EnergiaLibroTO pk);
     public Respuesta<List<EnergiaLibroTO>> getEnergias(LibroBloqueoTO pk);
+    public Respuesta<List<EnergiaLibroTO>> guardarEnergias(List<EnergiaLibroTO> energias) throws Exception;;
+    public Resultado eliminarEnergia(EnergiaLibroTO pk) throws Exception;;
     
-    public Respuesta<EnergiaLibroTO> agregarEnergia(EnergiaLibroTO energia);
-    
-    public Resultado eliminarEnergia(EnergiaLibroTO pk);
-
     public Respuesta<List<DotacionLibroTO>> getDotaciones(LibroBloqueoTO pk);
-
-    public Respuesta<DotacionLibroTO> guardarDotacion(DotacionLibroTO dotacion);
-    
+    public Respuesta<DotacionLibroTO> guardarDotacion(DotacionLibroTO dotacion) throws Exception;;
     public Resultado eliminarDotacion(DotacionLibroTO pk);
     
     public Respuesta<List<RespLibroTO>> getResponsables(LibroBloqueoTO pk);
-    
-    public Respuesta<RespLibroTO> asignarResponsable(RespLibroTO responsable);
+    public Respuesta<RespLibroTO> asignarResponsable(RespLibroTO responsable) throws Exception;;
 }

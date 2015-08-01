@@ -4,6 +4,7 @@ import cl.cerrocolorado.recob.bo.CajaBloqueoBO;
 import cl.cerrocolorado.recob.bo.CandadoBO;
 import cl.cerrocolorado.recob.bo.EmpresaBO;
 import cl.cerrocolorado.recob.bo.EquipoBO;
+import cl.cerrocolorado.recob.bo.LibroBloqueoBO;
 import cl.cerrocolorado.recob.bo.TrabajadorBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 
@@ -41,4 +42,10 @@ public class FactoryBO
     {
         return (EquipoBO) BeansFactory.getBean("equipoBO");
     }
+
+    public static LibroBloqueoBO getLibroBloqueoBO()
+    {
+        return (LibroBloqueoBO) BeansFactory.getBean("libroBloqueoBO");
+    }
+
 }

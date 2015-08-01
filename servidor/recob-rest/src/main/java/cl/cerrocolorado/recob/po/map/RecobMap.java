@@ -6,6 +6,7 @@ import cl.cerrocolorado.recob.to.DotacionLibroTO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.to.EnergiaLibroTO;
 import cl.cerrocolorado.recob.to.EquipoTO;
+import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
 import cl.cerrocolorado.recob.to.LibroBloqueoTO;
 import cl.cerrocolorado.recob.to.PersonaTO;
 import cl.cerrocolorado.recob.to.RespLibroTO;
@@ -115,12 +116,14 @@ public interface RecobMap
     public void updateLibro(LibroBloqueoTO libro);
     public void deleteLibro(LibroBloqueoTO libro);
     public int  childsLibro(LibroBloqueoTO libro);
+    public int  selectNumeroLibro();
     public List<LibroBloqueoTO> selectLibros(Map<String,Object> parms);
     
     /* 
      * Manipulación de TAGs en Libros de Bloqueo
      */
     public void insertTagLibro(TagLibroTO tag);
+    public void updateTagLibro(TagLibroTO tag);
     public void deleteTagLibro(TagLibroTO tag);
     public List<TagLibroTO> selectTagsLibro(Map<String,Object> parms);
 
@@ -146,4 +149,8 @@ public interface RecobMap
     public void updateRespLibro(RespLibroTO responsable);
     public List<RespLibroTO> selectRespLibro(Map<String,Object> parms);
 
+    /*
+     * Manipulación de Funciones de Bloqueo
+     */
+    public List<FuncionBloqueoTO> selectFuncionesBloqueo(Map<String,Object> parms);
 }

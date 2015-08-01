@@ -66,8 +66,8 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         
         Map<String, Object> parms = new HashMap<>();
         parms.put( "libro", pk );
-        parms.put( "ubicacion", pk.getCaja().getUbicacion());
-
+        parms.put( "ubicacion", pk.getUbicacion());
+        
         logger.debug("get[001] parametros: {}", parms);
         
         List<LibroBloqueoTO> lista = mapper.selectLibros( parms );
@@ -157,7 +157,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
-        parms.put("energiaCero", energiaCero.orElse(true));
+        parms.put("energiaCero", energiaCero.orElse(null));
         logger.debug("getTags[001] parámetros de la consulta: {}", parms);
 
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
@@ -172,7 +172,8 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk.getLibro());
-        parms.put("tag", pk);
+        parms.put("tag", pk.getTag());
+        parms.put("id", pk.getId());
         
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
         if(lista.isEmpty())
@@ -261,8 +262,14 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("guardarTag[INI] tag: {}", pk);
         
-        mapper.insertTagLibro(pk);
-        
+        if(pk.getId()==null)
+        {
+            mapper.insertTagLibro(pk);
+        } else
+        {
+            mapper.updateTagLibro(pk);
+        }    
+            
         logger.info ("guardarTag[FIN] registro guardado con éxito: {}", pk);
         return pk;
     }
@@ -364,5 +371,14 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("getRespLibroVigente[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
-
+    
+    public int getNumeroLibro()
+    {
+        logger.info("getNumeroLibro[INI]");
+        
+        int numero = mapper.selectNumeroLibro();
+        
+        logger.info("getNumeroLibro[FIN] numero: {}", numero);
+        return numero;
+    }
 }
