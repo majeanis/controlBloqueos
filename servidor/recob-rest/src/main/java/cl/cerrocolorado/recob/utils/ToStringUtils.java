@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Formatter;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -118,6 +119,17 @@ public class ToStringUtils
         return textoFormateado;
     }
 
+    /**
+     * Formatea al estilo printf del C++
+     * @param textoBase
+     * @param valores
+     * @return 
+     */
+    public String format(String textoBase, Object... valores)
+    {
+        return new Formatter().format(textoBase, valores).toString();
+    }
+    
     /**
      * Permite generar un String en base a la concatenación de distintos valores
      * dados, usando un caracter también dado como parámetro.
