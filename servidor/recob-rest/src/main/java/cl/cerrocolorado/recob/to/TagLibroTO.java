@@ -69,6 +69,12 @@ public class TagLibroTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) || (libro==null || libro.isKeyBlank() || tag == null || tag.isKeyBlank());
+        return isIdBlank() && (libro==null || libro.isKeyBlank() || tag == null || tag.isKeyBlank());
+    }
+
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }

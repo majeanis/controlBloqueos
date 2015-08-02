@@ -12,4 +12,11 @@ public abstract class EntidadTO extends BaseTO
      */
     @JsonIgnore
     public abstract boolean isKeyBlank();
+
+    /**
+     * Determina si el campo Id está en NULL o en Cero
+     * @return 
+     */
+    @JsonIgnore
+    public abstract boolean isIdBlank();
 }

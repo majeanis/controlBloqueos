@@ -81,6 +81,12 @@ public class ResponsableTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && (persona == null || persona.isKeyBlank() || fechaIngreso == null);
+        return isIdBlank() && (persona == null || persona.isKeyBlank() || fechaIngreso == null);
+    }
+
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }

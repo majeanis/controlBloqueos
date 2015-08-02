@@ -23,4 +23,10 @@ public class EnergiaLibroTO extends EnergiaTO
     {
         return libro == null || libro.isKeyBlank() || super.isKeyBlank();
     }
+
+    @Override
+    public boolean isIdBlank()
+    {
+        return super.isIdBlank();
+    }
 }

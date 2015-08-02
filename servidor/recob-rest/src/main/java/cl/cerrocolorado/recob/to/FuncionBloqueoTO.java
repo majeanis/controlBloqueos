@@ -58,6 +58,12 @@ public class FuncionBloqueoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0);
+        return isIdBlank();
+    }
+    
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }

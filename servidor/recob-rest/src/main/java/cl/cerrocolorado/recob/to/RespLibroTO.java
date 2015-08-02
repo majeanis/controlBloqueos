@@ -69,6 +69,12 @@ public class RespLibroTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (libro == null || libro.isKeyBlank()) || (trabajador==null || trabajador.isKeyBlank());
+        return isIdBlank() && (libro == null || libro.isKeyBlank()) || (trabajador==null || trabajador.isKeyBlank());
+    }
+
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }

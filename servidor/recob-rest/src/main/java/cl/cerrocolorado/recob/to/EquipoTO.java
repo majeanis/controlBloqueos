@@ -60,7 +60,12 @@ public class EquipoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id == null || id==0) && (StringUtils.isBlank(codigo) || ubicacion == null || ubicacion.isKeyBlank());
+        return isIdBlank() && (StringUtils.isBlank(codigo) || ubicacion == null || ubicacion.isKeyBlank());
     }    
 
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
+    }
 }

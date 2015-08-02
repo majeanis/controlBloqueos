@@ -93,6 +93,12 @@ public class TagTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && (numero==null || numero==0 || equipo.isKeyBlank());
+        return isIdBlank() && (numero==null || numero==0 || equipo.isKeyBlank());
+    }
+
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }

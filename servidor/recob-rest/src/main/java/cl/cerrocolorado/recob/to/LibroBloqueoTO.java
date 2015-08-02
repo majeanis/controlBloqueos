@@ -96,8 +96,13 @@ public class LibroBloqueoTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        if( !StringUtils.isBlank(id) ) 
-            return false;
-        return numero==null || numero == 0 || caja == null || caja.isKeyBlank();
+        return isIdBlank() && (numero == 0 || caja == null || caja.isKeyBlank());
     }
+    
+    @Override
+    public boolean isIdBlank()
+    {
+        return StringUtils.isBlank(id);
+    }
+
 }

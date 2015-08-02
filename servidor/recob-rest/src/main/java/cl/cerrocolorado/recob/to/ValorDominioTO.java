@@ -64,6 +64,12 @@ public class ValorDominioTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return (id==null || id==0) && StringUtils.isBlank(codigo);
+        return isIdBlank() && StringUtils.isBlank(codigo);
+    }
+    
+    @Override
+    public boolean isIdBlank()
+    {
+        return id==null || id==0;
     }
 }
