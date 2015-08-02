@@ -79,7 +79,7 @@ public class ConfiguracionService
             switch( accion )
             {
                 case VER_TODOS:
-                    Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,null);
+                    Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,Optional.empty());
                     logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
                     return RespGenerica.of(r1);
 
@@ -210,7 +210,7 @@ public class ConfiguracionService
             switch( accion )
             {
                 case VER_TODOS:
-                    Respuesta<List<CandadoTO>> r1 = FactoryBO.getCandadoBO().getTodos(ubicacion,null);
+                    Respuesta<List<CandadoTO>> r1 = FactoryBO.getCandadoBO().getTodos(ubicacion,Optional.empty());
                     logger.info("verCandados[FIN] retorno de todos los registros: {}", r1);
                     return RespGenerica.of(r1);
 
@@ -368,7 +368,7 @@ public class ConfiguracionService
             switch( accion )
             {
                 case VER_TODOS:
-                    Respuesta<List<EquipoTO>> r1 = FactoryBO.getEquipoBO().getTodos(ubicacion,null);
+                    Respuesta<List<EquipoTO>> r1 = FactoryBO.getEquipoBO().getTodos(ubicacion,Optional.empty());
                     logger.info("verEquipos[FIN] retorno de todos los registros: {}", r1);
                     return RespGenerica.of(r1);
 
@@ -509,7 +509,7 @@ public class ConfiguracionService
             switch( accion )
             {
                 case VER_TODOS:
-                    Respuesta<List<TagTO>> r1 = FactoryBO.getEquipoBO().getTagsTodos(pkEquipo,null);
+                    Respuesta<List<TagTO>> r1 = FactoryBO.getEquipoBO().getTagsTodos(pkEquipo,Optional.empty());
                     logger.info("verTags[FIN] retorno de todos los registros: {}", r1);
                     return RespGenerica.of(r1);
 
