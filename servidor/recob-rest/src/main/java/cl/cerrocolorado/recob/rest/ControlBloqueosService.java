@@ -47,27 +47,22 @@ public class ControlBloqueosService
         ubicacionBO = FactoryBO.getUbicacionBO();
     }
 
-    @Path("{numeroCaja}/libros")
+    @Path("{numeroCaja}/libros/abiertos")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public RespGenerica verLibros(
+    public RespGenerica verLibrosAbiertos(
             @HeaderParam("token") String tokenUbicacion,
             @PathParam  ("numeroCaja") Integer numeroCaja,
-            @QueryParam ("accion") Integer accion,
-    		@QueryParam ("numeroLibro") Integer numeroLibro,
-            @QueryParam ("fecha") Date fecha
-    )
+            @QueryParam ("fechaInicial") Date fechaInicial)
     {
-    	logger.info ("verLibros[INI] token: {}", tokenUbicacion);
-    	logger.info ("verLibros[INI] accion: {}", accion);
-        logger.info ("verLibros[INI] numeroCaja: {}", numeroCaja);
-        logger.info ("verLibros[INI] numeroLibro: {}", numeroLibro);
-        logger.info ("verLibros[INI] fecha: {}", fecha);
+    	logger.info ("verLibrosAbiertos[INI] token: {}", tokenUbicacion);
+        logger.info ("verLibrosAbiertos[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("verLibrosAbiertos[INI] fechaInicial: {}", fechaInicial);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("verLibro[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("verLibrosAbiertos[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -77,38 +72,53 @@ public class ControlBloqueosService
             CajaBloqueoTO caja = new CajaBloqueoTO();
             caja.setUbicacion(ubicacion);
             caja.setNumero(numeroCaja);
-            logger.info("verLibros[001] objeto caja con el que se buscará el libro: {}", caja);
+            logger.debug("verLibrosAbiertos[001] objeto caja con el que se buscará el libro: {}", caja);
 
-            switch( accion )
-            {
-                case VER_CERRADOS:
-                    Respuesta<List<LibroBloqueoTO>> r1 = FactoryBO.getLibroBloqueoBO().getCerrados(caja, Optional.ofNullable(fecha));
-                    logger.info("verLibros[FIN] retorno de todos los registros: {}", r1);
-                    return RespGenerica.of(r1);
-
-                case VER_VIGENTES:
-                    Respuesta<List<LibroBloqueoTO>> r2 = FactoryBO.getLibroBloqueoBO().getVigentes(caja, Optional.ofNullable(fecha));
-                    logger.info("verLibros[FIN] retorno de registros vigentes: {}", r2);
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    LibroBloqueoTO libro = new LibroBloqueoTO();
-                    libro.setUbicacion(ubicacion);
-                    libro.setCaja(caja);
-                    libro.setNumero(numeroLibro);
-                    Respuesta<LibroBloqueoTO> r3 = FactoryBO.getLibroBloqueoBO().get(libro);
-
-                    logger.info("verLibros[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            Respuesta<List<LibroBloqueoTO>> r = FactoryBO.getLibroBloqueoBO().getVigentes(caja, Optional.ofNullable(fechaInicial));
+            logger.info("verLibrosAbiertos[FIN] retorno de registros vigentes: {}", r);
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
-            logger.error("verLibros[ERR] exception: ", e);
+            logger.error("verLibrosAbiertos[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
+    }
 
-        logger.info("verCajasBloqueo[FIN] código de acción inválido: {}", accion);
-        return null;
+    @Path("{numeroCaja}/libros/cerrados")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verLibrosCerrados(
+            @HeaderParam("token") String tokenUbicacion,
+            @PathParam  ("numeroCaja") Integer numeroCaja,
+            @QueryParam ("fechaInicial") Date fechaInicial)
+    {
+    	logger.info ("verLibrosCerrados[INI] token: {}", tokenUbicacion);
+        logger.info ("verLibrosCerrados[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("verLibrosCerrados[INI] fechaInicial: {}", fechaInicial);
+        
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verLibrosCerrados[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            CajaBloqueoTO caja = new CajaBloqueoTO();
+            caja.setUbicacion(ubicacion);
+            caja.setNumero(numeroCaja);
+            logger.debug("verLibrosCerrados[001] objeto caja con el que se buscará el libro: {}", caja);
+
+            Respuesta<List<LibroBloqueoTO>> r = FactoryBO.getLibroBloqueoBO().getCerrados(caja, Optional.ofNullable(fechaInicial));
+            logger.info("verLibrosCerrados[FIN] retorno de registros vigentes: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verLibrosCerrados[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
     }
 
     @Path("{numeroCaja}/libros")
