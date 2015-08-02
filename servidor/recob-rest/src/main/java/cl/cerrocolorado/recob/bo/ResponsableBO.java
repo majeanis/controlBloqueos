@@ -16,7 +16,7 @@ public interface ResponsableBO
     public Respuesta<ResponsableTO> guardar(ResponsableTO responsable) throws Exception;
 
 	@Transaccional
-    public Resultado eliminar(ResponsableTO pk) throws Exception;
+    public Respuesta<ResponsableTO> eliminar(ResponsableTO pk) throws Exception;
 
     public Respuesta<ResponsableTO> getVigente(UbicacionTO pk);
 }

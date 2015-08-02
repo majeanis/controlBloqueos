@@ -17,7 +17,7 @@ public interface EmpresaBO
     public Respuesta<EmpresaTO> guardar(EmpresaTO empresa) throws Exception;
 
 	@Transaccional
-    public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception;
+    public Respuesta<EmpresaTO> eliminar(EmpresaTO pkEmpresa) throws Exception;
 
     public Respuesta<EmpresaTO> get(EmpresaTO pkEmpresa);
         

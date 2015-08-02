@@ -21,7 +21,7 @@ public interface CandadoBO
     public Respuesta<CandadoTO> guardar(CandadoTO candado) throws Exception; 
 
 	@Transaccional
-    public Resultado eliminar(CandadoTO pkCandado) throws Exception;
+    public Respuesta<CandadoTO> eliminar(CandadoTO pkCandado) throws Exception;
 
     public Respuesta<CandadoTO> get(CandadoTO pkCandado);
     

@@ -31,17 +31,17 @@ public interface LibroBloqueoBO
     public Respuesta<TagLibroTO> guardarTag(TagLibroTO tag) throws Exception;
     public Respuesta<List<TagLibroTO>> getTags(LibroBloqueoTO pk, Optional<Boolean> energiaCero);
     public Respuesta<List<TagLibroTO>> guardarTags(List<TagLibroTO> tags) throws Exception;
-    public Resultado eliminarTag(TagLibroTO pk) throws Exception;
+    public Respuesta<TagLibroTO> eliminarTag(TagLibroTO pk) throws Exception;
     
     public Respuesta<EnergiaLibroTO> guardarEnergia(LibroBloqueoTO pk);
     public Respuesta<EnergiaLibroTO> getEnergia(EnergiaLibroTO pk);
     public Respuesta<List<EnergiaLibroTO>> getEnergias(LibroBloqueoTO pk);
     public Respuesta<List<EnergiaLibroTO>> guardarEnergias(List<EnergiaLibroTO> energias) throws Exception;;
-    public Resultado eliminarEnergia(EnergiaLibroTO pk) throws Exception;;
+    public Respuesta<EnergiaLibroTO> eliminarEnergia(EnergiaLibroTO pk) throws Exception;;
     
     public Respuesta<List<DotacionLibroTO>> getDotaciones(LibroBloqueoTO pk);
     public Respuesta<DotacionLibroTO> guardarDotacion(DotacionLibroTO dotacion) throws Exception;;
-    public Resultado eliminarDotacion(DotacionLibroTO pk);
+    public Respuesta<DotacionLibroTO> eliminarDotacion(DotacionLibroTO pk);
     
     public Respuesta<List<RespLibroTO>> getResponsables(LibroBloqueoTO pk);
     public Respuesta<RespLibroTO> asignarResponsable(RespLibroTO responsable) throws Exception;;

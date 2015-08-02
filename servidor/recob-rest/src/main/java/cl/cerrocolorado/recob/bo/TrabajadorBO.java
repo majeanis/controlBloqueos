@@ -18,7 +18,7 @@ public interface TrabajadorBO
     public Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador) throws Exception;
 
 	@Transaccional
-    public Resultado eliminar(TrabajadorTO pkTrabajador) throws Exception;
+    public Respuesta<TrabajadorTO> eliminar(TrabajadorTO pkTrabajador) throws Exception;
 
     public Respuesta<TrabajadorTO> get(TrabajadorTO pkTrabajador);
 

@@ -154,7 +154,7 @@ public class CandadoBean implements CandadoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CandadoTO pkCandado) throws Exception
+    public Respuesta<CandadoTO> eliminar(CandadoTO pkCandado) throws Exception
     {
         logger.info ("eliminar[INI] candado: {}", pkCandado );
         Resultado rtdo = new ResultadoProceso();
@@ -163,7 +163,7 @@ public class CandadoBean implements CandadoBO
         {
             logger.info("eliminar[FIN] pkCandado llego en NULL");
         	rtdo.addError(this.getClass(), "Debe informar el candado que desea eliminar" );
-        	return rtdo;
+        	return Respuesta.of(rtdo);
         }
         if( pkCandado.getNumero() == null )
         {
@@ -179,14 +179,14 @@ public class CandadoBean implements CandadoBO
         {
             rtdo.addError(this.getClass(), "No existe Candado con N° #{1}", String.valueOf(pkCandado.getNumero()) );
             logger.info ("eliminar[FIN] no existe candado: {}", pkCandado );
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         if(!candadoPO.esEliminable(candado))
         {
             rtdo.addError(this.getClass(), "Candado tiene registros asociados" );
             logger.info ("eliminar[FIN] registro no puede ser eliminado");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         // Si llegamos a este punto, entonces es posible la eliminación
@@ -195,7 +195,7 @@ public class CandadoBean implements CandadoBO
         
         rtdo.addMensaje(this.getClass(), "Candado con N° de serie #{1} eliminado con éxito", candado.getSerie() );
         logger.info ("eliminar[FIN] candado eliminado con exito: {} {}", rtdo, candado );
-        return rtdo;
+        return Respuesta.of(rtdo,candado);
     }
     
     @Override

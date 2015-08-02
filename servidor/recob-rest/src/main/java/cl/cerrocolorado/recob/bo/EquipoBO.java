@@ -22,9 +22,9 @@ public interface EquipoBO
 
     public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception;
 
-    public Resultado eliminar(EquipoTO pk) throws Exception;
+    public Respuesta<EquipoTO> eliminar(EquipoTO pk) throws Exception;
 
-    public Resultado eliminarTag(TagTO pk) throws Exception;
+    public Respuesta<TagTO> eliminarTag(TagTO pk) throws Exception;
     
     public Respuesta<EquipoTagsTO> get(EquipoTO pk);
 

@@ -125,7 +125,7 @@ public class ResponsableBean implements ResponsableBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(ResponsableTO pk) throws Exception
+    public Respuesta<ResponsableTO> eliminar(ResponsableTO pk) throws Exception
     {
         logger.info ("eliminar[INI] pkResponsable: {}", pk );
         Resultado rtdo = new ResultadoProceso();
@@ -134,7 +134,7 @@ public class ResponsableBean implements ResponsableBO
         {
         	rtdo.addError(this.getClass(), "Debe informar la identificación del Responsable" );
         	logger.info( "eliminar[FIN] no se informaron todos los filtros: {}", pk );
-        	return rtdo;
+        	return Respuesta.of(rtdo);
         }
         
         ResponsableTO resp = responsablePO.get(pk);
@@ -142,14 +142,14 @@ public class ResponsableBean implements ResponsableBO
         {
             rtdo.addError(this.getClass(), "No existe Responsable #{1}", pk.getPersona().getRut().toText() );
             logger.info ("eliminar[FIN] no existe el responsable: {}", pk );
-            return rtdo;
+            return Respuesta.of(rtdo);
         } 
         
         if(!responsablePO.esEliminable(resp))
         {
             rtdo.addError(this.getClass(), "Responsable tiene registros asociados" );
             logger.info ("eliminar[FIN] registro no puede ser eliminado");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         responsablePO.eliminar(resp);
@@ -157,7 +157,7 @@ public class ResponsableBean implements ResponsableBO
         
         rtdo.addMensaje(this.getClass(), "Responsable #{1} eliminada con éxito", resp.getEmpresa().getRut().toText() );
         logger.info ("eliminar[FIN] responsable eliminado con exito: {} {}", rtdo, resp );
-        return rtdo;
+        return Respuesta.of(rtdo,resp);
     }
     
     @Override

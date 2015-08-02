@@ -154,17 +154,16 @@ public class ConfiguracionService
         }
     }
 
-    @Path("cajasBloqueo")
+    @Path("cajasBloqueo/{numero}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("numero") Integer numeroCaja)
+    		@PathParam("numero") Integer numeroCaja)
     {
         logger.info ("eliminarCajaBloqueo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
-
+        
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
@@ -179,7 +178,7 @@ public class ConfiguracionService
             caja.setNumero(numeroCaja);
             caja.setUbicacion(ubicacion);
 
-            Resultado r = FactoryBO.getCajaBloqueoBO().eliminar(caja);
+            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().eliminar(caja);
             
             logger.info("eliminarCajaBloqueo[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -285,13 +284,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("candados")
+    @Path("candados/{numero}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarCandado(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("numero") Integer numeroCandado)
+    		@PathParam("numero") Integer numeroCandado)
     {
         logger.info ("eliminarCandado[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCandado[INI] numeroCandado: {}", numeroCandado);
@@ -310,7 +308,7 @@ public class ConfiguracionService
             candado.setNumero(numeroCandado);
             candado.setUbicacion(ubicacion);
 
-            Resultado r = FactoryBO.getCandadoBO().eliminar(candado);
+            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().eliminar(candado);
             
             logger.info("eliminarCandado[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -447,13 +445,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("equipos")
+    @Path("equipos/{codigo}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("codigo") String codigoEquipo)
+    		@PathParam("codigo") String codigoEquipo)
     {
         logger.info ("eliminarEquipo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEquipo[INI] codigoEquipo: {}", codigoEquipo);
@@ -472,7 +469,7 @@ public class ConfiguracionService
             equipo.setCodigo(codigoEquipo);
             equipo.setUbicacion(ubicacion);
         
-            Resultado r = FactoryBO.getEquipoBO().eliminar(equipo);
+            Respuesta<EquipoTO> r = FactoryBO.getEquipoBO().eliminar(equipo);
             
             logger.info("eliminarEquipo[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -631,13 +628,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("empresas")
+    @Path("empresas/{rut}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarEmpresa(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("rut") String rutEmpresa)
+    		@PathParam("rut") String rutEmpresa)
     {
         logger.info ("eliminarEmpresa[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEmpresa[INI] rutEmpresa: {}", rutEmpresa);
@@ -654,7 +650,7 @@ public class ConfiguracionService
             EmpresaTO empresa = new EmpresaTO();
             empresa.setRut(Rut.valueOf(rutEmpresa));
         
-            Resultado r = FactoryBO.getEmpresaBO().eliminar(empresa);
+            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().eliminar(empresa);
             
             logger.info("eliminarEmpresa[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -665,13 +661,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("trabajadores")
+    @Path("trabajadores/{rut}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarTrabajador(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("rut") String rutTrabajador)
+    		@PathParam("rut") String rutTrabajador)
     {
         logger.info ("eliminarTrabajador[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarTrabajador[INI] rutEmpresa: {}", rutTrabajador);
@@ -688,7 +683,7 @@ public class ConfiguracionService
             TrabajadorTO trabajador = new TrabajadorTO();
             trabajador.setRut(Rut.valueOf(rutTrabajador));
         
-            Resultado r = FactoryBO.getTrabajadorBO().eliminar(trabajador);
+            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().eliminar(trabajador);
             
             logger.info("eliminarTrabajador[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);

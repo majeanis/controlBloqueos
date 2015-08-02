@@ -82,7 +82,7 @@ public class EmpresaBean implements EmpresaBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(EmpresaTO pkEmpresa) throws Exception
+    public Respuesta<EmpresaTO> eliminar(EmpresaTO pkEmpresa) throws Exception
     {
         logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
         Resultado rtdo = new ResultadoProceso();
@@ -91,30 +91,30 @@ public class EmpresaBean implements EmpresaBO
         {
         	rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa" );
         	logger.info("eliminar[FIN] no se eliminó por fallas en validación", rtdo);
-        	return rtdo;
+        	return Respuesta.of(rtdo);
         }
         
-        EmpresaTO otra = empresaPO.get(pkEmpresa);
-        if( otra == null )
+        EmpresaTO empresa = empresaPO.get(pkEmpresa);
+        if( empresa == null )
         {
             rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: #{1}", String.valueOf( pkEmpresa.getRut() ) );
             logger.info ("eliminar[FIN] no existe el registro: {}", pkEmpresa );
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
-        if(!empresaPO.esEliminable(otra))
+        if(!empresaPO.esEliminable(empresa))
         {
             rtdo.addError(this.getClass(), "Empresa tiene registros asociados" );
             logger.info ("eliminar[FIN] registro no puede ser eliminado");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
-        empresaPO.eliminar(otra);
-        logger.debug("eliminar[001] despues de eliminar el registro: {}", otra );
+        empresaPO.eliminar(empresa);
+        logger.debug("eliminar[001] despues de eliminar el registro: {}", empresa );
         
         rtdo.addMensaje(EmpresaBean.class, "Empresa RUT: #{1} eliminada con éxito", pkEmpresa.getRut().toText() );
-        logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, otra );
-        return rtdo;
+        logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, empresa );
+        return Respuesta.of(rtdo,empresa);
     }
     
     @Override

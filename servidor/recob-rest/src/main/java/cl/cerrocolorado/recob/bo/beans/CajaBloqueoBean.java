@@ -106,16 +106,16 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(CajaBloqueoTO pkCaja) throws Exception
+    public Respuesta<CajaBloqueoTO> eliminar(CajaBloqueoTO pkCaja) throws Exception
     {
         logger.info ("eliminar[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
         
         if( pkCaja == null || pkCaja.isKeyBlank() )
         {
-        	rtdo.addError(this.getClass(),  "Debe informar la identificación de la caja" );
+        	rtdo.addError(this.getClass(), "Debe informar la identificación de la caja" );
         	logger.info( "eliminar[FIN] no se informaron todos los filtros: {}", pkCaja );
-        	return rtdo;
+        	return Respuesta.of(rtdo);
         }
         
         CajaBloqueoTO caja = cajaPO.get(pkCaja);
@@ -123,14 +123,14 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         {
             rtdo.addError(this.getClass(), "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
             logger.info ("eliminar[FIN] no existe caja: {}", pkCaja );
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         if(!cajaPO.esEliminable(caja))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
             logger.info ("eliminar[FIN] registro no puede ser eliminado");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         cajaPO.eliminar(caja);
@@ -138,7 +138,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         
         rtdo.addMensaje(this.getClass(), "Caja N° #{1} eliminada con éxito", String.valueOf( caja.getNumero() ) );
         logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, caja );
-        return rtdo;
+        return Respuesta.of(rtdo,caja);
     }
     
     @Override

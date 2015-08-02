@@ -256,7 +256,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
 
     @Override
     @Transaccional
-    public Resultado eliminarTag(TagLibroTO pk) throws Exception
+    public Respuesta<TagLibroTO> eliminarTag(TagLibroTO pk) throws Exception
     {
         logger.info ("eliminarTag[INI] pk: {}", pk);
         
@@ -265,7 +265,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(),  "Debe informar la identificaión del tag");
             logger.info("eliminarTag[FIN] no se informó la identificación del tag: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         TagLibroTO tag = libroBloqueoPO.getTag(pk);
@@ -273,14 +273,14 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getTag().getNumero()));
             logger.info("eliminarTag[FIN] no existe el TAG que se desea eliminar: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         libroBloqueoPO.eliminarTag(tag);
         rtdo.addMensaje(this.getClass(), "TAG eliminado con éxito");
         
         logger.info ("eliminarTag[FIN] pk: {}", pk);
-        return rtdo;
+        return Respuesta.of(rtdo,tag);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
 
     @Override
     @Transaccional
-    public Resultado eliminarEnergia(EnergiaLibroTO pk) throws Exception
+    public Respuesta<EnergiaLibroTO> eliminarEnergia(EnergiaLibroTO pk) throws Exception
     {
         logger.info("eliminarEnergia[INI] pk: {}", pk);
         
@@ -322,6 +322,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "Debe informar la identificación de la energía");
             logger.info("eliminarEnergia[FIN] no se informó completa la pk: {}", pk);
+            return Respuesta.of(rtdo);
         }
         
         EnergiaLibroTO energia = libroBloqueoPO.getEnergia(pk);
@@ -329,14 +330,14 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "No existe Energia: #{1}", pk.getNombre() );
             logger.info("eliminarEnergia[FIN] no existe registro de energía: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.eliminarEnergia(pk);
+        libroBloqueoPO.eliminarEnergia(energia);
         rtdo.addMensaje(this.getClass(), "Registro de la energía eliminado con éxito" );
 
         logger.info("eliminarEnergia[FIN] registro eliminado con éxito: {}", rtdo);
-        return rtdo;
+        return Respuesta.of(rtdo,energia);
     }
 
     @Override
@@ -369,7 +370,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
     
     @Override
     @Transaccional
-    public Resultado eliminarDotacion(DotacionLibroTO pk)
+    public Respuesta<DotacionLibroTO> eliminarDotacion(DotacionLibroTO pk)
     {
         logger.info("eliminarDotacion[INI] pk: {}", pk);
         
@@ -378,6 +379,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "Debe informar la identificación de la dotación");
             logger.info("eliminarDotacion[FIN] no se informó completa la pk: {}", pk);
+            return Respuesta.of(rtdo);
         }
         
         DotacionLibroTO dotacion = libroBloqueoPO.getDotacion(pk);
@@ -385,14 +387,14 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "No existe registro de dotacion: #{1}", pk.getTrabajador().getRut().toText() );
             logger.info("eliminarDotacion[FIN] no existe registro de dotacion: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.eliminarDotacion(pk);
+        libroBloqueoPO.eliminarDotacion(dotacion);
         rtdo.addMensaje(this.getClass(), "Registro de dotación eliminado con éxito" );
 
         logger.info("eliminarDotacion[FIN] registro eliminado con éxito: {}", rtdo);
-        return rtdo;
+        return Respuesta.of(rtdo,dotacion);
     }
 
     @Override

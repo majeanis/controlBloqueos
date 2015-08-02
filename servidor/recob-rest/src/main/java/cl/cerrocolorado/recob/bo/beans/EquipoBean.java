@@ -204,7 +204,7 @@ public class EquipoBean implements EquipoBO
     
     @Transaccional
     @Override
-    public Resultado eliminar(EquipoTO pk) throws Exception
+    public Respuesta<EquipoTO> eliminar(EquipoTO pk) throws Exception
     {
         logger.info ("eliminar[INI] pk: {}", pk);
         
@@ -214,7 +214,7 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "Debe informar identificación del equipo");
             logger.info("eliminar[FIN] no se informo la pk del equipo: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         EquipoTagsTO equipo = equipoPO.get(pk);
@@ -222,7 +222,7 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
             logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
     
         // Revisamos si es posible eliminar los TAGs
@@ -237,7 +237,7 @@ public class EquipoBean implements EquipoBO
         if(!rtdo.esExitoso())
         {
             logger.info("eliminar[FIN] se encontraron errores de validación");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         // Revisamos si es posible eliminar los TAGs
@@ -255,12 +255,12 @@ public class EquipoBean implements EquipoBO
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
 
         logger.info ("eliminar[FIN] registro eliminado con éxito: {}", equipo);
-        return rtdo;
+        return Respuesta.of(rtdo,equipo);
     }
 
     @Transaccional
     @Override
-    public Resultado eliminarTag(TagTO pk) throws Exception
+    public Respuesta<TagTO> eliminarTag(TagTO pk) throws Exception
     {
         logger.info ("eliminarTag[INI] pkTag: {}", pk);
         
@@ -269,7 +269,7 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "Debe informar identificación del TAG");
             logger.info ("eliminarTag[FIN] no se informó completa la pk: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         TagTO tag = equipoPO.getTag(pk);
@@ -277,21 +277,21 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getNumero()) );
             logger.info("eliminarTag[FIN] no existe el TAG: {}", pk);
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
         if( equipoPO.esTagEliminable(tag))
         {
             rtdo.addError(this.getClass(), "TAG tiene registros asociados");
             logger.info("eliminarTag[FIN] tag no es eliminable: {}", tag );
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         equipoPO.eliminarTag(tag);
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
         
         logger.info ("eliminarTag[FIN] registro elimiinado con éxito: {}", tag);        
-        return rtdo;
+        return Respuesta.of(rtdo,tag);
     }
 
     @Override

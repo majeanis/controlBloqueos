@@ -127,7 +127,7 @@ public class TrabajadorBean implements TrabajadorBO
     }
 
     @Override
-    public Resultado eliminar(TrabajadorTO pkTrabajador) throws Exception
+    public Respuesta<TrabajadorTO> eliminar(TrabajadorTO pkTrabajador) throws Exception
     {
         logger.info("eliminar[INI] pkTrabajador: {}", pkTrabajador);
 
@@ -137,41 +137,41 @@ public class TrabajadorBean implements TrabajadorBO
         {
             rtdo.addError(this.getClass(), "Debe informar al R.U.T. del trabajador");
             logger.info("eliminar[FIN] pkTrabajador llegó en NULL");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         // Si no se informa la Empresa entonces se elimina la relación que esté vigente
-        TrabajadorTO eliminar;
+        TrabajadorTO trabajador;
         if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
         {
-            eliminar = trabajadorPO.getVigente(pkTrabajador);
-            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", eliminar);
+            trabajador = trabajadorPO.getVigente(pkTrabajador);
+            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            eliminar = trabajadorPO.get(pkTrabajador);
-            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", eliminar);            
+            trabajador = trabajadorPO.get(pkTrabajador);
+            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 
-        if(eliminar==null)
+        if(trabajador==null)
         {
             rtdo.addError(this.getClass(), "No se encontró registro del Trabajador" );
             logger.info("eliminar[FIN] no se encontró registro eliminable");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
         
-        if(!trabajadorPO.esEliminable(eliminar))
+        if(!trabajadorPO.esEliminable(trabajador))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
             logger.info ("eliminar[FIN] registro no puede ser eliminado");
-            return rtdo;
+            return Respuesta.of(rtdo);
         }
 
         // Si llegamos a este punto, es posible eliminar al trabajador
-        trabajadorPO.eliminar(eliminar);
-        rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. #{1} eliminado con éxito", eliminar.getRut().toText() );
+        trabajadorPO.eliminar(trabajador);
+        rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. #{1} eliminado con éxito", trabajador.getRut().toText() );
 
         logger.info("eliminar[FIN] registro eliminado con éxito");
-        return rtdo;
+        return Respuesta.of(rtdo,trabajador);
     }
 
     @Override
