@@ -30,13 +30,11 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.ToStringUtils;
 import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
 import java.util.Arrays;
 import java.util.Optional;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.PathParam;
 
@@ -46,12 +44,7 @@ public class ConfiguracionService
     private static final Logger logger = LogManager.getLogger(ConfiguracionService.class);
     
     private static final UbicacionBO ubicacionBO;
-    // private static final String token = "ec4b8544-1c73-11e5-9840-080027465435";
 
-    private static final int VER_TODOS = 1;
-    private static final int VER_VIGENTES = 2;
-    private static final int VER_UNO = 3;
-    
     static
     {
         ubicacionBO = FactoryBO.getUbicacionBO();
@@ -62,12 +55,10 @@ public class ConfiguracionService
     @GET
     public RespGenerica verCajasBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@DefaultValue("0") @QueryParam("accion") Integer accion,
-    		@DefaultValue("0") @QueryParam("numero") Integer numeroCaja)
+    		@QueryParam("vigentes") Boolean vigentes)
     {
         logger.info ("verCajasBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("verCajasBloqueo[INI] accion: {}", accion);
-        logger.info ("verCajasBloqueo[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("verCajasBloqueo[INI] vigentes: {}", vigentes);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -79,35 +70,50 @@ public class ConfiguracionService
         try
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,Optional.empty());
-                    logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
-                    return RespGenerica.of(r1);
-
-                case VER_VIGENTES:
-                    Respuesta<List<CajaBloqueoTO>> r2 = FactoryBO.getCajaBloqueoBO().getVigentes(ubicacion);
-                    logger.info("verCajasBloqueo[FIN] retorno de registros vigentes: {}", r2);
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    CajaBloqueoTO caja = new CajaBloqueoTO();
-                    caja.setNumero(numeroCaja);
-                    caja.setUbicacion(ubicacion);
-                    Respuesta<CajaBloqueoTO> r3 = FactoryBO.getCajaBloqueoBO().get(caja);
-
-                    logger.info("verCajasBloqueo[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,vigencia);
+            
+            logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
+            return RespGenerica.of(r1);
         } catch(Exception e)
         {
             logger.error("verCajasBloqueo[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
+    }
 
-        logger.info("verCajasBloqueo[FIN] código de acción inválido: {}", accion);
-        return null;
+    @Path("cajasBloqueo/{numeroCaja}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verCajaBloqueo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@PathParam("numeroCaja") Integer numeroCaja)
+    {
+        logger.info ("verCajaBloqueo[INI] token: {}", tokenUbicacion);
+        logger.info ("verCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            CajaBloqueoTO caja = new CajaBloqueoTO();
+            caja.setUbicacion(ubicacion);
+            caja.setNumero(numeroCaja);
+            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().get(caja);
+
+            logger.info("verCajaBloqueo[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verCajaBloqueo[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
     }
 
     @Path("cajasBloqueo")
@@ -154,12 +160,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("cajasBloqueo/{numero}")
+    @Path("cajasBloqueo/{numeroCaja}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     public RespGenerica eliminarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@PathParam("numero") Integer numeroCaja)
+    		@PathParam("numeroCaja") Integer numeroCaja)
     {
         logger.info ("eliminarCajaBloqueo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
@@ -194,12 +200,10 @@ public class ConfiguracionService
     @GET
     public RespGenerica verCandados(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion,
-    		@QueryParam("numero") Integer numeroCandado)
+    		@QueryParam("vigentes") Boolean vigentes)
     {
         logger.info ("verCandados[INI] token: {}", tokenUbicacion);
-        logger.info ("verCandados[INI] accion: {}", accion);
-        logger.info ("verCandados[INI] numeroCandado: {}", numeroCandado);
+        logger.info ("verCandados[INI] vigentes: {}", vigentes);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -211,37 +215,52 @@ public class ConfiguracionService
         try
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<CandadoTO>> r1 = FactoryBO.getCandadoBO().getTodos(ubicacion,Optional.empty());
-                    logger.info("verCandados[FIN] retorno de todos los registros: {}", r1);
-                    return RespGenerica.of(r1);
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<CandadoTO>> r = FactoryBO.getCandadoBO().getTodos(ubicacion, vigencia);
 
-                case VER_VIGENTES:
-                    Respuesta<List<CandadoTO>> r2 = FactoryBO.getCandadoBO().getVigentes(ubicacion);
-                    logger.info("verCandados[FIN] retorno de registros vigentes: {}", r2);
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    CandadoTO candado = new CandadoTO();
-                    candado.setNumero(numeroCandado);
-                    candado.setUbicacion(ubicacion);
-                    Respuesta<CandadoTO> r3 = FactoryBO.getCandadoBO().get(candado);
-
-                    logger.info("verCandados[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            logger.info("verCandados[FIN] retorno de todos los registros: {}", r);
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verCandados[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
-
-        logger.info("verCandados[FIN] código de acción inválido: {}", accion);
-        return null;
     }
 
+    @Path("candados/{numeroCandado}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verCandado(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@PathParam("numeroCandado") Integer numeroCandado)
+    {
+        logger.info ("verCandado[INI] token: {}", tokenUbicacion);
+        logger.info ("verCandado[INI] numeroCandado: {}", numeroCandado);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            CandadoTO candado = new CandadoTO();
+            candado.setNumero(numeroCandado);
+            candado.setUbicacion(ubicacion);
+            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().get(candado);
+
+            logger.info("verCandado[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verCandado[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+    
     @Path("candados")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -284,12 +303,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("candados/{numero}")
+    @Path("candados/{numeroCandado}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     public RespGenerica eliminarCandado(
     		@HeaderParam("token") String tokenUbicacion,
-    		@PathParam("numero") Integer numeroCandado)
+    		@PathParam("numeroCandado") Integer numeroCandado)
     {
         logger.info ("eliminarCandado[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCandado[INI] numeroCandado: {}", numeroCandado);
@@ -336,9 +355,9 @@ public class ConfiguracionService
 
         try
         {
-            Respuesta<List<UsoCandadoTO>> r1 = FactoryBO.getCandadoBO().getUsosCandado(Optional.of(Boolean.TRUE));
-            logger.info("verUsosCandado[FIN] registros retornados: {}", r1);
-            return RespGenerica.of(r1);
+            Respuesta<List<UsoCandadoTO>> r = FactoryBO.getCandadoBO().getUsosCandado(Optional.of(Boolean.TRUE));
+            logger.info("verUsosCandado[FIN] registros retornados: {}", r);
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verUsosCandado[ERR] exception: ", e);
@@ -351,12 +370,10 @@ public class ConfiguracionService
     @GET
     public RespGenerica verEquipos(
     		@HeaderParam("token") String tokenUbicacion,
-            @QueryParam("accion") Integer accion,
-    		@QueryParam("codigo") String codigoEquipo)
+            @QueryParam("vigentes") Boolean vigentes)
     {
         logger.info ("verEquipos[INI] token: {}", tokenUbicacion);
-        logger.info ("verEquipos[INI] accion: {}", accion);
-        logger.info ("verEquipos[INI] codigoEquipo: {}", codigoEquipo);
+        logger.info ("verEquipos[INI] vigentes: {}", vigentes);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -368,34 +385,50 @@ public class ConfiguracionService
         try
         {
             UbicacionTO ubicacion = respUbic.getContenido().get();
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<EquipoTO>> r1 = FactoryBO.getEquipoBO().getTodos(ubicacion,Optional.empty());
-                    logger.info("verEquipos[FIN] retorno de todos los registros: {}", r1);
-                    return RespGenerica.of(r1);
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<EquipoTO>> r = FactoryBO.getEquipoBO().getTodos(ubicacion, vigencia);
 
-                case VER_VIGENTES:
-                    Respuesta<List<EquipoTO>> r2 = FactoryBO.getEquipoBO().getVigentes(ubicacion);
-                    logger.info("verEquipos[FIN] retorno de registros vigentes: {}", r2);
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    EquipoTO equipo = new EquipoTO();
-                    equipo.setCodigo(codigoEquipo);
-                    equipo.setUbicacion(ubicacion);
-                    Respuesta<EquipoTagsTO> r3 = FactoryBO.getEquipoBO().get(equipo);
-                    logger.info("verEquipos[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            logger.info("verEquipos[FIN] retorno de todos los registros: {}", r);
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verEquipos[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
+    }
 
-        logger.info("verEquipos[FIN] código de acción inválido: {}", accion);
-        return null;
+    @Path("equipos/{codigoEquipo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verEquipo(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@QueryParam("codigoEquipo") String codigoEquipo)
+    {
+        logger.info ("verEquipo[INI] token: {}", tokenUbicacion);
+        logger.info ("verEquipo[INI] codigoEquipo: {}", codigoEquipo);
+        
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().get();
+            EquipoTO equipo = new EquipoTO();
+            equipo.setCodigo(codigoEquipo);
+            equipo.setUbicacion(ubicacion);
+            Respuesta<EquipoTagsTO> r = FactoryBO.getEquipoBO().get(equipo);
+
+            logger.info("verEquipo[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verEquipo[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
     }
     
     @Path("equipos")
@@ -445,12 +478,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("equipos/{codigo}")
+    @Path("equipos/{codigoEquipo}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     public RespGenerica eliminarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@PathParam("codigo") String codigoEquipo)
+    		@PathParam("codigoEquipo") String codigoEquipo)
     {
         logger.info ("eliminarEquipo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEquipo[INI] codigoEquipo: {}", codigoEquipo);
@@ -480,19 +513,17 @@ public class ConfiguracionService
         }
     }
 
-    @Path("equipos/{idEquipo}/tags")
+    @Path("equipos/{codigoEquipo}/tags")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verTags(
     		@HeaderParam("token") String tokenUbicacion,
-            @PathParam("idEquipo") Integer idEquipo,
-    		@QueryParam("accion") Integer accion,
-    		@QueryParam("numero") Integer numeroTag)
+            @PathParam  ("codigoEquipo") String codigoEquipo,
+    		@QueryParam ("vigentes") Boolean vigentes)
     {
         logger.info ("verTags[INI] token: {}" , tokenUbicacion);
-        logger.info ("verTags[INI] idEquipo: {}", idEquipo);
-        logger.info ("verTags[INI] accion: {}", accion);
-        logger.info ("verTags[INI] numeroTag: {}", numeroTag);
+        logger.info ("verTags[INI] codigoEquipo: {}", codigoEquipo);
+        logger.info ("verTags[INI] vigentes: {}", vigentes);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -504,50 +535,102 @@ public class ConfiguracionService
         try
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            Optional<Boolean> vigencia = Optional.of(vigentes);
             EquipoTO pkEquipo = new EquipoTO();
             pkEquipo.setUbicacion(ubicacion);
-            pkEquipo.setId(idEquipo);
+            pkEquipo.setCodigo(codigoEquipo);
+            logger.debug("verTags[001] antes de ejecutar el método BO: {}", pkEquipo);
+            
+            Respuesta<List<TagTO>> r = FactoryBO.getEquipoBO().getTagsTodos(pkEquipo, vigencia);
+            logger.info("verTags[FIN] retorno de todos los registros: {}", r);
+            return RespGenerica.of(r);
 
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<TagTO>> r1 = FactoryBO.getEquipoBO().getTagsTodos(pkEquipo,Optional.empty());
-                    logger.info("verTags[FIN] retorno de todos los registros: {}", r1);
-                    return RespGenerica.of(r1);
-
-                case VER_VIGENTES:
-                    Respuesta<List<TagTO>> r2 = FactoryBO.getEquipoBO().getTagsVigentes(pkEquipo);
-                    logger.info("verTags[FIN] retorno de registros vigentes: {}", r2);
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    TagTO tag = new TagTO();
-                    tag.setEquipo(pkEquipo);
-                    tag.setNumero(numeroTag);
-                    Respuesta<TagTO> r3 = FactoryBO.getEquipoBO().getTag(tag);
-                    logger.info("verTags[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
         } catch(Exception e)
         {
             logger.error("verTags[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
-
-        logger.info("verTags[FIN] código de acción inválido: {}", accion);
-        return null;
     }
 
+    @Path("equipos/{codigoEquipo}/tags/{numeroTag}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verTag(
+    		@HeaderParam("token") String tokenUbicacion,
+            @PathParam("codigoEquipo") String codigoEquipo,
+    		@PathParam("numeroTag") Integer numeroTag)
+    {
+        logger.info ("verTag[INI] token: {}" , tokenUbicacion);
+        logger.info ("verTag[INI] codigoEquipo: {}", codigoEquipo);
+        logger.info ("verTag[INI] numeroTag: {}", numeroTag);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verTag[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
+            EquipoTO equipo = new EquipoTO();
+            equipo.setUbicacion(ubicacion);
+            equipo.setCodigo(codigoEquipo);
+            TagTO tag = new TagTO();
+            tag.setEquipo(equipo);
+            tag.setNumero(numeroTag);
+            logger.debug("verTag[001] antes de ejecutar al método BO: {}", tag);
+            
+            Respuesta<TagTO> r = FactoryBO.getEquipoBO().getTag(tag);
+
+            logger.info("verTag[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verTag[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+    
     @Path("empresas")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verEmpresas(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion,
-    		@QueryParam("rut") String rutEmpresa)
+    		@QueryParam("vigentes") Boolean vigentes)
+    {
+        logger.info ("verEmpresas[INI] token: {}", tokenUbicacion);
+        logger.info ("verEmpresas[INI] vigentes: {}", vigentes);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verEmpresas[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<EmpresaTO>> r1 = FactoryBO.getEmpresaBO().getTodos(vigencia);
+            logger.info("verEmpresas[FIN] retorno de todos los registros: {}", r1.getResultado());
+            return RespGenerica.of(r1);
+        } catch(Exception e)
+        {
+            logger.error("verEmpresas[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
+
+    @Path("empresas/{rutEmpresa}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verEmpresa(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@PathParam("rut") String rutEmpresa)
     {
         logger.info ("verEmpresa[INI] token: {}", tokenUbicacion);
-        logger.info ("verEmpresa[INI] accion: {}", accion);
         logger.info ("verEmpresa[INI] rut: {}", rutEmpresa);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
@@ -559,36 +642,19 @@ public class ConfiguracionService
 
         try
         {
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<EmpresaTO>> r1 = FactoryBO.getEmpresaBO().getTodos(null);
-                    logger.info("verEmpresa[FIN] retorno de todos los registros: {}", r1.getResultado());
-                    return RespGenerica.of(r1);
+            EmpresaTO empresa = new EmpresaTO();
+            empresa.setRut(Rut.valueOf(rutEmpresa));
+            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().get(empresa);
 
-                case VER_VIGENTES:
-                    Respuesta<List<EmpresaTO>> r2 = FactoryBO.getEmpresaBO().getVigentes();
-                    logger.info("verEmpresa[FIN] retorno de registros vigentes: {}", r2.getResultado());
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    EmpresaTO empresa = new EmpresaTO();
-                    empresa.setRut( Rut.valueOf(rutEmpresa) );
-                    Respuesta<EmpresaTO> r3 = FactoryBO.getEmpresaBO().get(empresa);
-
-                    logger.info("verEmpresa[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            logger.info("verEmpresa[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verEmpresa[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
-
-        logger.info("verEmpresa[FIN] código de acción inválido: {}", accion);
-        return null;
     }
-
+    
     @Path("empresas")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -628,12 +694,12 @@ public class ConfiguracionService
         }
     }
 
-    @Path("empresas/{rut}")
+    @Path("empresas/{rutEmpresa}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     public RespGenerica eliminarEmpresa(
     		@HeaderParam("token") String tokenUbicacion,
-    		@PathParam("rut") String rutEmpresa)
+    		@PathParam("rutEmpresa") String rutEmpresa)
     {
         logger.info ("eliminarEmpresa[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEmpresa[INI] rutEmpresa: {}", rutEmpresa);
@@ -661,15 +727,15 @@ public class ConfiguracionService
         }
     }
 
-    @Path("trabajadores/{rut}")
+    @Path("trabajadores/{rutTrabajador}")
     @Produces(MediaType.APPLICATION_JSON)
     @DELETE
     public RespGenerica eliminarTrabajador(
     		@HeaderParam("token") String tokenUbicacion,
-    		@PathParam("rut") String rutTrabajador)
+    		@PathParam("rutTrabajador") String rutTrabajador)
     {
         logger.info ("eliminarTrabajador[INI] token: {}", tokenUbicacion);
-        logger.info ("eliminarTrabajador[INI] rutEmpresa: {}", rutTrabajador);
+        logger.info ("eliminarTrabajador[INI] rutTrabajador: {}", rutTrabajador);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -703,7 +769,7 @@ public class ConfiguracionService
     		@FormParam("trabajador") String jsonTrabajador)
     {
     	logger.info ("guardarTrabajador[INI] token: {}", tokenUbicacion);
-    	logger.info ("guardarTrabajador[INI] empresa: {}", jsonTrabajador);
+    	logger.info ("guardarTrabajador[INI] trabajador: {}", jsonTrabajador);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -738,12 +804,10 @@ public class ConfiguracionService
     @GET
     public RespGenerica verTrabajadores(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion,
-    		@QueryParam("rut") String rutTrabajador)
+    		@QueryParam("vigentes") Boolean vigentes)
     {
         logger.info ("verTrabajadores[INI] token: {}", tokenUbicacion);
-        logger.info ("verTrabajadores[INI] accion: {}", accion);
-        logger.info ("verTrabajadores[INI] rutTrabajador: {}", rutTrabajador);
+        logger.info ("verTrabajadores[INI] vigentes: {}", vigentes);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -754,46 +818,58 @@ public class ConfiguracionService
 
         try
         {
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<TrabajadorTO>> r1 = FactoryBO.getTrabajadorBO().getTodos(null);
-                    logger.info("verTrabajadores[FIN] retorno de todos los registros: {}", r1.getResultado());
-                    return RespGenerica.of(r1);
-
-                case VER_VIGENTES:
-                    Respuesta<List<TrabajadorTO>> r2 = FactoryBO.getTrabajadorBO().getVigentes();
-                    logger.info("verTrabajadores[FIN] retorno de registros vigentes: {}", r2.getResultado());
-                    return RespGenerica.of(r2);
-
-                case VER_UNO:
-                    TrabajadorTO trabajador = new TrabajadorTO();
-                    trabajador.setRut( Rut.valueOf(rutTrabajador) );
-                    Respuesta<TrabajadorTO> r3 = FactoryBO.getTrabajadorBO().get(trabajador);
-
-                    logger.info("verTrabajadores[FIN] retorno de un registro: {}", r3);
-                    return RespGenerica.of(r3);
-            }
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<TrabajadorTO>> r = FactoryBO.getTrabajadorBO().getTodos(vigencia);
+            logger.info("verTrabajadores[FIN] retorno de todos los registros: {}", r.getResultado());
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verTrabajadores[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
-
-        logger.info("verTrabajadores[FIN] código de acción inválido: {}", accion);
-        return null;
     }
 
+    @Path("trabajadores/{rutTrabajador}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public RespGenerica verTrabajador(
+    		@HeaderParam("token") String tokenUbicacion,
+    		@PathParam("rutTrabajador") String rutTrabajador)
+    {
+        logger.info ("verTrabajador[INI] token: {}", tokenUbicacion);
+        logger.info ("verTrabajador[INI] rutTrabajador: {}", rutTrabajador);
+
+        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
+        if( !respUbic.getResultado().esExitoso() )
+        {
+            logger.info ("verTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            return RespGenerica.of(respUbic);
+        }
+
+        try
+        {
+            TrabajadorTO trabajador = new TrabajadorTO();
+            trabajador.setRut(Rut.valueOf(rutTrabajador));
+            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().get(trabajador);
+
+            logger.info("verTrabajador[FIN] retorno de un registro: {}", r);
+            return RespGenerica.of(r);
+        } catch(Exception e)
+        {
+            logger.error("verTrabajadores[ERR] exception: ", e);
+            return RespGenerica.of(this.getClass(), e);
+        }
+    }
     
     @Path("funcionesBloqueo")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verFuncionesBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion)
+    		@QueryParam("vigentes") Boolean vigentes)
     {
         logger.info ("verFuncionesBloqueo[INI] token: {}", tokenUbicacion);
-        logger.info ("verFuncionesBloqueo[INI] accion: {}", accion);
+        logger.info ("verFuncionesBloqueo[INI] vigentes: {}", vigentes);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -804,25 +880,14 @@ public class ConfiguracionService
 
         try
         {
-            switch( accion )
-            {
-                case VER_TODOS:
-                    Respuesta<List<FuncionBloqueoTO>> r1 = FactoryBO.getUbicacionBO().getFunciones(Optional.empty());
-                    logger.info("verFuncionesBloqueo[FIN] retorno de todos los registros: {}", r1.getResultado());
-                    return RespGenerica.of(r1);
-
-                case VER_VIGENTES:
-                    Respuesta<List<FuncionBloqueoTO>> r2 = FactoryBO.getUbicacionBO().getFunciones(Optional.of(Boolean.TRUE));
-                    logger.info("verFuncionesBloqueo[FIN] retorno de registros vigentes: {}", r2.getResultado());
-                    return RespGenerica.of(r2);
-            }
+            Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
+            Respuesta<List<FuncionBloqueoTO>> r = FactoryBO.getUbicacionBO().getFunciones(vigencia);
+            logger.info("verFuncionesBloqueo[FIN] retorno de todos los registros: {}", r.getResultado());
+            return RespGenerica.of(r);
         } catch(Exception e)
         {
             logger.error("verFuncionesBloqueo[ERR] exception: ", e);
             return RespGenerica.of(this.getClass(), e);
         }
-
-        logger.info("verFuncionesBloqueo[FIN] código de acción inválido: {}", accion);
-        return null;
     }
 }

@@ -8,7 +8,6 @@ import cl.cerrocolorado.recob.to.LibroBloqueoInfoTO;
 import cl.cerrocolorado.recob.to.LibroBloqueoTO;
 import cl.cerrocolorado.recob.to.RespLibroTO;
 import cl.cerrocolorado.recob.to.TagLibroTO;
-import cl.cerrocolorado.recob.utils.Resultado;
 import java.util.Date;
 
 import java.util.List;

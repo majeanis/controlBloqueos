@@ -47,21 +47,22 @@ public class ControlBloqueosService
         ubicacionBO = FactoryBO.getUbicacionBO();
     }
 
-    @Path("libros")
+    @Path("{numeroCaja}/libros")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verLibros(
             @HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion,
-            @QueryParam("numeroCaja") Integer numeroCaja,
-    		@QueryParam("numeroLibro") Integer numeroLibro,
-            @QueryParam("fecha") Date fecha
+            @PathParam  ("numeroCaja") Integer numeroCaja,
+            @QueryParam ("accion") Integer accion,
+    		@QueryParam ("numeroLibro") Integer numeroLibro,
+            @QueryParam ("fecha") Date fecha
     )
     {
     	logger.info ("verLibros[INI] token: {}", tokenUbicacion);
-        logger.info ("verLibros[INI] fecha: {}", fecha);
-    	logger.info ("verLibros[INI] numeroCaja: {}", numeroCaja);
+    	logger.info ("verLibros[INI] accion: {}", accion);
+        logger.info ("verLibros[INI] numeroCaja: {}", numeroCaja);
         logger.info ("verLibros[INI] numeroLibro: {}", numeroLibro);
+        logger.info ("verLibros[INI] fecha: {}", fecha);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -110,15 +111,17 @@ public class ControlBloqueosService
         return null;
     }
 
-    @Path("libros")
+    @Path("{numeroCaja}/libros")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarLibro(
     		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("libro") String jsonLibro)
+            @PathParam  ("numeroCaja") Integer numeroCaja,
+    		@FormParam  ("libro") String jsonLibro)
     {
     	logger.info ("guardarLibro[INI] token: {}", tokenUbicacion);
+        logger.info ("guardarLibro[INI] numeroCaja: {}", numeroCaja);
     	logger.info ("guardarLibro[INI] jsonLibro: {}", jsonLibro);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
@@ -141,6 +144,11 @@ public class ControlBloqueosService
             logger.debug("guardarLibro[001] después de parsear el JSON: {}", libro);
 
             libro.setUbicacion(ubicacion);
+            libro.setCaja( new CajaBloqueoTO() );
+            libro.getCaja().setNumero(numeroCaja);
+            libro.getCaja().setUbicacion(ubicacion);
+            logger.debug("guardarLibro[002] antes de llamar al método BO: {}", libro);
+
             Respuesta<LibroBloqueoTO> r = FactoryBO.getLibroBloqueoBO().guardar(libro);
 
             logger.info("guardarLibro[FIN] resultado registro libro: {}", r);
@@ -152,15 +160,18 @@ public class ControlBloqueosService
         }
     }
 
-    @Path("libros/{idLibro}")
+    @Path("{numeroCaja}/libros/{numeroLibro}")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verLibro(
             @HeaderParam("token") String tokenUbicacion,
-            @PathParam("idLibro") String idLibro)
+            @PathParam("numeroCaja") Integer numeroCaja,
+            @PathParam("numeroLibro") Integer numeroLibro)
     {
     	logger.info ("verLibro[INI] token: {}", tokenUbicacion);
-
+        logger.info ("verLibro[INI] numeroCaja: {}", numeroCaja);
+        logger.info ("verLibro[INI] numeroLibro: {}", numeroLibro);
+        
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
@@ -172,7 +183,9 @@ public class ControlBloqueosService
         {
             LibroBloqueoTO pk = new LibroBloqueoTO();
             pk.setUbicacion(respUbic.getContenido().orElse(null));
-            pk.setId(idLibro);
+            pk.setCaja(new CajaBloqueoTO());
+            pk.getCaja().setNumero(numeroCaja);
+            pk.setNumero(numeroLibro);
             Respuesta<LibroBloqueoInfoTO> r = FactoryBO.getLibroBloqueoBO().getLibro(pk);
             
             logger.info("verLibro[FIN] respuesta retornada: {}", r );
@@ -185,7 +198,7 @@ public class ControlBloqueosService
     }
 
     @Deprecated
-    @Path("libros/{idLibro}/tags")
+    @Path("{numeroCaja}/libros/{numeroLibro}/tags")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verTags()
@@ -194,7 +207,7 @@ public class ControlBloqueosService
     }
 
     @Deprecated
-    @Path("libros/{idLibro}/energias")
+    @Path("{numeroCaja}/libros/{numeroLibro}/energias")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verEnergias()
@@ -203,7 +216,7 @@ public class ControlBloqueosService
     }
 
     @Deprecated
-    @Path("libros/{idLibro}/dotacion")
+    @Path("{numeroCaja}/libros/{numeroLibro}/dotacion")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verDotacion()
@@ -212,7 +225,7 @@ public class ControlBloqueosService
     }
 
     @Deprecated
-    @Path("libros/{idLibro}/responsables")
+    @Path("{numeroCaja}/libros/{numeroLibro}/responsables")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     public RespGenerica verResponsables()
