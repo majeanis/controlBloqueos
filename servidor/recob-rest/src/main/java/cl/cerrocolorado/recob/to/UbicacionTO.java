@@ -6,6 +6,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mauricio.camara
@@ -18,9 +19,11 @@ public class UbicacionTO extends EntidadTO
     private String nombre;
     private String descripcion;
     private Boolean vigente;
-    private String token;
     private EstacionTO estacion;
 
+    @JsonIgnore
+    private String token;
+        
     public Integer getId()
     {
         return id;
