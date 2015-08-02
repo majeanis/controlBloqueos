@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.bo;
+package cl.cerrocolorado.recob.bo.utils;
 
 import cl.cerrocolorado.recob.bo.utils.BeansFactory;
 import org.springframework.transaction.PlatformTransactionManager;

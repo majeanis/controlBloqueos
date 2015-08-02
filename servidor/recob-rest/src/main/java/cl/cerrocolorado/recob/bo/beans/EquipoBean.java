@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cl.cerrocolorado.recob.bo.EquipoBO;
-import cl.cerrocolorado.recob.bo.Transaccion;
+import cl.cerrocolorado.recob.bo.utils.Transaccion;
 import cl.cerrocolorado.recob.po.EquipoPO;
 import cl.cerrocolorado.recob.to.EquipoTO;
 import cl.cerrocolorado.recob.to.EquipoTagsTO;
