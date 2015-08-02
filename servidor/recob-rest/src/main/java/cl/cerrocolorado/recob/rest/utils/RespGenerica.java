@@ -62,7 +62,7 @@ public class RespGenerica
 		return new RespGenerica(rtdo,null);
 	}
 
-  	public static RespGenerica of(Class<?> clazz, Mensaje mensaje)
+  	public static RespGenerica of(Mensaje mensaje)
 	{
     	Resultado rtdo = new ResultadoProceso();
 		rtdo.addMensaje(mensaje);
