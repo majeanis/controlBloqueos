@@ -27,6 +27,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
+import javax.ws.rs.FormParam;
 
 @Path("controlBloqueos")
 public class ControlBloqueosService
@@ -111,11 +112,11 @@ public class ControlBloqueosService
 
     @Path("libros")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarLibro(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("libro") String jsonLibro)
+    		@FormParam("libro") String jsonLibro)
     {
     	logger.info ("guardarLibro[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarLibro[INI] jsonLibro: {}", jsonLibro);
