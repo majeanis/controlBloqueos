@@ -31,7 +31,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     {
         logger.info ("guardar[INI] caja: {}", caja);
         
-        if( caja.getId() == null )
+        if( caja.isIdBlank() )
         {
             mapper.insertCajaBloqueo( caja );
             logger.debug("guardar[001] despues de insertar la caja: {}", caja);

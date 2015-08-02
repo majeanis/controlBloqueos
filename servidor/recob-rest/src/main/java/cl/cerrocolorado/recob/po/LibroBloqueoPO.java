@@ -37,7 +37,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("guardar[INI] libro: {}", libro);
         
-        if( libro.getId() == null )
+        if( libro.isIdBlank() )
         {
             mapper.insertLibro( libro );
             logger.debug("guardar[001] despues de insertar el registro: {}", libro);
@@ -262,7 +262,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("guardarTag[INI] tag: {}", pk);
         
-        if(pk.getId()==null)
+        if(pk.isIdBlank())
         {
             mapper.insertTagLibro(pk);
         } else
@@ -285,7 +285,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("guardarDotacion[INI] pk: {}", pk);
         
-        if(pk.getId() == null)
+        if(pk.isIdBlank())
         {
             mapper.insertDotacionLibro(pk);
         } else
@@ -323,7 +323,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("guardarResponsable[INI] pk: {}", pk);
         
-        if(pk.getId() == null)
+        if(pk.isIdBlank())
         {
             mapper.insertRespLibro(pk);
         } else

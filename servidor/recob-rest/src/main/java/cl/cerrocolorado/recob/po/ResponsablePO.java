@@ -94,7 +94,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     {
         logger.info("guardar[INI] datos: {}", datos);
 
-        if( datos.getId() == null)
+        if( datos.isIdBlank() )
         {
             mapper.insertResponsable(datos);
             logger.debug("guardar[001] después de hacer el insert");

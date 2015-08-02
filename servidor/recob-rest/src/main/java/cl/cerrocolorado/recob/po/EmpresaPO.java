@@ -30,7 +30,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     {
         logger.info ("guardar[INI] empresa: {}", empresa);
         
-        if( empresa.getId() == null )
+        if( empresa.isIdBlank() )
         {
             mapper.insertEmpresa( empresa );
             logger.debug("guardar[001] despues de insertar el registro: {}", empresa);

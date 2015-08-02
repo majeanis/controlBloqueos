@@ -32,9 +32,12 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.Rut;
+import cl.cerrocolorado.recob.utils.ToStringUtils;
 import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
 import java.util.Arrays;
 import java.util.Optional;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.PathParam;
 
 @Path("configuracion")
@@ -59,8 +62,8 @@ public class ConfiguracionService
     @GET
     public RespGenerica verCajasBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("accion") Integer accion,
-    		@QueryParam("numero") Integer numeroCaja)
+    		@DefaultValue("0") @QueryParam("accion") Integer accion,
+    		@DefaultValue("0") @QueryParam("numero") Integer numeroCaja)
     {
         logger.info ("verCajasBloqueo[INI] token: {}", tokenUbicacion);
         logger.info ("verCajasBloqueo[INI] accion: {}", accion);
@@ -109,11 +112,11 @@ public class ConfiguracionService
 
     @Path("cajasBloqueo")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("caja") String jsonCaja)
+    		@FormParam("caja") String jsonCaja)
     {
     	logger.info ("guardarCajaBloqueo[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
@@ -132,7 +135,9 @@ public class ConfiguracionService
             if( caja == null )
             {
                 logger.info("guardarCajaBloqueo[FIN] no se pudo parsear el JSON: {}", jsonCaja);
-                return null;
+                RespGenerica r4 = RespGenerica.of(new ParsearJsonError(this.getClass(), "Caja"));
+                logger.info("guardarCajaBloqueo[FIN] no se pudo parsear el JSON2: {}", ToStringUtils.toString(r4));
+                return r4;
             }
 
             caja.setUbicacion(ubicacion);
@@ -151,11 +156,11 @@ public class ConfiguracionService
 
     @Path("cajasBloqueo")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("numero") Integer numeroCaja)
+    		@FormParam("numero") Integer numeroCaja)
     {
         logger.info ("eliminarCajaBloqueo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCajaBloqueo[INI] numeroCaja: {}", numeroCaja);
@@ -240,11 +245,11 @@ public class ConfiguracionService
 
     @Path("candados")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarCandado(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("candado") String jsonCandado)
+    		@FormParam("candado") String jsonCandado)
     {
     	logger.info ("guardarCandado[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarCandado[INI] jsonCandado: {}", jsonCandado);
@@ -282,11 +287,11 @@ public class ConfiguracionService
 
     @Path("candados")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarCandado(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("numero") Integer numeroCandado)
+    		@FormParam("numero") Integer numeroCandado)
     {
         logger.info ("eliminarCandado[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarCandado[INI] numeroCandado: {}", numeroCandado);
@@ -397,12 +402,12 @@ public class ConfiguracionService
     
     @Path("equipos")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("equipo") String jsonEquipo,
-            @QueryParam("tags") String jsonTags)
+    		@FormParam("equipo") String jsonEquipo,
+            @FormParam("tags") String jsonTags)
     {
     	logger.info ("guardarEquipo[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarEquipo[INI] equipo: {}", jsonEquipo);
@@ -421,7 +426,7 @@ public class ConfiguracionService
             if( equipo == null )
             {
                 logger.info ("guardarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
-                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Equipo"));
+                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Equipo"));
             }
             if( jsonTags != null )
             {
@@ -444,11 +449,11 @@ public class ConfiguracionService
 
     @Path("equipos")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("codigo") String codigoEquipo)
+    		@FormParam("codigo") String codigoEquipo)
     {
         logger.info ("eliminarEquipo[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEquipo[INI] codigoEquipo: {}", codigoEquipo);
@@ -589,11 +594,11 @@ public class ConfiguracionService
 
     @Path("empresas")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarEmpresa(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("empresa") String jsonEmpresa)
+    		@FormParam("empresa") String jsonEmpresa)
     {
     	logger.info ("guardarEmpresa[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarEmpresa[INI] empresa: {}", jsonEmpresa);
@@ -611,7 +616,7 @@ public class ConfiguracionService
             if( empresa == null )
             {
                 logger.info ("guardarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
-                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Empresa"));
+                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Empresa"));
             }
             
             logger.debug("guardarEmpresa[001] después de parsear el JSON: {}", empresa);
@@ -628,11 +633,11 @@ public class ConfiguracionService
 
     @Path("empresas")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarEmpresa(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("rut") String rutEmpresa)
+    		@FormParam("rut") String rutEmpresa)
     {
         logger.info ("eliminarEmpresa[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarEmpresa[INI] rutEmpresa: {}", rutEmpresa);
@@ -662,11 +667,11 @@ public class ConfiguracionService
 
     @Path("trabajadores")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @DELETE
     public RespGenerica eliminarTrabajador(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("rut") String rutTrabajador)
+    		@FormParam("rut") String rutTrabajador)
     {
         logger.info ("eliminarTrabajador[INI] token: {}", tokenUbicacion);
         logger.info ("eliminarTrabajador[INI] rutEmpresa: {}", rutTrabajador);
@@ -696,11 +701,11 @@ public class ConfiguracionService
 
     @Path("trabajadores")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
     public RespGenerica guardarTrabajador(
     		@HeaderParam("token") String tokenUbicacion,
-    		@QueryParam("trabajador") String jsonTrabajador)
+    		@FormParam("trabajador") String jsonTrabajador)
     {
     	logger.info ("guardarTrabajador[INI] token: {}", tokenUbicacion);
     	logger.info ("guardarTrabajador[INI] empresa: {}", jsonTrabajador);
@@ -720,7 +725,7 @@ public class ConfiguracionService
             if( trabajador == null )
             {
                 logger.info ("guardarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
-                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Trabajador"));
+                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Trabajador"));
             }
 
             Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().guardar(trabajador);

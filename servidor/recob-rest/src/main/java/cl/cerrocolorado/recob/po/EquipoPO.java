@@ -71,7 +71,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     {
         logger.info ("guardar[INI] equipo: {}", equipo);
 
-        if( equipo.getId() == null )
+        if( equipo.isIdBlank() )
         {
             mapper.insertEquipo(equipo);
             logger.info("guardar[FIN] registro creado con éxito: {}", equipo);
@@ -154,7 +154,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     {
         logger.info("guardarTag[INI] tag: {}", tag);
         
-        if(tag.getId() == null)
+        if(tag.isIdBlank())
         {
             mapper.insertTag(tag);
             logger.debug("guardarTag[001] después de insertar el tag: {}", tag);

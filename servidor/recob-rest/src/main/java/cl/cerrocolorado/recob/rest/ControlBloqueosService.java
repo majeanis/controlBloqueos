@@ -134,7 +134,7 @@ public class ControlBloqueosService
             if( libro == null )
             {
                 logger.info("guardarLibro[FIN] no se pudo parsear el JSON: {}", jsonLibro);
-                return RespGenerica.of(this.getClass(), new ParsearJsonError(this.getClass(),"Libro"));
+                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Libro"));
             }
 
             logger.debug("guardarLibro[001] después de parsear el JSON: {}", libro);

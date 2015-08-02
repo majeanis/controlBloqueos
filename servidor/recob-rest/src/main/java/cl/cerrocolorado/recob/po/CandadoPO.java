@@ -33,7 +33,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     {
         logger.info ("guardar[INI] candado: {}", candado);
         
-        if( candado.getId() == null )
+        if( candado.isIdBlank() )
         {
             mapper.insertCandado( candado );
             logger.debug("guardar[001] despues de insertar el candado: {}", candado);
