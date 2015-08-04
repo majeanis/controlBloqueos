@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 
 /**
@@ -9,8 +10,10 @@ import java.util.Date;
 public class RespLibroTO extends EntidadTO
 {
     private static final long serialVersionUID = 1L;
-    
+
+    @JsonIgnore    
     private Integer id;
+
     private LibroBloqueoTO libro;
     private TrabajadorTO trabajador;
     private Date fechaIngreso;

@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -10,6 +11,7 @@ public class CandadoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
+    @JsonIgnore
     private Integer id;
     private Integer numero;
     private String serie;

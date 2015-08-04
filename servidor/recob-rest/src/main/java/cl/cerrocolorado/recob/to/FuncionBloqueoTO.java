@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -9,8 +10,10 @@ import cl.cerrocolorado.recob.utils.EntidadTO;
 public class FuncionBloqueoTO extends EntidadTO
 {
     private static final long serialVersionUID = 1L;
-    
+
+    @JsonIgnore    
     private Integer id;
+
     private String nombre;
     private Integer maximo;
     private Boolean vigente;

@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.to;
 import java.util.Date;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mauricio.camara
@@ -11,6 +12,7 @@ public class DotacionLibroTO extends EntidadTO
 {
     private static final long serialVersionUID = 1L;
 
+    @JsonIgnore    
     private Integer id;
     private LibroBloqueoTO libro;
     private FuncionBloqueoTO funcion;

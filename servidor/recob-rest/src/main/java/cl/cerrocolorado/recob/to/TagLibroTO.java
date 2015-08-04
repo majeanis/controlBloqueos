@@ -1,6 +1,7 @@
 package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 
 /**
@@ -9,7 +10,9 @@ import java.util.Date;
  */
 public class TagLibroTO extends EntidadTO
 {
+    @JsonIgnore    
     private Integer id;
+
     private LibroBloqueoTO libro;
     private TagTO tag;
     private Boolean energiaCero;

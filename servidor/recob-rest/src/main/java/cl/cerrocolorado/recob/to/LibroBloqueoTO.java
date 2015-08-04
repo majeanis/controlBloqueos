@@ -15,7 +15,8 @@ public class LibroBloqueoTO extends EntidadTO
 
     @JsonIgnore
     private UbicacionTO ubicacion;
-    
+
+    @JsonIgnore    
     private String id;
     private Integer numero;
     private Date fecha;

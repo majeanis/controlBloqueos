@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import cl.cerrocolorado.recob.bo.FactoryBO;
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
+import cl.cerrocolorado.recob.bo.utils.FactoryBO;
 import cl.cerrocolorado.recob.to.EmpresaTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Rut;
 import static cl.cerrocolorado.recob.utils.ToStringUtils.toString;
 import cl.cerrocolorado.recob.utils.ValidUtils;
+import com.google.common.base.Optional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,26 +20,6 @@ import java.net.URL;
 
 public class TestRecob
 {
-    public static void testEmpresa() throws Exception
-    {
-        EmpresaTO empr = new EmpresaTO();
-
-        empr.setRut( Rut.valueOf("13005188-K") );
-        empr.setNombre("Mauricio Camara Molina");
-        empr.setVigente(Boolean.TRUE);
-        FactoryBO.getEmpresaBO().guardar(empr);
-        System.out.println( "Registro Guardado:" + empr );
-
-        empr = new EmpresaTO();
-        empr.setRut( Rut.valueOf("13640210-2") );
-        empr.setNombre("Jéssica Godoy Cossio");
-        empr.setVigente(Boolean.TRUE);
-        FactoryBO.getEmpresaBO().guardar(empr);
-        System.out.println( "Registro Guardado:" + empr );
-
-        System.out.println( FactoryBO.getEmpresaBO().getTodos() );
-    }
-
     public static void testJson()
     {
     	Date date = new Date();
@@ -116,10 +96,6 @@ public class TestRecob
 
     public static void main(String[] args)
     {
-        CajaBloqueoTO caja = null;
-        caja = new CajaBloqueoTO();
-        System.out.println(ValidUtils.isPropertyBlank(caja, "nombre"));
-        
 //        testRest();
 //      
 //      CajaBloqueoTO caja = new CajaBloqueoTO();

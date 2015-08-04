@@ -2,11 +2,13 @@ package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import cl.cerrocolorado.recob.utils.Rut;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class EmpresaTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
-	
+
+    @JsonIgnore
     private Integer id;
     private Rut     rut;
     private String  nombre;

@@ -11,7 +11,9 @@ public class TagTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
+    @JsonIgnore    
 	private Integer id;
+
     private Integer numero;
     private String nombre;
     private String descripcion;

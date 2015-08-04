@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.to;
 import org.apache.commons.lang3.StringUtils;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -12,6 +13,7 @@ public class EquipoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
+    @JsonIgnore
     private Integer id;
     private String codigo;
     private Boolean vigente;
