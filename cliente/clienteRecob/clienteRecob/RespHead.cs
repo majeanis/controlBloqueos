@@ -9,7 +9,7 @@ namespace Recob.Cliente.Rest
     public class RespHead
     {
         public DateTime fecha { get; set; }
-        public string codigo { get; set; }
+        public int codigo { get; set; }
         public string severidad { get; set; }
     }
 }

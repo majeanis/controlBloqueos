@@ -14,22 +14,36 @@ namespace Recob.Cliente
     {
         static void Main(String[] args)
         {
-            String token = "9cc5882c-2dd9-11e5-ac59-080027465435";
-            String url = "http://192.168.56.10:5080/recobWS/rest/configuracion/cajasBloqueo/3";
-            //RespGenerica<List<CajaBloqueoTO>> r = ClienteRest.doGET<List<CajaBloqueoTO>>(token, url);
-            RespGenerica<CajaBloqueoTO> r = ClienteRest.doGET<CajaBloqueoTO>(token, url);
-            //MessageBox.Show(r.ToString());
+            FrmConfCajasBloqueo form = new FrmConfCajasBloqueo();
+            form.ShowDialog();
 
-            CajaBloqueoTO caja = new CajaBloqueoTO();
+            //String token = "9cc5882c-2dd9-11e5-ac59-080027465435";
+            //String url = "http://192.168.56.10:5080/recobWS/rest/configuracion/cajasBloqueo/3";
+            ////RespGenerica<List<CajaBloqueoTO>> r = ClienteRest.doGET<List<CajaBloqueoTO>>(token, url);
+            //RespGenerica<CajaBloqueoTO> r = ClienteRest.doGET<CajaBloqueoTO>(token, url);
+            ////MessageBox.Show(r.ToString());
 
-            caja.numero = 5;
-            caja.vigente = true;
-            caja.nombre = "CAJA N° 5";
-            String jsonCaja = JsonConvert.SerializeObject(caja);
+            //CajaBloqueoTO caja = new CajaBloqueoTO();
 
-            String url2 = "http://192.168.56.10:5080/recobWS/rest/configuracion/cajasBloqueo/4";
-            //RespGenerica<CajaBloqueoTO> r1 = ClienteRest.doPUT<CajaBloqueoTO>(token, url2, "caja=" + jsonCaja);
-            RespGenerica<CajaBloqueoTO> r1 = ClienteRest.doDELETE<CajaBloqueoTO>(token, url2);
+            //RespGenerica<CajaBloqueoTO> d = Modelo.eliminarCaja(4);
+            //RespGenerica<CajaBloqueoTO> c = Modelo.getCaja(4);
+            //RespGenerica<List<CajaBloqueoTO>> l = Modelo.getCajas();
+
+            //caja.numero = 4;
+            //caja.vigente = true;
+            //caja.nombre = "CAJA N° 4";
+
+            //RespGenerica<CajaBloqueoTO> r2 = Modelo.guardarCaja(caja);
+            //if(r2.encabezado.codigo == 1)
+            //{
+            //    MessageBox.Show(r2.contenido.numero.ToString());
+            //}
+
+            //String jsonCaja = JsonConvert.SerializeObject(caja);
+
+            //String url2 = "http://192.168.56.10:5080/recobWS/rest/configuracion/cajasBloqueo/4";
+            ////RespGenerica<CajaBloqueoTO> r1 = ClienteRest.doPUT<CajaBloqueoTO>(token, url2, "caja=" + jsonCaja);
+            //RespGenerica<CajaBloqueoTO> r1 = ClienteRest.doDELETE<CajaBloqueoTO>(token, url2);
         }
     }
 }

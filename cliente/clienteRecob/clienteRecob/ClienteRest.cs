@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Newtonsoft.Json;
 using Recob.Cliente;
+using Recob.Cliente.Comun;
 
 namespace Recob.Cliente.Rest
 {
@@ -16,36 +17,32 @@ namespace Recob.Cliente.Rest
             WebClient syncClient = new WebClient();
             
             syncClient.Headers.Add("token", token);
-            syncClient.Headers["Content-type"] = "application/json";
             syncClient.Encoding = Encoding.UTF8;
 
             return syncClient;
         }
 
-        private static RespGenerica<T> fromJson<T>(String respuestaJson)
-        {
-            RespGenerica<T> r = JsonConvert.DeserializeObject<RespGenerica<T>>(respuestaJson);
-            return r;
-        }
-
         public static RespGenerica<T> doGET<T>(String token, String url)
         {
             WebClient syncClient = getWebClient(token);
+            syncClient.Headers["Content-type"] = "application/json";
             var jsonResp = syncClient.DownloadString(url);
-            return fromJson<T>(jsonResp);
+            return JsonUtils.fromJson<RespGenerica<T>>(jsonResp);
         }
         public static RespGenerica<T> doPUT<T>(String token, String url, String data)
         {
             WebClient syncClient = getWebClient(token);
+            syncClient.Headers["Content-type"] = "application/x-www-form-urlencoded";
             var jsonResp = syncClient.UploadString(url, "PUT", data);
-            return fromJson<T>(jsonResp);
+            return JsonUtils.fromJson<RespGenerica<T>>(jsonResp);
         }
 
         public static RespGenerica<T> doDELETE<T>(String token, String url)
         {
             WebClient syncClient = getWebClient(token);
+            syncClient.Headers["Content-type"] = "application/x-www-form-urlencoded";
             var jsonResp = syncClient.UploadString(url, "DELETE", "");
-            return fromJson<T>(jsonResp);
+            return JsonUtils.fromJson<RespGenerica<T>>(jsonResp);
         }
     }
 }

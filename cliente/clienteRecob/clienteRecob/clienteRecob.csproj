@@ -47,11 +47,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Recob.Cliente.Principal</StartupObject>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -71,6 +73,14 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsUtils.cs" />
+    <Compile Include="FrmConfCajasBloqueo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmConfCajasBloqueo.Designer.cs">
+      <DependentUpon>FrmConfCajasBloqueo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JsonUtils.cs" />
     <Compile Include="Modelo.cs" />
     <Compile Include="Principal.cs" />
     <Compile Include="Properties.cs" />
@@ -79,14 +89,20 @@
     <Compile Include="RespHead.cs" />
     <Compile Include="RespMensaje.cs" />
     <Compile Include="UbicacionTO.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="WeatherApiClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmConfCajasBloqueo.resx">
+      <DependentUpon>FrmConfCajasBloqueo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +124,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="fonts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,16 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
-namespace Recob.Cliente.Utils
+namespace Recob.Cliente.Comun
 {
     class Properties
     {
-        static Properties()
+        public static String Token
         {
-            UrlBase = "http://192.168.56.10:5080/recobWS/rest/";
+            get 
+            {
+                return ConfigurationManager.AppSettings["token"];
+            }
         }
 
-        public static String UrlBase { get; set; }
+        public static String UrlCajasBloqueo
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["urlCajasBloqueo"];
+            }
+        }
     }
 }
