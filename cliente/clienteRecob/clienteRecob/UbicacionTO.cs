@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Recob.Cliente.TO
 {
-    public class UbicacionTO
+    public class UbicacionTO : BaseTO
     {
         public string nombre { get; set; }
         public string descripcion { get; set; }
