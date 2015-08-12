@@ -73,42 +73,42 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     @Override
     public LibroBloqueoTO obtener(LibroBloqueoTO pk)
     {
-        logger.info ("get[INI] pk: {}", pk );
+        logger.info ("obtener[INI] pk: {}", pk );
         
         Map<String, Object> parms = new HashMap<>();
         parms.put( "libro", pk );
         parms.put( "ubicacion", pk.getUbicacion());
         
-        logger.debug("get[001] parametros: {}", parms);
+        logger.debug("obtener[001] parametros: {}", parms);
         
         List<LibroBloqueoTO> lista = mapper.selectLibros( parms );
-        logger.debug("get[002] despues de ejecutar el select: {}", lista.size() );
+        logger.debug("obtener[002] despues de ejecutar el select: {}", lista.size() );
         
         if(lista.isEmpty())
         {
-            logger.info ("get[FIN] no se encontró el registro: {}", parms );
+            logger.info ("obtener[FIN] no se encontró el registro: {}", parms );
             return null;
         }
         
-        logger.info ("get[FIN] registro encontrado: {}", lista.get(0) );
+        logger.info ("obtener[FIN] registro encontrado: {}", lista.get(0) );
         return lista.get(0);
     }
     
-    public LibroBloqueoInfoTO getLibro(LibroBloqueoTO pk)
+    public LibroBloqueoInfoTO obtenerLibro(LibroBloqueoTO pk)
     {
-        logger.info ("get[INI] pkLibro: {}", pk);
+        logger.info ("obtener[INI] pkLibro: {}", pk);
         
         LibroBloqueoTO libro = obtener(pk);
         if( libro == null )
         {
-            logger.info ("get[FIN] libro no encontrado: {}", pk);
+            logger.info ("obtener[FIN] libro no encontrado: {}", pk);
             return null;
         }
         
-        List<TagLibroTO> tags = getTags(pk, Optional.empty());
-        List<EnergiaLibroTO> energias = getEnergias(pk);
-        List<DotacionLibroTO> dotacion = getDotaciones(pk);
-        List<RespLibroTO> responsables = getResponsables(pk);
+        List<TagLibroTO> tags = obtenerTags(pk, Optional.empty());
+        List<EnergiaLibroTO> energias = obtenerEnergias(pk);
+        List<DotacionLibroTO> dotacion = obtenerDotaciones(pk);
+        List<RespLibroTO> responsables = obtenerResponsables(pk);
 
         LibroBloqueoInfoTO l = new LibroBloqueoInfoTO();
         l.setCaja(libro.getCaja());
@@ -122,18 +122,18 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         l.setResponsables(responsables);
         l.setTags(tags);
 
-        logger.info ("get[FIN] registro encontrado: {}", l);
+        logger.info ("obtener[FIN] registro encontrado: {}", l);
         return l;
     }
 
-    public List<LibroBloqueoTO> getList(CajaBloqueoTO pkCaja, 
-                                        Optional<Boolean> vigencia, 
-                                        Optional<Date> fechaLibro,
-                                        Optional<Date> fechaCierre)
+    public List<LibroBloqueoTO> obtenerList(CajaBloqueoTO pkCaja, 
+                                            Optional<Boolean> vigencia, 
+                                            Optional<Date> fechaLibro,
+                                            Optional<Date> fechaCierre)
     {
-        logger.info ("getList[INI] pkCaja: {}", pkCaja);
-        logger.info ("getList[INI] vigencia: {}", vigencia );
-        logger.info ("getList[INI] fechaLibro: {}", fechaLibro );
+        logger.info ("obtenerList[INI] pkCaja: {}", pkCaja);
+        logger.info ("obtenerList[INI] vigencia: {}", vigencia );
+        logger.info ("obtenerList[INI] fechaLibro: {}", fechaLibro );
         
         Map<String, Object> parms = new HashMap<>();
         parms.put( "ubicacion", pkCaja.getUbicacion());
@@ -141,34 +141,34 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         parms.put( "vigencia", vigencia.orElse(null));
         parms.put( "fechaLibro", fechaLibro.orElse(null));
         parms.put( "fechaCierre", fechaCierre.orElse(null));
-        logger.debug("getList[001] parametros: {}", parms);
+        logger.debug("obtenerList[001] parametros: {}", parms);
 
         List<LibroBloqueoTO> lista = mapper.selectLibros( parms );
-        logger.debug("getList[002] despues de ejecutar el select: {}", lista.size() );
+        logger.debug("obtenerList[002] despues de ejecutar el select: {}", lista.size() );
 
-        logger.info ("getList[FIN] registros encontrados: {}", lista.size() );
+        logger.info ("obtenerList[FIN] registros encontrados: {}", lista.size() );
         return lista;
     }
     
-    public List<TagLibroTO> getTags(LibroBloqueoTO pk,
+    public List<TagLibroTO> obtenerTags(LibroBloqueoTO pk,
                                     Optional<Boolean> energiaCero)
     {
-        logger.info ("getTags[INI] pkLibro: {}", pk);
+        logger.info ("obtenerTags[INI] pkLibro: {}", pk);
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
         parms.put("energiaCero", energiaCero.orElse(null));
-        logger.debug("getTags[001] parámetros de la consulta: {}", parms);
+        logger.debug("obtenerTags[001] parámetros de la consulta: {}", parms);
 
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
 
-        logger.info ("getTags[FIN] registros encontrados: {}", lista);
+        logger.info ("obtenerTags[FIN] registros encontrados: {}", lista);
         return lista;
     }
 
-    public TagLibroTO getTag(TagLibroTO tag)
+    public TagLibroTO obtenerTag(TagLibroTO tag)
     {
-        logger.info ("getTag[INI] pkTag: {}", tag);
+        logger.info ("obtenerTag[INI] pkTag: {}", tag);
         
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", tag.getLibro());
@@ -178,28 +178,28 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getTags[FIN] no se encontró registro: {}", tag);
+            logger.info ("obtenerTags[FIN] no se encontró registro: {}", tag);
             return null;
         }
-        logger.info ("getTags[FIN] registro encontrado: {}", lista.get(0));
+        logger.info ("obtenerTags[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
 
-    public List<EnergiaLibroTO> getEnergias(LibroBloqueoTO pk)
+    public List<EnergiaLibroTO> obtenerEnergias(LibroBloqueoTO pk)
     {
-        logger.info ("getEnergias[INI] pkLibro: {}", pk);
+        logger.info ("obtenerEnergias[INI] pkLibro: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
         List<EnergiaLibroTO> lista = mapper.selectEnergiasLibro(parms);
 
-        logger.info ("getEnergias[FIN] registros encontrados: {}", lista);
+        logger.info ("obtenerEnergias[FIN] registros encontrados: {}", lista);
         return lista;
     }
 
-    public EnergiaLibroTO getEnergia(EnergiaLibroTO pk)
+    public EnergiaLibroTO obtenerEnergia(EnergiaLibroTO pk)
     {
-        logger.info ("getEnergia[INI] pkEnergia: {}", pk);
+        logger.info ("obtenerEnergia[INI] pkEnergia: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk.getLibro());
@@ -207,29 +207,29 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         List<EnergiaLibroTO> lista = mapper.selectEnergiasLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getEnergia[FIN] no se encontró registro: {}", pk);
+            logger.info ("obtenerEnergia[FIN] no se encontró registro: {}", pk);
             return null;    
         }
         
-        logger.info ("getEnergia[FIN] registro encontrado: {}", lista.get(0));
+        logger.info ("obtenerEnergia[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
 
-    public List<DotacionLibroTO> getDotaciones(LibroBloqueoTO pk)
+    public List<DotacionLibroTO> obtenerDotaciones(LibroBloqueoTO pk)
     {
-        logger.info ("getDotacion[INI] pkLibro: {}", pk);
+        logger.info ("obtenerDotacion[INI] pkLibro: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
         List<DotacionLibroTO> lista = mapper.selectDotacionLibro(parms);
 
-        logger.info ("getDotacion[FIN] registros encontrados: {}", lista);
+        logger.info ("obtenerDotacion[FIN] registros encontrados: {}", lista);
         return lista;
     }
 
-    public DotacionLibroTO getDotacion(DotacionLibroTO pk)
+    public DotacionLibroTO obtenerDotacion(DotacionLibroTO pk)
     {
-        logger.info ("getDotacion[INI] pkDotacion: {}", pk);
+        logger.info ("obtenerDotacion[INI] pkDotacion: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk.getLibro());
@@ -238,39 +238,39 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         List<DotacionLibroTO> lista = mapper.selectDotacionLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getDotacion[FIN] no se encontró registro: {}", pk);
+            logger.info ("obtenerDotacion[FIN] no se encontró registro: {}", pk);
             return null;    
         }
         
-        logger.info ("getDotacion[FIN] registro encontrado: {}", lista.get(0));
+        logger.info ("obtenerDotacion[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
 
-    public List<RespLibroTO> getResponsables(LibroBloqueoTO pk)
+    public List<RespLibroTO> obtenerResponsables(LibroBloqueoTO pk)
     {
-        logger.info ("getResponsables[INI] pkLibro: {}", pk);
+        logger.info ("obtenerResponsables[INI] pkLibro: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
         List<RespLibroTO> lista = mapper.selectRespLibro(parms);
 
-        logger.info ("getResponsables[FIN] registros encontrados: {}", lista);
+        logger.info ("obtenerResponsables[FIN] registros encontrados: {}", lista);
         return lista;
     }
-    
-    public TagLibroTO guardarTag(TagLibroTO pk)
+
+    public TagLibroTO crearTag(TagLibroTO pk)
     {
-        logger.info ("guardarTag[INI] tag: {}", pk);
-        
-        if(pk.isIdBlank())
-        {
-            mapper.insertTagLibro(pk);
-        } else
-        {
-            mapper.updateTagLibro(pk);
-        }    
-            
-        logger.info ("guardarTag[FIN] registro guardado con éxito: {}", pk);
+        logger.info ("crearTag[INI] tag: {}", pk);
+        mapper.insertTagLibro(pk);
+        logger.info ("crearTag[FIN] registro guardado con éxito: {}", pk);
+        return pk;
+    }
+
+    public TagLibroTO modificarTag(TagLibroTO pk)
+    {
+        logger.info ("modificarTag[INI] tag: {}", pk);
+        mapper.updateTagLibro(pk);
+        logger.info ("modificarTag[FIN] registro guardado con éxito: {}", pk);
         return pk;
     }
 
@@ -281,19 +281,19 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("eliminarTag[INI] registro eliminado con éxitok: {}", pk);
     }
 
-    public DotacionLibroTO guardarDotacion(DotacionLibroTO pk)
+    public DotacionLibroTO crearDotacion(DotacionLibroTO pk)
     {
-        logger.info ("guardarDotacion[INI] pk: {}", pk);
-        
-        if(pk.isIdBlank())
-        {
-            mapper.insertDotacionLibro(pk);
-        } else
-        {
-            mapper.updateDotacionLibro(pk);
-        }
-
-        logger.info ("guardarDotacion[FIN] registro guardado con éxito: {}", pk);
+        logger.info ("crearDotacion[INI] pk: {}", pk);
+        mapper.insertDotacionLibro(pk);
+        logger.info ("crearDotacion[FIN] registro guardado con éxito: {}", pk);
+        return pk;
+    }
+    
+    public DotacionLibroTO modificarDotacion(DotacionLibroTO pk)
+    {
+        logger.info ("modificarDotacion[INI] pk: {}", pk);
+        mapper.updateDotacionLibro(pk);
+        logger.info ("modificarDotacion[FIN] registro guardado con éxito: {}", pk);
         return pk;
     }
     
@@ -303,12 +303,20 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         mapper.deleteDotacionLibro(pk);
         logger.info ("eliminarDotacion[FIN] registro eliminado con éxito: {}", pk);
     }
-    
-    public EnergiaLibroTO guardarEnergia(EnergiaLibroTO energia)
+
+    public EnergiaLibroTO crearEnergia(EnergiaLibroTO energia)
     {
-        logger.info ("guardarEnergia[INI] pk: {}", energia);
+        logger.info ("crearEnergia[INI] pk: {}", energia);
         mapper.insertEnergiaLibro(energia);
-        logger.info ("guardarEnergia[FIN] registro guardado con éxito: {}", energia);
+        logger.info ("crearEnergia[FIN] registro guardado con éxito: {}", energia);
+        return energia;
+    }
+
+    public EnergiaLibroTO modificarEnergia(EnergiaLibroTO energia)
+    {
+        logger.info ("modificarEnergia[INI] pk: {}", energia);
+        mapper.insertEnergiaLibro(energia);
+        logger.info ("modificarEnergia[FIN] registro guardado con éxito: {}", energia);
         return energia;
     }
     
@@ -319,25 +327,25 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info("eliminarLibro[FIN] registro eliminado con éxito: {}", pk);
     }
 
-    public RespLibroTO guardarResponsable(RespLibroTO pk)
+    public RespLibroTO crearResponsable(RespLibroTO pk)
     {
-        logger.info ("guardarResponsable[INI] pk: {}", pk);
-        
-        if(pk.isIdBlank())
-        {
-            mapper.insertRespLibro(pk);
-        } else
-        {
-            mapper.updateRespLibro(pk);
-        }
-
-        logger.info ("guardarResponsable[FIN] registro guardado con éxito: {}", pk);
+        logger.info ("crearResponsable[INI] pk: {}", pk);
+        mapper.insertRespLibro(pk);
+        logger.info ("crearResponsable[FIN] registro guardado con éxito: {}", pk);
+        return pk;
+    }
+    
+    public RespLibroTO modificarResponsable(RespLibroTO pk)
+    {
+        logger.info ("modificarResponsable[INI] pk: {}", pk);
+        mapper.updateRespLibro(pk);
+        logger.info ("modificarResponsable[FIN] registro guardado con éxito: {}", pk);
         return pk;
     }
 
-    public RespLibroTO getRespLibro(RespLibroTO pk)
+    public RespLibroTO obtenerRespLibro(RespLibroTO pk)
     {
-        logger.info ("getRespLibro[INI] pk: {}", pk);
+        logger.info ("obtenerRespLibro[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
@@ -346,17 +354,17 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         List<RespLibroTO> lista = mapper.selectRespLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getRespLibro[FIN] no se encontró registro: {}", pk);
+            logger.info ("obtenerRespLibro[FIN] no se encontró registro: {}", pk);
             return null;    
         }
         
-        logger.info ("getRespLibro[FIN] registro encontrado: {}", lista.get(0));
+        logger.info ("obtenerRespLibro[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
 
-    public RespLibroTO getRespLibroVigente(LibroBloqueoTO pk)
+    public RespLibroTO obtenerRespVigente(LibroBloqueoTO pk)
     {
-        logger.info ("getRespLibroVigente[INI] pk: {}", pk);
+        logger.info ("obtenerRespVigente[INI] pk: {}", pk);
 
         Map<String,Object> parms = new HashMap<>();
         parms.put("libro", pk);
@@ -364,21 +372,21 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         List<RespLibroTO> lista = mapper.selectRespLibro(parms);
         if(lista.isEmpty())
         {
-            logger.info ("getRespLibroVigente[FIN] no se encontró registro: {}", pk);
+            logger.info ("obtenerRespVigente[FIN] no se encontró registro: {}", pk);
             return null;    
         }
         
-        logger.info ("getRespLibroVigente[FIN] registro encontrado: {}", lista.get(0));
+        logger.info ("obtenerRespVigente[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
     }
     
-    public int getNumeroLibro()
+    public int obtenerNumeroLibro()
     {
-        logger.info("getNumeroLibro[INI]");
+        logger.info("obtenerNumeroLibro[INI]");
         
         int numero = mapper.selectNumeroLibro();
         
-        logger.info("getNumeroLibro[FIN] numero: {}", numero);
+        logger.info("obtenerNumeroLibro[FIN] numero: {}", numero);
         return numero;
     }
 }
