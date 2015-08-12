@@ -29,7 +29,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     private RecobMap mapper;
 
     @Override
-    public CandadoTO insert(CandadoTO candado)
+    public CandadoTO crear(CandadoTO candado)
     {
         logger.info ("insert[INI] candado: {}", candado);
         mapper.insertCandado( candado );
@@ -39,7 +39,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     }
 
     @Override
-    public CandadoTO update(CandadoTO candado)
+    public CandadoTO modificar(CandadoTO candado)
     {
         logger.info ("guardar[INI] candado: {}", candado);
         mapper.updateCandado( candado );
@@ -49,7 +49,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     }
 
     @Override
-    public void delete(CandadoTO pkCandado)
+    public void eliminar(CandadoTO pkCandado)
     {
         logger.info ("delete[INI] candado: {}", pkCandado );
         mapper.deleteCandado(pkCandado);
@@ -57,7 +57,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     }
 
     @Override
-    public boolean isDeleteable(CandadoTO pk)
+    public boolean esEliminable(CandadoTO pk)
     {
         logger.info ("isDeleteable[INI] pkCandado: {}", pk);
         
@@ -68,7 +68,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     }
 
     @Override
-    public CandadoTO get(CandadoTO pkCandado )
+    public CandadoTO obtener(CandadoTO pkCandado )
     {
         logger.info ("get[INI] pkCandado: {}", pkCandado );
         

@@ -27,7 +27,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     private RecobMap mapper;
     
     @Override
-    public CajaBloqueoTO insert(CajaBloqueoTO caja)
+    public CajaBloqueoTO crear(CajaBloqueoTO caja)
     {
         logger.info ("insert[INI] caja: {}", caja);
         mapper.insertCajaBloqueo( caja );
@@ -37,7 +37,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     }
 
     @Override
-    public CajaBloqueoTO update(CajaBloqueoTO caja)
+    public CajaBloqueoTO modificar(CajaBloqueoTO caja)
     {
         logger.info ("update[INI] caja: {}", caja);
         mapper.updateCajaBloqueo( caja );
@@ -47,7 +47,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     }
 
     @Override
-    public void delete(CajaBloqueoTO pkCaja)
+    public void eliminar(CajaBloqueoTO pkCaja)
     {
         logger.info ("delete[INI] pkCaja: {}", pkCaja );
         mapper.deleteCajaBloqueo(pkCaja);
@@ -55,7 +55,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     }
 
     @Override
-    public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
+    public CajaBloqueoTO obtener(CajaBloqueoTO pkCaja)
     {
         logger.info ("get[INI] pkCaja: {}", pkCaja );
         
@@ -95,7 +95,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     }
 
     @Override
-    public boolean isDeleteable(CajaBloqueoTO pk)
+    public boolean esEliminable(CajaBloqueoTO pk)
     {
         logger.info ("isDeleteable[INI] pkCaja: {}", pk);
         

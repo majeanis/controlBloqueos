@@ -49,7 +49,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     }
     
     @Override
-    public TrabajadorTO insert(TrabajadorTO trabajador)
+    public TrabajadorTO crear(TrabajadorTO trabajador)
     {
         logger.info ("insert[INI] trabajador: {}", trabajador);
 
@@ -63,7 +63,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     }
     
     @Override
-    public TrabajadorTO update(TrabajadorTO trabajador)
+    public TrabajadorTO modificar(TrabajadorTO trabajador)
     {
         logger.info ("update[INI] trabajador: {}", trabajador);
 
@@ -73,7 +73,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         trabajador.setId(persona.getId());
 
         // Validamos si ya existe la relación entre Trabajador y Empresa
-        TrabajadorTO otro = get(trabajador);
+        TrabajadorTO otro = obtener(trabajador);
         if(otro==null)
         {
             mapper.insertTrabajador(trabajador);
@@ -89,7 +89,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     }
 
     @Override
-    public void delete(TrabajadorTO pkTrabajador)
+    public void eliminar(TrabajadorTO pkTrabajador)
     {
         logger.info ("eliminar[INI] trabajador: {}", pkTrabajador );
         mapper.deleteTrabajador(pkTrabajador);
@@ -97,7 +97,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     }
 
     @Override
-    public TrabajadorTO get(TrabajadorTO pkTrabajador )
+    public TrabajadorTO obtener(TrabajadorTO pkTrabajador )
     {
         logger.info ("get[INI] pkTrabajador: {}", pkTrabajador );
 
@@ -194,7 +194,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     }
 
     @Override
-    public boolean isDeleteable(TrabajadorTO pk)
+    public boolean esEliminable(TrabajadorTO pk)
     {
         logger.info ("isDeleteable[INI] pkTrabajador: {}", pk);
         int relaciones = mapper.childsTrabajador(pk);

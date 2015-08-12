@@ -26,7 +26,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     private RecobMap mapper;
     
     @Override
-    public EmpresaTO insert(EmpresaTO empresa)
+    public EmpresaTO crear(EmpresaTO empresa)
     {
         logger.info ("insert[INI] empresa: {}", empresa);
         mapper.insertEmpresa( empresa );
@@ -35,7 +35,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     }
     
     @Override
-    public EmpresaTO update(EmpresaTO empresa)
+    public EmpresaTO modificar(EmpresaTO empresa)
     {
         logger.info ("update[INI] empresa: {}", empresa);
         mapper.updateEmpresa( empresa );
@@ -45,7 +45,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     }
 
     @Override
-    public void delete(EmpresaTO pkEmpresa)
+    public void eliminar(EmpresaTO pkEmpresa)
     {
         logger.info ("delete[INI] pkEmpresa: {}", pkEmpresa );
         mapper.deleteEmpresa(pkEmpresa);
@@ -53,7 +53,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     }
 
     @Override
-    public boolean isDeleteable(EmpresaTO pk)
+    public boolean esEliminable(EmpresaTO pk)
     {
         logger.info ("isDeleteable[INI] pkEmpresa: {}", pk);
         int relaciones = mapper.childsEmpresa(pk);
@@ -62,7 +62,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     }
     
     @Override
-    public EmpresaTO get(EmpresaTO pkEmpresa )
+    public EmpresaTO obtener(EmpresaTO pkEmpresa )
     {
         logger.info ("get[INI] pkEmpresa: {}", pkEmpresa );
         

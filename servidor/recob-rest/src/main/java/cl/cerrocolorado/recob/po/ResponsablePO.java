@@ -23,7 +23,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
 
 
     @Override
-    public ResponsableTO insert(ResponsableTO datos)
+    public ResponsableTO crear(ResponsableTO datos)
     {
         logger.info ("insert[INI] datos: {}", datos);
         mapper.insertResponsable(datos);
@@ -33,7 +33,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     }
 
     @Override
-    public ResponsableTO update(ResponsableTO datos)
+    public ResponsableTO modificar(ResponsableTO datos)
     {
         logger.info ("update[INI] datos: {}", datos);
         mapper.updateResponsable(datos);
@@ -43,7 +43,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     }
 
     @Override
-    public void delete(ResponsableTO pk)
+    public void eliminar(ResponsableTO pk)
     {
         logger.info ("delete[INI] pk: {}", pk);
         mapper.deleteResponsable(pk);
@@ -51,7 +51,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     }
 
     @Override
-    public boolean isDeleteable(ResponsableTO pk)
+    public boolean esEliminable(ResponsableTO pk)
     {
         logger.info ("isDeleteable[INI] pk: {}", pk);
         int i = mapper.childsResponsable(pk);
@@ -61,7 +61,7 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     }
 
     @Override
-    public ResponsableTO get(ResponsableTO pk)
+    public ResponsableTO obtener(ResponsableTO pk)
     {
         logger.info ("get[INI] pkResponsable: {}", pk);
         
