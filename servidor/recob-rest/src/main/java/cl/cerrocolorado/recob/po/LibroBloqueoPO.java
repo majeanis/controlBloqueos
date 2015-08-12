@@ -31,34 +31,45 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     
     @Autowired
     private RecobMap mapper;
+
+    @Override
+    public LibroBloqueoTO insert(LibroBloqueoTO libro)
+    {
+        logger.info ("insert[INI] libro: {}", libro);
+        mapper.insertLibro( libro );
+        logger.debug("insert[FIN] después de insertar el registro: {}", libro);
+
+        return libro;
+    }
     
     @Override
-    public LibroBloqueoTO guardar(LibroBloqueoTO libro)
+    public LibroBloqueoTO update(LibroBloqueoTO libro)
     {
-        logger.info ("guardar[INI] libro: {}", libro);
-        
-        if( libro.isIdBlank() )
-        {
-            mapper.insertLibro( libro );
-            logger.debug("guardar[001] despues de insertar el registro: {}", libro);
-        } else
-        {
-            mapper.updateLibro( libro );
-            logger.debug("guardar[002] despues de actualizar el registro: {}", libro);
-        }
-        
-        logger.info ("guardar[FIN] libro guardado con éxito: {}", libro);
+        logger.info ("update[INI] libro: {}", libro);
+        mapper.updateLibro( libro );
+        logger.debug("update[FIN] después de actualizar el registro: {}", libro);
+ 
         return libro;
     }
 
     @Override
-    public void eliminar(LibroBloqueoTO pk)
+    public void delete(LibroBloqueoTO pk)
     {
-        logger.info ("eliminar[INI] pkLibro: {}", pk );
+        logger.info ("delete[INI] pkLibro: {}", pk );
         mapper.deleteLibro(pk);
-        logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pk );
+        logger.info ("delete[FIN] después de eliminar el registro: {}", pk );
     }
 
+    @Override
+    public boolean isDeleteable(LibroBloqueoTO pk)
+    {
+        logger.info ("isDeleteable[INI] pkLibro: {}", pk);
+        int relaciones = mapper.childsLibro(pk);
+        logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
+
+        return relaciones == 0;
+    }
+    
     @Override
     public LibroBloqueoTO get(LibroBloqueoTO pk)
     {
@@ -137,17 +148,6 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
 
         logger.info ("getList[FIN] registros encontrados: {}", lista.size() );
         return lista;
-    }
-
-    @Override
-    public boolean esEliminable(LibroBloqueoTO pk)
-    {
-        logger.info ("esEliminable[INI] pkLibro: {}", pk);
-
-        int relaciones = mapper.childsLibro(pk);
-
-        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones == 0;
     }
     
     public List<TagLibroTO> getTags(LibroBloqueoTO pk,

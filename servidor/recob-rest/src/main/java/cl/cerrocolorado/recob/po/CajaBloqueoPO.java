@@ -27,30 +27,31 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     private RecobMap mapper;
     
     @Override
-    public CajaBloqueoTO guardar(CajaBloqueoTO caja)
+    public CajaBloqueoTO insert(CajaBloqueoTO caja)
     {
-        logger.info ("guardar[INI] caja: {}", caja);
-        
-        if( caja.isIdBlank() )
-        {
-            mapper.insertCajaBloqueo( caja );
-            logger.debug("guardar[001] despues de insertar la caja: {}", caja);
-        } else
-        {
-            mapper.updateCajaBloqueo( caja );
-            logger.debug("guardar[002] despues de actualizar la caja: {}", caja);
-        }
-        
-        logger.info ("guardar[FIN] caja: {}", caja);
+        logger.info ("insert[INI] caja: {}", caja);
+        mapper.insertCajaBloqueo( caja );
+        logger.info ("insert[FIN] despues de insertar la caja: {}", caja);
+
         return caja;
     }
 
     @Override
-    public void eliminar(CajaBloqueoTO pkCaja)
+    public CajaBloqueoTO update(CajaBloqueoTO caja)
     {
-        logger.info ("eliminar[INI] pkCaja: {}", pkCaja );
+        logger.info ("update[INI] caja: {}", caja);
+        mapper.updateCajaBloqueo( caja );
+        logger.info ("update[FIN] despues de actualizar la caja: {}", caja);
+
+        return caja;
+    }
+
+    @Override
+    public void delete(CajaBloqueoTO pkCaja)
+    {
+        logger.info ("delete[INI] pkCaja: {}", pkCaja );
         mapper.deleteCajaBloqueo(pkCaja);
-        logger.info ("eliminar[FIN] despues de eliminar a la caja: {}", pkCaja );
+        logger.info ("delete[FIN] despues de eliminar a la caja: {}", pkCaja );
     }
 
     @Override
@@ -94,13 +95,13 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     }
 
     @Override
-    public boolean esEliminable(CajaBloqueoTO pk)
+    public boolean isDeleteable(CajaBloqueoTO pk)
     {
-        logger.info ("esEliminable[INI] pkCaja: {}", pk);
+        logger.info ("isDeleteable[INI] pkCaja: {}", pk);
         
         int relaciones = mapper.childsCajaBloqueo(pk);
         
-        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
+        logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
     }
 }

@@ -26,13 +26,41 @@ public class EquipoPO implements BasePO<EquipoTO>
     private RecobMap mapper;
 
     @Override
-    public void eliminar(EquipoTO pkEquipo)
+    public EquipoTO insert(EquipoTO equipo)
     {
-        logger.info ("eliminar[INI] pkEquipo: {}", pkEquipo);
-        
+        logger.info ("insert[INI] equipo: {}", equipo);
+        mapper.insertEquipo(equipo);
+        logger.info ("insert[FIN] después de ejecutar el insert: {}", equipo);
+
+        return equipo;
+    }
+
+    @Override
+    public EquipoTO update(EquipoTO equipo)
+    {
+        logger.info ("update[INI] equipo: {}", equipo);
+        mapper.updateEquipo(equipo);
+        logger.debug("update[FIN] registro actualizado con éxito: {}", equipo);
+
+        return equipo;
+    }
+    
+    @Override
+    public void delete(EquipoTO pkEquipo)
+    {
+        logger.info ("delete[INI] pkEquipo: {}", pkEquipo);
         mapper.deleteEquipo(pkEquipo);
-        
-        logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pkEquipo);
+        logger.info ("delete[FIN] despues de eliminar el registro: {}", pkEquipo);
+    }
+    
+    @Override
+    public boolean isDeleteable(EquipoTO pk)
+    {
+        logger.info ("isDeleteable[INI] pkEquipo: {}", pk);
+        int relaciones = mapper.childsEquipo(pk);
+        logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
+
+        return relaciones == 0;
     }
 
     @Override
@@ -64,35 +92,6 @@ public class EquipoPO implements BasePO<EquipoTO>
         equipo.setTags(tags);
         logger.info("get[FIN] registro encontrado: {}", equipo);
         return equipo;
-    }
-
-    @Override
-    public EquipoTO guardar(EquipoTO equipo)
-    {
-        logger.info ("guardar[INI] equipo: {}", equipo);
-
-        if( equipo.isIdBlank() )
-        {
-            mapper.insertEquipo(equipo);
-            logger.info("guardar[FIN] registro creado con éxito: {}", equipo);
-        } else
-        {
-            mapper.updateEquipo(equipo);
-            logger.debug("guardar[FIN] registro actualizado con éxito: {}", equipo);
-        }
-
-        return equipo;
-    }
-
-    @Override
-    public boolean esEliminable(EquipoTO pk)
-    {
-        logger.info ("esEliminable[INI] pkEquipo: {}", pk);
-        
-        int relaciones = mapper.childsEquipo(pk);
-        
-        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones == 0;
     }
 
     public boolean esTagEliminable(TagTO pk)

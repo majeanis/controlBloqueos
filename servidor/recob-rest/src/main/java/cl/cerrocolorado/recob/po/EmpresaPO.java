@@ -26,32 +26,41 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     private RecobMap mapper;
     
     @Override
-    public EmpresaTO guardar(EmpresaTO empresa)
+    public EmpresaTO insert(EmpresaTO empresa)
     {
-        logger.info ("guardar[INI] empresa: {}", empresa);
-        
-        if( empresa.isIdBlank() )
-        {
-            mapper.insertEmpresa( empresa );
-            logger.debug("guardar[001] despues de insertar el registro: {}", empresa);
-        } else
-        {
-            mapper.updateEmpresa( empresa );
-            logger.debug("guardar[002] despues de actualizar el registro: {}", empresa);
-        }
-        
-        logger.info ("guardar[FIN] registro guardado con exito: {}", empresa);
+        logger.info ("insert[INI] empresa: {}", empresa);
+        mapper.insertEmpresa( empresa );
+        logger.info ("insert[FIN] después de insertar el registro: {}", empresa);
+        return empresa;
+    }
+    
+    @Override
+    public EmpresaTO update(EmpresaTO empresa)
+    {
+        logger.info ("update[INI] empresa: {}", empresa);
+        mapper.updateEmpresa( empresa );
+        logger.info ("update[FIN] después de actualizar el registro: {}", empresa);
+
         return empresa;
     }
 
     @Override
-    public void eliminar(EmpresaTO pkEmpresa)
+    public void delete(EmpresaTO pkEmpresa)
     {
-        logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
+        logger.info ("delete[INI] pkEmpresa: {}", pkEmpresa );
         mapper.deleteEmpresa(pkEmpresa);
-        logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pkEmpresa );
+        logger.info ("delete[FIN] despues de eliminar el registro: {}", pkEmpresa );
     }
 
+    @Override
+    public boolean isDeleteable(EmpresaTO pk)
+    {
+        logger.info ("isDeleteable[INI] pkEmpresa: {}", pk);
+        int relaciones = mapper.childsEmpresa(pk);
+        logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
+        return relaciones == 0;
+    }
+    
     @Override
     public EmpresaTO get(EmpresaTO pkEmpresa )
     {
@@ -87,16 +96,5 @@ public class EmpresaPO implements BasePO<EmpresaTO>
 
         logger.info ("getVigentes[FIN] registros: {}", lista.size() );
         return lista;
-    }
-
-    @Override
-    public boolean esEliminable(EmpresaTO pk)
-    {
-        logger.info ("esEliminable[INI] pkEmpresa: {}", pk);
-        
-        int relaciones = mapper.childsEmpresa(pk);
-        
-        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones == 0;
     }
 }

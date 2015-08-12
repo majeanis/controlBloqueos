@@ -7,8 +7,9 @@ package cl.cerrocolorado.recob.po;
  */
 public interface BasePO<T>
 {
-    public void eliminar(T pk);
-    public boolean esEliminable(T pk);
+    public T insert(T datos);
+    public T update(T datos);
+    public void delete(T pk);
     public T get(T pk);
-    public T guardar(T datos);
+    public boolean isDeleteable(T pk);
 }

@@ -20,25 +20,43 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     
     @Autowired
     private RecobMap mapper;
-    
+
+
     @Override
-    public void eliminar(ResponsableTO pk)
+    public ResponsableTO insert(ResponsableTO datos)
     {
-        logger.info ("eliminar[INI] pk: {}", pk);
+        logger.info ("insert[INI] datos: {}", datos);
+        mapper.insertResponsable(datos);
+        logger.info ("insert[FIN] después de hacer el insert: {}", datos);
 
-        mapper.deleteResponsable(pk);
-
-        logger.info ("eliminar[FIN] registro eliminado con éxito: {}", pk );
+        return datos;
     }
 
     @Override
-    public boolean esEliminable(ResponsableTO pk)
+    public ResponsableTO update(ResponsableTO datos)
     {
-        logger.info ("esEliminable[INI] pk: {}", pk);
+        logger.info ("update[INI] datos: {}", datos);
+        mapper.updateResponsable(datos);
+        logger.info ("update[FIN] después de hacer el update: {}", datos);
+ 
+        return datos;
+    }
 
+    @Override
+    public void delete(ResponsableTO pk)
+    {
+        logger.info ("delete[INI] pk: {}", pk);
+        mapper.deleteResponsable(pk);
+        logger.info ("delete[FIN] registro eliminado con éxito: {}", pk );
+    }
+
+    @Override
+    public boolean isDeleteable(ResponsableTO pk)
+    {
+        logger.info ("isDeleteable[INI] pk: {}", pk);
         int i = mapper.childsResponsable(pk);
-        
-        logger.info ("esEliminable[FIN] registros hijos: {}", i);
+        logger.info ("isDeleteable[FIN] registros hijos: {}", i);
+
         return i == 0;
     }
 
@@ -87,25 +105,6 @@ public class ResponsablePO implements BasePO<ResponsableTO>
         
         logger.info("getVigente[FIN] registro encontrado: {}", lista.get(0));
         return lista.get(0);
-    }
-
-    @Override
-    public ResponsableTO guardar(ResponsableTO datos)
-    {
-        logger.info("guardar[INI] datos: {}", datos);
-
-        if( datos.isIdBlank() )
-        {
-            mapper.insertResponsable(datos);
-            logger.debug("guardar[001] después de hacer el insert");
-        } else
-        {
-            mapper.updateResponsable(datos);
-            logger.debug("guardar[002] después de hacer el update");
-        }
-
-        logger.info("guardar[FIN] registro guardao con éxito: {}", datos);
-        return datos;
     }
 }
  

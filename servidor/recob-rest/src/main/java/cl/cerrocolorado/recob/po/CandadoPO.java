@@ -27,32 +27,44 @@ public class CandadoPO implements BasePO<CandadoTO>
     
     @Autowired
     private RecobMap mapper;
-    
+
     @Override
-    public CandadoTO guardar(CandadoTO candado)
+    public CandadoTO insert(CandadoTO candado)
     {
-        logger.info ("guardar[INI] candado: {}", candado);
-        
-        if( candado.isIdBlank() )
-        {
-            mapper.insertCandado( candado );
-            logger.debug("guardar[001] despues de insertar el candado: {}", candado);
-        } else
-        {
-            mapper.updateCandado( candado );
-            logger.debug("guardar[002] despues de actualizar la candado: {}", candado);
-        }
-        
-        logger.info ("guardar[FIN] candado: {}", candado);
+        logger.info ("insert[INI] candado: {}", candado);
+        mapper.insertCandado( candado );
+        logger.debug("insert[FIN] después de insertar el candado: {}", candado);
+
         return candado;
     }
 
     @Override
-    public void eliminar(CandadoTO pkCandado)
+    public CandadoTO update(CandadoTO candado)
     {
-        logger.info ("eliminar[INI] candado: {}", pkCandado );
+        logger.info ("guardar[INI] candado: {}", candado);
+        mapper.updateCandado( candado );
+        logger.debug("guardar[FIN] después de actualizar la candado: {}", candado);
+ 
+        return candado;
+    }
+
+    @Override
+    public void delete(CandadoTO pkCandado)
+    {
+        logger.info ("delete[INI] candado: {}", pkCandado );
         mapper.deleteCandado(pkCandado);
-        logger.info ("eliminar[FIN] despues de eliminar a la candado: {}", pkCandado );
+        logger.info ("delete[FIN] despues de eliminar a la candado: {}", pkCandado );
+    }
+
+    @Override
+    public boolean isDeleteable(CandadoTO pk)
+    {
+        logger.info ("isDeleteable[INI] pkCandado: {}", pk);
+        
+        int relaciones = mapper.childsCandado(pk);
+        
+        logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
+        return relaciones == 0;
     }
 
     @Override
@@ -136,17 +148,6 @@ public class CandadoPO implements BasePO<CandadoTO>
         
         logger.info ("getList[FIN] candado encontrado: {}", candados.size() );
         return candados;
-    }
-
-    @Override
-    public boolean esEliminable(CandadoTO pk)
-    {
-        logger.info ("esEliminable[INI] pkCandado: {}", pk);
-        
-        int relaciones = mapper.childsCandado(pk);
-        
-        logger.info ("esEliminable[FIN] relaciones: {}", relaciones);
-        return relaciones == 0;
     }
     
     public List<UsoCandadoTO> getUsosCandado(Optional<Boolean> vigencia)
