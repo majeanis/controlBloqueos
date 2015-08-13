@@ -14,31 +14,14 @@ import java.util.Optional;
  *
  * @author mauricio.camara
  */
-public interface EquipoBO
+public interface EquipoBO extends BaseBO<EquipoTO>
 {
-    public Respuesta<EquipoTagsTO> guardar(EquipoTagsTO equipo) throws Exception;
-
-    public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception;
-
-    public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception;
-
-    public Respuesta<EquipoTO> eliminar(EquipoTO pk) throws Exception;
-
+    public Respuesta<EquipoTagsTO> getEquipo(EquipoTO pk);
+    public Respuesta<List<EquipoTO>> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia);
+    public Respuesta<TagTO> crearTag(TagTO tag) throws Exception;
+    public Respuesta<TagTO> modificarTag(TagTO tag) throws Exception;
     public Respuesta<TagTO> eliminarTag(TagTO pk) throws Exception;
-    
-    public Respuesta<EquipoTagsTO> get(EquipoTO pk);
-
     public Respuesta<TagTO> getTag(TagTO pk);
-
-    public Respuesta<List<EquipoTO>> getVigentes(UbicacionTO pkUbicacion);
-    
-    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, 
-                                              Optional<Boolean> vigencia);
-    
+    public Respuesta<List<TagTO>> getTags(EquipoTO pk, Optional<Boolean> vigencia);
     public Respuesta<List<TagTO>> getTagsEnergiaCero(EquipoTO pk);
-    
-    public Respuesta<List<TagTO>> getTagsVigentes(EquipoTO pk);
-    
-    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, 
-                                               Optional<Boolean> vigencia);
 }

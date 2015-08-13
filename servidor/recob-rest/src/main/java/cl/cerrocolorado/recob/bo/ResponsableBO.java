@@ -3,20 +3,13 @@ package cl.cerrocolorado.recob.bo;
 import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.utils.Resultado;
-import cl.cerrocolorado.recob.utils.Transaccional;
+
 
 /**
  *
  * @author mauricio.camara
  */
-public interface ResponsableBO
+public interface ResponsableBO extends BaseBO<ResponsableTO>
 {
-	@Transaccional
-    public Respuesta<ResponsableTO> guardar(ResponsableTO responsable) throws Exception;
-
-	@Transaccional
-    public Respuesta<ResponsableTO> eliminar(ResponsableTO pk) throws Exception;
-
     public Respuesta<ResponsableTO> getVigente(UbicacionTO pk);
 }

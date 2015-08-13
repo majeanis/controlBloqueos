@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * @author mauricio.camara
  */
-public interface UbicacionBO
+public interface UbicacionBO extends BaseBO<UbicacionTO>
 {
     public UbicacionTO get(String tokenUbicacion);
     public Respuesta<UbicacionTO> validarToken(String tokenUbicacion);
