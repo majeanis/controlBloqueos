@@ -4,7 +4,6 @@ import cl.cerrocolorado.recob.to.ResponsableTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 
-
 /**
  *
  * @author mauricio.camara

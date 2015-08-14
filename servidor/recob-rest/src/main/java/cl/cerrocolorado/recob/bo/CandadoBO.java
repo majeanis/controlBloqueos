@@ -24,11 +24,6 @@ public interface CandadoBO extends BaseBO<CandadoTO>
     public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, 
                                                Optional<PersonaTO> pkPersona, 
                                                Optional<Boolean> vigencia);
-
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion);
-    
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion,
-                                                  Optional<PersonaTO> pkPersona);
     
     public Respuesta<List<UsoCandadoTO>> getUsosCandado(Optional<Boolean> vigencia);
 }
