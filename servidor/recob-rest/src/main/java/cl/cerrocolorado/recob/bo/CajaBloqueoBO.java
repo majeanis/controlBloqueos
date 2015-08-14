@@ -15,6 +15,4 @@ public interface CajaBloqueoBO extends BaseBO<CajaBloqueoTO>
 {
     public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, 
                                                    Optional<Boolean> vigencia);
-
-    public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion);
 }
