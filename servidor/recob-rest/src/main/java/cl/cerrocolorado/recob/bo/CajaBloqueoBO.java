@@ -13,6 +13,6 @@ import java.util.Optional;
  */
 public interface CajaBloqueoBO extends BaseBO<CajaBloqueoTO>
 {
-    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, 
+    public Respuesta<List<CajaBloqueoTO>> getCajas(UbicacionTO pkUbicacion, 
                                                    Optional<Boolean> vigencia);
 }

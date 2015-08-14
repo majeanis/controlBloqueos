@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public interface EquipoBO extends BaseBO<EquipoTO>
 {
-    public Respuesta<List<EquipoTO>> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia);
+    public Respuesta<List<EquipoTO>> getEquipos(UbicacionTO pkUbicacion, Optional<Boolean> vigencia);
     public Respuesta<EquipoTagsTO> getEquipo(EquipoTO pk);
     
     public Respuesta<TagTO> crearTag(TagTO tag) throws Exception;

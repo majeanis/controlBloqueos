@@ -11,5 +11,5 @@ import java.util.Optional;
  */
 public interface EmpresaBO extends BaseBO<EmpresaTO>
 {
-    public Respuesta<List<EmpresaTO>> getTodos(Optional<Boolean> vigencia);
+    public Respuesta<List<EmpresaTO>> getEmpresas(Optional<Boolean> vigencia);
 }
