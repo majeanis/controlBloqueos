@@ -9,6 +9,7 @@ import cl.cerrocolorado.recob.to.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.Utils;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import java.util.Optional;
@@ -34,43 +35,30 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     @Autowired
     private UbicacionPO ubicacionPO;
 
-    @Transaccional
-    @Override
-    public Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO cajaBloqueo) throws Exception
+    private Resultado validarCaja(CajaBloqueoTO cajaBloqueo)
     {
-        logger.info ("guardar[INI] cajaBloqueo: {}", cajaBloqueo);
-        
+        logger.info ("validarCaja[INI] cajaBloqueo: {}", cajaBloqueo);
         Resultado rtdo = new ResultadoProceso();
 
         if( cajaBloqueo == null )
         {
         	rtdo.addError( this.getClass(), "Debe informar los datos de la Caja");
-            logger.info ("guardar[FIN] caja informada en null" );        	
-            return Respuesta.of(rtdo);
+            logger.info ("validarCaja[FIN] caja informada en null" );        	
+            return rtdo;
         } 
-
         if ( cajaBloqueo.getVigente() == null )
         {
             rtdo.addError( this.getClass(), "Debe informar Vigencia de la Caja");
         }
-        
-        if( cajaBloqueo.getNumero() == null )
+        if( Utils.nvl(cajaBloqueo.getNumero(), 0) == 0 )
         {
             rtdo.addError( this.getClass(), "Debe informar N° de la Caja" );
-        } else if( cajaBloqueo.getNumero() == 0 )
-        {
-            rtdo.addError( this.getClass(), "El N° de Caja es inválido" );
         }
-        
         if( cajaBloqueo.getNombre() == null )
         {
             rtdo.addError( this.getClass(), "Debe informar nombre de la Caja" );
         }
-        
-        if( cajaBloqueo.getUbicacion() == null )
-        {
-            rtdo.addError( this.getClass(), "Caja debe estar asociada a una Ubicación" );
-        } else if (cajaBloqueo.getUbicacion().getId() == null )
+        if( cajaBloqueo.getUbicacion() == null || cajaBloqueo.getUbicacion().isKeyBlank())
         {
             rtdo.addError( this.getClass(), "Caja debe estar asociada a una Ubicación" );
         } else
@@ -82,26 +70,60 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 		    }
         }
 
+        logger.info ("validarCaja[FIN] resultado de la validación: {}", rtdo);
+        return rtdo;
+    }
+
+    @Transaccional
+    @Override
+    public Respuesta<CajaBloqueoTO> crear(CajaBloqueoTO caja) throws Exception
+    {
+        logger.info ("crear[INI] caja: {}", caja);
+        
+        Resultado rtdo = validarCaja( caja );
+        CajaBloqueoTO otra = cajaPO.obtener( caja );
+        if(otra!=null)
+        {
+            rtdo.addError(this.getClass(), "Ya existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
+        }
         if( !rtdo.esExitoso() )
         {
-            logger.info ("guardar[FIN] saliendo del método por campos en NULL: {}", rtdo );
+            logger.info ("crear[FIN] saliendo por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
-        }
-        
-        // Buscamos la preexistencia de la caja
-        CajaBloqueoTO otraCaja = cajaPO.get( cajaBloqueo );
-        if( otraCaja != null ) 
-        {
-            logger.debug("guardar[001] ya existe registro para la caja: {}", otraCaja );
-            cajaBloqueo.setId(otraCaja.getId());
         }
 
         // Si llegamos a este punto la Caja puede ser Guardada
-        cajaPO.guardar(cajaBloqueo);
-        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo guardada con éxito");
+        cajaPO.crear(caja);
+        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo creada con éxito");
         
-        logger.info ("guardar[FIN] caja guardada con exito: {}", cajaBloqueo );
-        return Respuesta.of(rtdo, cajaBloqueo);
+        logger.info ("crear[FIN] caja guardada con exito: {}", caja );
+        return Respuesta.of(rtdo, caja);
+    }
+    
+    @Transaccional
+    @Override
+    public Respuesta<CajaBloqueoTO> modificar(CajaBloqueoTO caja) throws Exception
+    {
+        logger.info ("modificar[INI] caja: {}", caja);
+        
+        Resultado rtdo = validarCaja( caja );
+        CajaBloqueoTO otra = cajaPO.obtener( caja );
+        if(otra==null)
+        {
+            rtdo.addError(this.getClass(), "No existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
+        }
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("modificar[FIN] saliendo por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+
+        // Si llegamos a este punto la Caja puede ser Guardada
+        cajaPO.modificar(caja);
+        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo modificada con éxito");
+        
+        logger.info ("modificar[FIN] caja guardada con exito: {}", caja );
+        return Respuesta.of(rtdo, caja);
     }
     
     @Transaccional
@@ -118,7 +140,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         	return Respuesta.of(rtdo);
         }
         
-        CajaBloqueoTO caja = cajaPO.get(pkCaja);
+        CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
         if( caja == null )
         {
             rtdo.addError(this.getClass(), "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
@@ -154,7 +176,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return Respuesta.of(rtdo);
         }
 
-        CajaBloqueoTO caja = cajaPO.get(pkCaja);
+        CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
         if( caja == null )
         {
             rtdo.addMensaje(this.getClass(), "No se encontró registro para Caja N° #{1}", String.valueOf(pkCaja.getNumero()));
@@ -165,30 +187,24 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     }
 
     @Override
-    public Respuesta<List<CajaBloqueoTO>> getTodos(UbicacionTO pkUbicacion, 
+    public Respuesta<List<CajaBloqueoTO>> getCajas(UbicacionTO pkUbicacion, 
                                                    Optional<Boolean> vigencia)
     {
-        logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
-        logger.info ("getTodos[INI] vigencia: {}", vigencia);
+        logger.info ("getCajas[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getCajas[INI] vigencia: {}", vigencia);
 
         Resultado rtdo = new ResultadoProceso();
         if(pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar la ubicación");
-            logger.info("getTodos[FIN] pkUbicacion llegó en NULL");
+            logger.info("getCajas[FIN] pkUbicacion llegó en NULL");
             return Respuesta.of(rtdo);
         }
 
         List<CajaBloqueoTO> cajas = cajaPO.getList(pkUbicacion, vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), cajas.size()));
 
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", cajas.size() );
+        logger.info ("getCajas[FIN] cantidad registros encontrados: {}", cajas.size() );
         return Respuesta.of(rtdo, cajas);
-    }
-    
-    @Override
-    public Respuesta<List<CajaBloqueoTO>> getVigentes(UbicacionTO pkUbicacion)
-    {
-        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
     }
 }
