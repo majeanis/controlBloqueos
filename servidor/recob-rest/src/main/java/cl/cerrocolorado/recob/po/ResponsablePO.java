@@ -23,22 +23,21 @@ public class ResponsablePO implements BasePO<ResponsableTO>
 
 
     @Override
-    public ResponsableTO crear(ResponsableTO datos)
+    public ResponsableTO guardar(ResponsableTO datos)
     {
-        logger.info ("insert[INI] datos: {}", datos);
-        mapper.insertResponsable(datos);
-        logger.info ("insert[FIN] después de hacer el insert: {}", datos);
-
-        return datos;
-    }
-
-    @Override
-    public ResponsableTO modificar(ResponsableTO datos)
-    {
-        logger.info ("update[INI] datos: {}", datos);
-        mapper.updateResponsable(datos);
-        logger.info ("update[FIN] después de hacer el update: {}", datos);
- 
+        logger.info ("guardar[INI] datos: {}", datos);
+        
+        if(datos.isIdBlank())
+        {
+            mapper.insertResponsable(datos);
+            logger.debug("guardar[001] después de insertar al responsable: {}", datos);            
+        } else
+        {
+            mapper.updateResponsable(datos);
+            logger.debug("guardar[002] después de actualizar al responsable: {}", datos);
+        }
+        
+        logger.info ("guardar[FIN] responsable guardado con éxito: {}", datos);
         return datos;
     }
 

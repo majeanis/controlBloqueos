@@ -33,22 +33,21 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     private RecobMap mapper;
 
     @Override
-    public LibroBloqueoTO crear(LibroBloqueoTO libro)
+    public LibroBloqueoTO guardar(LibroBloqueoTO libro)
     {
-        logger.info ("insert[INI] libro: {}", libro);
-        mapper.insertLibro( libro );
-        logger.debug("insert[FIN] después de insertar el registro: {}", libro);
+        logger.info ("guardar[INI] libro: {}", libro);
+     
+        if(libro.isIdBlank())
+        {
+            mapper.insertLibro( libro );
+            logger.debug("guadar[001] después de insertar el libro: {}", libro);
+        } else
+        {
+            mapper.updateLibro( libro );
+            logger.debug("guadar[002] después de actualizar el libro: {}", libro);
+        }
 
-        return libro;
-    }
-    
-    @Override
-    public LibroBloqueoTO modificar(LibroBloqueoTO libro)
-    {
-        logger.info ("update[INI] libro: {}", libro);
-        mapper.updateLibro( libro );
-        logger.debug("update[FIN] después de actualizar el registro: {}", libro);
- 
+        logger.info ("guardar[FIN] libro: {}", libro);        
         return libro;
     }
 
@@ -258,20 +257,22 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         return lista;
     }
 
-    public TagLibroTO crearTag(TagLibroTO pk)
+    public TagLibroTO guardarTag(TagLibroTO tag)
     {
-        logger.info ("crearTag[INI] tag: {}", pk);
-        mapper.insertTagLibro(pk);
-        logger.info ("crearTag[FIN] registro guardado con éxito: {}", pk);
-        return pk;
-    }
+        logger.info ("guardarTag[INI] tag: {}", tag);
 
-    public TagLibroTO modificarTag(TagLibroTO pk)
-    {
-        logger.info ("modificarTag[INI] tag: {}", pk);
-        mapper.updateTagLibro(pk);
-        logger.info ("modificarTag[FIN] registro guardado con éxito: {}", pk);
-        return pk;
+        if( tag.isIdBlank() )
+        {
+            mapper.insertTagLibro(tag);
+            logger.debug("guardarTag[001] después de insertar el Tag: {}", tag);
+        } else
+        {
+            mapper.updateTagLibro(tag);
+            logger.debug("guardarTag[002] después de actualizar el Tag: {}", tag);            
+        }
+
+        logger.info ("guardarTag[FIN] Tag guardado con éxito: {}", tag);        
+        return tag;
     }
 
     public void eliminarTag(TagLibroTO pk)
@@ -281,20 +282,22 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("eliminarTag[INI] registro eliminado con éxitok: {}", pk);
     }
 
-    public DotacionLibroTO crearDotacion(DotacionLibroTO pk)
+    public DotacionLibroTO guardarDotacion(DotacionLibroTO dotacion)
     {
-        logger.info ("crearDotacion[INI] pk: {}", pk);
-        mapper.insertDotacionLibro(pk);
-        logger.info ("crearDotacion[FIN] registro guardado con éxito: {}", pk);
-        return pk;
-    }
-    
-    public DotacionLibroTO modificarDotacion(DotacionLibroTO pk)
-    {
-        logger.info ("modificarDotacion[INI] pk: {}", pk);
-        mapper.updateDotacionLibro(pk);
-        logger.info ("modificarDotacion[FIN] registro guardado con éxito: {}", pk);
-        return pk;
+        logger.info ("guardarDotacion[INI] dotación: {}", dotacion);
+        
+        if(dotacion.isIdBlank())
+        {
+            mapper.insertDotacionLibro(dotacion);
+            logger.debug ("guardarDotacion[001] después de instalar la dotación: {}", dotacion);
+        } else
+        {
+            mapper.updateDotacionLibro(dotacion);
+            logger.debug ("guardarDotacion[002] después de actualizar la dotación: {}", dotacion);            
+        }
+
+        logger.info ("guardarDotacion[FIN] dotación guardado con éxito: {}", dotacion);
+        return dotacion;
     }
     
     public void eliminarDotacion(DotacionLibroTO pk)
@@ -304,19 +307,14 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("eliminarDotacion[FIN] registro eliminado con éxito: {}", pk);
     }
 
-    public EnergiaLibroTO crearEnergia(EnergiaLibroTO energia)
+    public EnergiaLibroTO guardarEnergia(EnergiaLibroTO energia)
     {
-        logger.info ("crearEnergia[INI] pk: {}", energia);
-        mapper.insertEnergiaLibro(energia);
-        logger.info ("crearEnergia[FIN] registro guardado con éxito: {}", energia);
-        return energia;
-    }
+        logger.info ("guardarEnergia[INI] energía: {}", energia);
 
-    public EnergiaLibroTO modificarEnergia(EnergiaLibroTO energia)
-    {
-        logger.info ("modificarEnergia[INI] pk: {}", energia);
         mapper.insertEnergiaLibro(energia);
-        logger.info ("modificarEnergia[FIN] registro guardado con éxito: {}", energia);
+        logger.debug("guardarEnergia[001] después de insertar la energía: {}", energia);
+
+        logger.info ("guardarEnergia[FIN] energía guardads con éxito: {}", energia);
         return energia;
     }
     
@@ -327,20 +325,22 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info("eliminarLibro[FIN] registro eliminado con éxito: {}", pk);
     }
 
-    public RespLibroTO crearResponsable(RespLibroTO pk)
+    public RespLibroTO guardarResponsable(RespLibroTO responsable)
     {
-        logger.info ("crearResponsable[INI] pk: {}", pk);
-        mapper.insertRespLibro(pk);
-        logger.info ("crearResponsable[FIN] registro guardado con éxito: {}", pk);
-        return pk;
-    }
-    
-    public RespLibroTO modificarResponsable(RespLibroTO pk)
-    {
-        logger.info ("modificarResponsable[INI] pk: {}", pk);
-        mapper.updateRespLibro(pk);
-        logger.info ("modificarResponsable[FIN] registro guardado con éxito: {}", pk);
-        return pk;
+        logger.info ("guardarResponsable[INI] responsable: {}", responsable);
+        
+        if(responsable.isIdBlank())
+        {
+            mapper.insertRespLibro(responsable);
+            logger.debug("guardarResponsable[001] después de insertar al responsable: {}", responsable);
+        } else
+        {
+            mapper.updateRespLibro(responsable);
+            logger.debug("guardarResponsable[002] después de actualizar al responsable: {}", responsable);
+        }
+        
+        logger.info ("guardarResponsable[FIN] responsable guardado con éxito: {}", responsable);
+        return responsable;
     }
 
     public RespLibroTO obtenerRespLibro(RespLibroTO pk)

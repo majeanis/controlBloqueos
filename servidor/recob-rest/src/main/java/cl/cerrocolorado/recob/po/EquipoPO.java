@@ -26,21 +26,21 @@ public class EquipoPO implements BasePO<EquipoTO>
     private RecobMap mapper;
 
     @Override
-    public EquipoTO crear(EquipoTO equipo)
+    public EquipoTO guardar(EquipoTO equipo)
     {
-        logger.info ("insert[INI] equipo: {}", equipo);
-        mapper.insertEquipo(equipo);
-        logger.info ("insert[FIN] después de ejecutar el insert: {}", equipo);
-
-        return equipo;
-    }
-
-    @Override
-    public EquipoTO modificar(EquipoTO equipo)
-    {
-        logger.info ("update[INI] equipo: {}", equipo);
-        mapper.updateEquipo(equipo);
-        logger.debug("update[FIN] registro actualizado con éxito: {}", equipo);
+        logger.info ("guardar[INI] equipo: {}", equipo);
+        
+        if( equipo.isIdBlank() )
+        {
+            mapper.insertEquipo(equipo);
+            logger.debug("update[001] después de insertar el equipo: {}", equipo);
+        } else
+        {
+            mapper.updateEquipo(equipo);
+            logger.debug("update[002] después de actualizar el equipo: {}", equipo);
+        }
+        
+        logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
 
         return equipo;
     }

@@ -26,21 +26,20 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     private RecobMap mapper;
     
     @Override
-    public EmpresaTO crear(EmpresaTO empresa)
+    public EmpresaTO guardar(EmpresaTO empresa)
     {
-        logger.info ("insert[INI] empresa: {}", empresa);
-        mapper.insertEmpresa( empresa );
-        logger.info ("insert[FIN] después de insertar el registro: {}", empresa);
-        return empresa;
-    }
-    
-    @Override
-    public EmpresaTO modificar(EmpresaTO empresa)
-    {
-        logger.info ("update[INI] empresa: {}", empresa);
-        mapper.updateEmpresa( empresa );
-        logger.info ("update[FIN] después de actualizar el registro: {}", empresa);
+        logger.info ("guardar[INI] empresa: {}", empresa);
+        if(empresa.isIdBlank())
+        {
+            mapper.insertEmpresa( empresa );            
+            logger.debug("guardar[001] después de insertar la empresa: {}", empresa);
+        } else
+        {
+            mapper.updateEmpresa( empresa );
+            logger.debug("guardar[002] después de actualizar la empresa: {}", empresa);
+        }
 
+        logger.info ("guardar[FIN] empresa guardad con éxito: {}", empresa);
         return empresa;
     }
 

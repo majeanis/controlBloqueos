@@ -35,7 +35,7 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         if( otra == null )
         {
             mapper.insertPersona(persona);
-            logger.debug("guardarPersona[001] después de crear a la persona: {}", persona);
+            logger.debug("guardarPersona[001] después de insertar a la persona: {}", persona);
         }
         else
         {
@@ -44,47 +44,33 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
             logger.debug("guardarPersona[002] después de actualizar a la persona: {}", persona);
         }
         
-        logger.info ("guardarPersona[FIN] persona guardada: {}", persona);
+        logger.info ("guardarPersona[FIN] persona guardada con éxito: {}", persona);
         return persona;
     }
     
     @Override
-    public TrabajadorTO crear(TrabajadorTO trabajador)
+    public TrabajadorTO guardar(TrabajadorTO trabajador)
     {
-        logger.info ("insert[INI] trabajador: {}", trabajador);
+        logger.info ("guardar[INI] trabajador: {}", trabajador);
 
         PersonaTO persona = guardarPersona(trabajador);
-        logger.debug("insert[001] después de guardar a la persona: {}", persona);
-        
-        mapper.insertTrabajador(trabajador);
-        
-        logger.info ("insert[FIN] registro creado con éxito: {}", trabajador);
-        return trabajador;
-    }
-    
-    @Override
-    public TrabajadorTO modificar(TrabajadorTO trabajador)
-    {
-        logger.info ("update[INI] trabajador: {}", trabajador);
+        logger.debug("guardar[001] después de guardar a la persona: {}", persona);
 
-        PersonaTO persona = guardarPersona(trabajador);
-        logger.debug("update[001] después de guardar a la persona: {}", persona);
-        
+        // Validamos si ya existe la relación entre Persona y Empresa
         trabajador.setId(persona.getId());
-
-        // Validamos si ya existe la relación entre Trabajador y Empresa
         TrabajadorTO otro = obtener(trabajador);
         if(otro==null)
         {
             mapper.insertTrabajador(trabajador);
-            logger.info("update[002] después de insertar al trabajador: {}", trabajador);
+            logger.info("guardar[002] después de insertar al trabajador: {}", trabajador);
         } else
         {
+            trabajador.setEmpresa(otro.getEmpresa());
             mapper.updateTrabajador(trabajador);
-            logger.info("update[003] después de actualizar al trabajador: {}", trabajador);            
+            logger.info("guardar[003] después de actualizar al trabajador: {}", trabajador);            
         }
 
-        logger.info ("update[FIN] registro guardado con éxito: {}", trabajador);
+        logger.info ("guardar[FIN] trabajador guardado con éxito: {}", trabajador);
         return trabajador;
     }
 

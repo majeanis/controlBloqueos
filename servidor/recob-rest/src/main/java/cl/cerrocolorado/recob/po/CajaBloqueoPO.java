@@ -27,22 +27,21 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     private RecobMap mapper;
     
     @Override
-    public CajaBloqueoTO crear(CajaBloqueoTO caja)
+    public CajaBloqueoTO guardar(CajaBloqueoTO caja)
     {
-        logger.info ("insert[INI] caja: {}", caja);
-        mapper.insertCajaBloqueo( caja );
-        logger.info ("insert[FIN] despues de insertar la caja: {}", caja);
+        logger.info ("guardar[INI] caja: {}", caja);
 
-        return caja;
-    }
-
-    @Override
-    public CajaBloqueoTO modificar(CajaBloqueoTO caja)
-    {
-        logger.info ("update[INI] caja: {}", caja);
-        mapper.updateCajaBloqueo( caja );
-        logger.info ("update[FIN] despues de actualizar la caja: {}", caja);
-
+        if( caja.isIdBlank() )
+        {
+            mapper.insertCajaBloqueo( caja );    
+            logger.debug("guardar[001] después de insertar la caja: {}", caja);
+        } else
+        {
+            mapper.updateCajaBloqueo( caja );
+            logger.debug("guardar[002] después de actualizar la caja: {}", caja);
+        }
+        
+        logger.info ("guardar[FIN] caja guardada con éxito: {}", caja);
         return caja;
     }
 

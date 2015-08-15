@@ -29,22 +29,21 @@ public class CandadoPO implements BasePO<CandadoTO>
     private RecobMap mapper;
 
     @Override
-    public CandadoTO crear(CandadoTO candado)
-    {
-        logger.info ("insert[INI] candado: {}", candado);
-        mapper.insertCandado( candado );
-        logger.debug("insert[FIN] después de insertar el candado: {}", candado);
-
-        return candado;
-    }
-
-    @Override
-    public CandadoTO modificar(CandadoTO candado)
+    public CandadoTO guardar(CandadoTO candado)
     {
         logger.info ("guardar[INI] candado: {}", candado);
-        mapper.updateCandado( candado );
-        logger.debug("guardar[FIN] después de actualizar la candado: {}", candado);
- 
+
+        if(candado.isIdBlank())
+        {
+            mapper.insertCandado( candado );    
+            logger.debug("guardar[001] después de insertar el candado: {}", candado);
+        } else
+        {
+            mapper.updateCandado( candado );
+            logger.debug("guardar[002] después de actualizar el candado: {}", candado);
+        }
+
+        logger.info ("guardar[FIN] candado guardado con éxito: {}", candado);
         return candado;
     }
 
