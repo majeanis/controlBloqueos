@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.to;
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import cl.cerrocolorado.recob.utils.Rut;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang.StringUtils;
 
 public class PersonaTO extends EntidadTO
 {
@@ -46,7 +47,7 @@ public class PersonaTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return isIdBlank() && rut == null;
+        return isIdBlank() && (rut==null || rut.isBlank());
     }
 
     @Override
