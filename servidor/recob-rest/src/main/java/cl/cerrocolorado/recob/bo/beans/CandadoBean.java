@@ -43,7 +43,7 @@ public class CandadoBean implements CandadoBO
     @Autowired
     private TrabajadorPO trabajadorPO;
 
-    private Respuesta<CandadoTO> guardar(CandadoTO candado, boolean esNuevo) throws Exception
+    private Respuesta<CandadoTO> guardar(CandadoTO candado, boolean esNuevo)
     {
         logger.info ("guardar[INI] candadoo: {}", candado);
         logger.info ("guardar[FIN] esNuevo: {}", esNuevo);

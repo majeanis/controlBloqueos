@@ -31,7 +31,7 @@ public class EmpresaBean implements EmpresaBO
     @Autowired
     private EmpresaPO empresaPO;
 
-    private Respuesta<EmpresaTO> guardar(EmpresaTO empresa, boolean esNuevo) throws Exception
+    private Respuesta<EmpresaTO> guardar(EmpresaTO empresa, boolean esNuevo)
     {
         logger.info ("guardar[INI] empresa: {}", empresa);
         logger.info ("guardar[INI] esNuevo: {}", esNuevo);
