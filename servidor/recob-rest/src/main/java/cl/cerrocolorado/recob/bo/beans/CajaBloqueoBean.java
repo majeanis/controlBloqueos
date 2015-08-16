@@ -35,95 +35,83 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     @Autowired
     private UbicacionPO ubicacionPO;
 
-    private Resultado validarCaja(CajaBloqueoTO cajaBloqueo)
+    private Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO caja, boolean esNuevo)
     {
-        logger.info ("validarCaja[INI] cajaBloqueo: {}", cajaBloqueo);
+        logger.info ("guardar[INI] caja: {}", caja);
+        logger.info ("guardar[INI] esNuevo: {}", esNuevo);
+        
         Resultado rtdo = new ResultadoProceso();
 
-        if( cajaBloqueo == null )
+        if( caja == null )
         {
         	rtdo.addError( this.getClass(), "Debe informar los datos de la Caja");
-            logger.info ("validarCaja[FIN] caja informada en null" );        	
-            return rtdo;
+            logger.info ("guardar[FIN] caja informada en null" );        	
+            return Respuesta.of(rtdo);
         } 
-        if ( cajaBloqueo.getVigente() == null )
+        if ( caja.getVigente() == null )
         {
             rtdo.addError( this.getClass(), "Debe informar Vigencia de la Caja");
         }
-        if( Utils.nvl(cajaBloqueo.getNumero(), 0) == 0 )
+        if( Utils.nvl(caja.getNumero(), 0) == 0 )
         {
             rtdo.addError( this.getClass(), "Debe informar N° de la Caja" );
         }
-        if( cajaBloqueo.getNombre() == null )
+        if( caja.getNombre() == null )
         {
             rtdo.addError( this.getClass(), "Debe informar nombre de la Caja" );
         }
-        if( cajaBloqueo.getUbicacion() == null || cajaBloqueo.getUbicacion().isKeyBlank())
+        if( caja.getUbicacion() == null || caja.getUbicacion().isKeyBlank())
         {
             rtdo.addError( this.getClass(), "Caja debe estar asociada a una Ubicación" );
         } else
         {
-		    UbicacionTO ubicacion = ubicacionPO.get(cajaBloqueo.getUbicacion());
+		    UbicacionTO ubicacion = ubicacionPO.get(caja.getUbicacion());
 		    if( ubicacion == null )
 		    {
-		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(cajaBloqueo.getUbicacion().getId()));
+		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(caja.getUbicacion().getId()));
 		    }
         }
 
-        logger.info ("validarCaja[FIN] resultado de la validación: {}", rtdo);
-        return rtdo;
+        CajaBloqueoTO otra = cajaPO.obtener( caja );
+        if( esNuevo )
+        {
+            if(otra != null)
+            {
+                rtdo.addError(this.getClass(), "Ya existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
+            }
+        } else if( otra == null )
+        {
+            rtdo.addError(this.getClass(), "No existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );            
+        } else
+        {
+            caja.setId(otra.getId());
+        }
+
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+
+        cajaPO.guardar(caja);
+        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo guardada con éxito");
+        
+        logger.info ("guardar[FIN] caja guardada con exito: {}", caja );
+        return Respuesta.of(rtdo, caja);
     }
 
     @Transaccional
     @Override
     public Respuesta<CajaBloqueoTO> crear(CajaBloqueoTO caja) throws Exception
     {
-        logger.info ("crear[INI] caja: {}", caja);
-        
-        Resultado rtdo = validarCaja( caja );
-        CajaBloqueoTO otra = cajaPO.obtener( caja );
-        if(otra!=null)
-        {
-            rtdo.addError(this.getClass(), "Ya existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
-        }
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("crear[FIN] saliendo por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
-
-        // Si llegamos a este punto la Caja puede ser Guardada
-        cajaPO.crear(caja);
-        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo creada con éxito");
-        
-        logger.info ("crear[FIN] caja guardada con exito: {}", caja );
-        return Respuesta.of(rtdo, caja);
+        return guardar(caja,true);
     }
     
     @Transaccional
     @Override
     public Respuesta<CajaBloqueoTO> modificar(CajaBloqueoTO caja) throws Exception
     {
-        logger.info ("modificar[INI] caja: {}", caja);
-        
-        Resultado rtdo = validarCaja( caja );
-        CajaBloqueoTO otra = cajaPO.obtener( caja );
-        if(otra==null)
-        {
-            rtdo.addError(this.getClass(), "No existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
-        }
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("modificar[FIN] saliendo por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
-
-        // Si llegamos a este punto la Caja puede ser Guardada
-        cajaPO.modificar(caja);
-        rtdo.addMensaje(this.getClass(), "Caja de Bloqueo modificada con éxito");
-        
-        logger.info ("modificar[FIN] caja guardada con exito: {}", caja );
-        return Respuesta.of(rtdo, caja);
+        return guardar(caja,false);
     }
     
     @Transaccional

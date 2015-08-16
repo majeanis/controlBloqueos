@@ -12,7 +12,7 @@ import cl.cerrocolorado.recob.to.UbicacionTO;
 import cl.cerrocolorado.recob.to.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
-import cl.cerrocolorado.recob.utils.Rut;
+import cl.cerrocolorado.recob.utils.Utils;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import java.util.Objects;
@@ -43,11 +43,10 @@ public class CandadoBean implements CandadoBO
     @Autowired
     private TrabajadorPO trabajadorPO;
 
-    @Transaccional
-    @Override
-    public Respuesta<CandadoTO> guardar(CandadoTO candado) throws Exception
+    private Respuesta<CandadoTO> guardar(CandadoTO candado, boolean esNuevo) throws Exception
     {
         logger.info ("guardar[INI] candadoo: {}", candado);
+        logger.info ("guardar[FIN] esNuevo: {}", esNuevo);
         
         Resultado rtdo = new ResultadoProceso();
 
@@ -57,12 +56,9 @@ public class CandadoBean implements CandadoBO
         	logger.info("guardar[FIN] no se informaron datos");
         	return Respuesta.of(rtdo);
         }
-        if( candado.getNumero() == null )
+        if( Utils.nvl( candado.getNumero(), 0 ) == 0 )
         {
             rtdo.addError(this.getClass(), "Debe informa el N° del candado");
-        } else if( candado.getNumero() == 0 )
-        {
-            rtdo.addError(this.getClass(), "N° del candado es inválido");
         }
         if( StringUtils.isBlank(candado.getSerie()) )
         {
@@ -72,7 +68,6 @@ public class CandadoBean implements CandadoBO
         {
             rtdo.addError(this.getClass(), "Debe informar vigencia del candado");
         }
-
         if( candado.getUso() == null || candado.getUso().isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar el uso del candado" );
@@ -87,8 +82,7 @@ public class CandadoBean implements CandadoBO
                 candado.setUso(uso);
             }
         }
-
-        if( candado.getUbicacion() == null || candado.getUbicacion().getId() == null )
+        if( candado.getUbicacion() == null || candado.getUbicacion().isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Candado debe estar asociado a una ubicación" );
         } else
@@ -102,8 +96,7 @@ public class CandadoBean implements CandadoBO
                 candado.setUbicacion(ubicacion);
             }
         }
-
-        if( candado.getPersona() == null || Rut.isBlank(candado.getPersona().getRut() ) )
+        if( candado.getPersona() == null || candado.getPersona().isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Debe asociar el candado a una Persona" );
         } else
@@ -117,30 +110,34 @@ public class CandadoBean implements CandadoBO
                 candado.setPersona(persona);
             }
         }
-        
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] saliendo del método por falla en validaciones: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
 
-        // Buscamos la preexistencia del candado
-        CandadoTO otroCandado = candadoPO.get( candado );
-        if( otroCandado != null ) 
+        CandadoTO otro = candadoPO.obtener(candado);
+        if(esNuevo)
         {
-            logger.debug("guardar[001] ya existe registro para el candado: {}", otroCandado );
-            candado.setId(otroCandado.getId());
+            if( otro != null )
+            {
+                rtdo.addError(this.getClass(), "Ya existe candado con N° #{1}", String.valueOf(candado.getNumero()));
+            }
+        }
+        else if( otro == null )
+        {
+            rtdo.addError(this.getClass(), "No existe candado con N° #{1}", String.valueOf(candado.getNumero()));
+        } 
+        else
+        {
+            candado.setId(otro.getId());
         }
 
         // Verificamos si existe otro Candado con el mismo N° de Serie
         CandadoTO otroSerie = candadoPO.getBySerie(candado);
-        if( otroSerie != null )
+        if( otroSerie!=null )
         {
-            if( candado.getId() == null || !Objects.equals(otroSerie.getId(), candado.getId()) )
+            if( esNuevo )
             {
                 rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie #{1} [Candado: #{2}]", candado.getSerie(), String.valueOf(otroSerie.getNumero()));
-                logger.info("guardar[FIN] Se repitió el N° de serie en otro candado: {}", otroSerie);
-                return Respuesta.of(rtdo);
+            } else if( !Objects.equals(otroSerie.getNumero(), candado.getNumero()) )
+            {
+                rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie #{1} [Candado: #{2}]", candado.getSerie(), String.valueOf(otroSerie.getNumero()));
             }
         }
         
@@ -152,6 +149,20 @@ public class CandadoBean implements CandadoBO
         return Respuesta.of(rtdo,candado);
     }
     
+    @Override
+    @Transaccional
+    public Respuesta<CandadoTO> crear(CandadoTO candado) throws Exception
+    {
+        return guardar(candado,true);
+    }
+
+    @Override
+    @Transaccional
+    public Respuesta<CandadoTO> modificar(CandadoTO candado) throws Exception
+    {
+        return guardar(candado,false);
+    }
+
     @Transaccional
     @Override
     public Respuesta<CandadoTO> eliminar(CandadoTO pkCandado) throws Exception
@@ -174,7 +185,7 @@ public class CandadoBean implements CandadoBO
             rtdo.addError(this.getClass(), "Debe informar la ubicación del candado" );
         }
         
-        CandadoTO candado = candadoPO.get(pkCandado);
+        CandadoTO candado = candadoPO.obtener(pkCandado);
         if( candado == null )
         {
             rtdo.addError(this.getClass(), "No existe Candado con N° #{1}", String.valueOf(pkCandado.getNumero()) );
@@ -212,7 +223,7 @@ public class CandadoBean implements CandadoBO
             return Respuesta.of(rtdo);
         }
 
-        CandadoTO candado = candadoPO.get(pkCandado);
+        CandadoTO candado = candadoPO.obtener(pkCandado);
         if( candado == null)
         {
             rtdo.addError(this.getClass(), "No existe candado con N° #{1}", String.valueOf(pkCandado.getNumero()));
@@ -252,46 +263,34 @@ public class CandadoBean implements CandadoBO
     }
 
     @Override
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion)
+    public Respuesta<List<CandadoTO>> getCandados(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
     {
-        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
-    }
-
-    @Override
-    public Respuesta<List<CandadoTO>> getVigentes(UbicacionTO pkUbicacion, Optional<PersonaTO> pkPersona)
-    {
-        return getTodos(pkUbicacion, pkPersona, Optional.of(Boolean.TRUE));
-    }
-
-    @Override
-    public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
-    {
-        logger.info ("getTodos[INI] ubicacion: {}", pkUbicacion );
-        logger.info ("getTodos[INI] vigencia: {}", vigencia );
+        logger.info ("getCandados[INI] ubicacion: {}", pkUbicacion );
+        logger.info ("getCandados[INI] vigencia: {}", vigencia );
         
         Resultado rtdo = new ResultadoProceso();
         if( pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar la ubicación");
-            logger.info ("getTodos[FIN] no se informó la ubicación: {}", pkUbicacion );
+            logger.info ("getCandados[FIN] no se informó la ubicación: {}", pkUbicacion );
             return Respuesta.of(rtdo);
         }
 
         List<CandadoTO> lista = candadoPO.getList(pkUbicacion, vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        logger.info ("getCandados[FIN] cantidad registros encontrados: {}", lista.size() );
         return Respuesta.of(rtdo, lista);
     }
 
 	@Override
-	public Respuesta<List<CandadoTO>> getTodos(UbicacionTO pkUbicacion, 
+	public Respuesta<List<CandadoTO>> getCandados(UbicacionTO pkUbicacion, 
                                                Optional<PersonaTO> pkPersona, 
                                                Optional<Boolean> vigencia) 
     {
-        logger.info ("getTodos[INI] pkUbicacion: {}", pkUbicacion );
-        logger.info ("getTodos[INI] pkPersona: {}", pkPersona );
-        logger.info ("getTodos[INI] vigencia: {}", vigencia);
+        logger.info ("getCandados[INI] pkUbicacion: {}", pkUbicacion );
+        logger.info ("getCandados[INI] pkPersona: {}", pkPersona );
+        logger.info ("getCandados[INI] vigencia: {}", vigencia);
 
         Resultado rtdo = new ResultadoProceso();
         PersonaTO persona = pkPersona.orElse(null);
@@ -302,14 +301,14 @@ public class CandadoBean implements CandadoBO
             persona.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar la Ubicación y el R.U.T. de la persona");
-            logger.info ("getTodos[FIN] no se informaron todos los filtros: {} {}", pkUbicacion, pkPersona );
+            logger.info ("getCandados[FIN] no se informaron todos los filtros: {} {}", pkUbicacion, pkPersona );
             return Respuesta.of(rtdo);
         }
 
         List<CandadoTO> lista = candadoPO.getList(pkUbicacion, pkPersona, vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        logger.info ("getCandados[FIN] cantidad registros encontrados: {}", lista.size() );
         return Respuesta.of(rtdo, lista);
 	}
 
