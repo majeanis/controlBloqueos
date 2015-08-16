@@ -31,11 +31,10 @@ public class EmpresaBean implements EmpresaBO
     @Autowired
     private EmpresaPO empresaPO;
 
-    @Transaccional
-    @Override
-    public Respuesta<EmpresaTO> guardar(EmpresaTO empresa) throws Exception
+    private Respuesta<EmpresaTO> guardar(EmpresaTO empresa, boolean esNuevo) throws Exception
     {
         logger.info ("guardar[INI] empresa: {}", empresa);
+        logger.info ("guardar[INI] esNuevo: {}", esNuevo);
         
         Resultado rtdo = new ResultadoProceso();
 
@@ -58,18 +57,25 @@ public class EmpresaBean implements EmpresaBO
             rtdo.addError(EmpresaBean.class, "Debe informar RUT de la empresa" );
         }
 
+        EmpresaTO otra = empresaPO.obtener(empresa);
+        if(esNuevo)
+        {
+            if(otra!=null)
+            {
+                rtdo.addError(this.getClass(), "Ya existe Empresa con R.U.T. #{1}", empresa.getRut().toText());
+            }
+        } else if ( otra == null )
+        {
+            rtdo.addError(this.getClass(), "No existe Empresa con R.U.T. #{1}", empresa.getRut().toText());
+        } else
+        {
+            empresa.setId(otra.getId());
+        }
+
         if( !rtdo.esExitoso() )
         {
             logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
-        }
-
-        // Buscamos si ya existe un registro para el RUT dado, en cuyo caso actualizamos
-        EmpresaTO otra = empresaPO.get(empresa);
-        if(otra != null)
-        {
-            logger.debug("guardar[001] registro de empresaa ya existe: {}", otra);
-            empresa.setId(otra.getId());
         }
 
         // Si llegamos a este punto la Caja puede ser Guardada
@@ -79,7 +85,21 @@ public class EmpresaBean implements EmpresaBO
         logger.info ("guardar[FIN] registro guardado con exito: {}", empresa );
         return Respuesta.of(rtdo, empresa);
     }
-    
+        
+    @Transaccional
+    @Override
+    public Respuesta<EmpresaTO> crear(EmpresaTO empresa) throws Exception
+    {
+        return guardar(empresa, true);
+    }
+
+    @Transaccional
+    @Override
+    public Respuesta<EmpresaTO> modificar(EmpresaTO empresa) throws Exception
+    {
+        return guardar(empresa, false);
+    }
+
     @Transaccional
     @Override
     public Respuesta<EmpresaTO> eliminar(EmpresaTO pkEmpresa) throws Exception
@@ -94,7 +114,7 @@ public class EmpresaBean implements EmpresaBO
         	return Respuesta.of(rtdo);
         }
         
-        EmpresaTO empresa = empresaPO.get(pkEmpresa);
+        EmpresaTO empresa = empresaPO.obtener(pkEmpresa);
         if( empresa == null )
         {
             rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: #{1}", String.valueOf( pkEmpresa.getRut() ) );
@@ -130,29 +150,22 @@ public class EmpresaBean implements EmpresaBO
             return Respuesta.of(rtdo);
         }
 
-        EmpresaTO empresa = empresaPO.get(pkEmpresa);
+        EmpresaTO empresa = empresaPO.obtener(pkEmpresa);
         
         logger.info ("get[FIN] resultado busqueda: {}", empresa );
         return Respuesta.of(empresa);
     }
 
     @Override
-    public Respuesta<List<EmpresaTO>> getTodos(Optional<Boolean> vigencia)
+    public Respuesta<List<EmpresaTO>> getEmpresas(Optional<Boolean> vigencia)
     {
-        logger.info ("getTodos[INI] vigencia: {}", vigencia );
+        logger.info ("getEmpresas[INI] vigencia: {}", vigencia );
 
         Resultado rtdo = new ResultadoProceso();
         List<EmpresaTO> lista = empresaPO.getList(vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
-        logger.info ("getTodos[FIN] cantidad registros encontrados: {}", lista.size() );
+        logger.info ("getEmpresas[FIN] cantidad registros encontrados: {}", lista.size() );
         return Respuesta.of(rtdo,lista);
     }
-
-    @Override
-    public Respuesta<List<EmpresaTO>> getVigentes()
-    {
-        return getTodos(Optional.of(Boolean.TRUE));
-    }
-
 }

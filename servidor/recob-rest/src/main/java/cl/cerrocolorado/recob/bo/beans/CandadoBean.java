@@ -141,6 +141,12 @@ public class CandadoBean implements CandadoBO
             }
         }
         
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+
         // Si llegamos a este punto la Caja puede ser Guardada
         candadoPO.guardar(candado);
         rtdo.addMensaje(this.getClass(), "Candado guardado con éxito");
