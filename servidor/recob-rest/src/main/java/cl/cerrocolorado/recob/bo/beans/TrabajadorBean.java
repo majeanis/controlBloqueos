@@ -12,6 +12,7 @@ import cl.cerrocolorado.recob.utils.Rut;
 import cl.cerrocolorado.recob.utils.Transaccional;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,9 +37,7 @@ public class TrabajadorBean implements TrabajadorBO
     @Autowired
     private EmpresaPO empresaPO;
     
-    @Override
-    @Transaccional
-    public Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador) throws Exception
+    public Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador, boolean esNuevo)
     {
         logger.info ("guardar[INI] trabajador: {}", trabajador);
         
@@ -50,38 +49,32 @@ public class TrabajadorBean implements TrabajadorBO
             logger.info ("guardar[FIN] objeto trabajador llegó en null" );
             return Respuesta.of(rtdo);
         }
-        
         if(Rut.isBlank(trabajador.getRut()))
         {
             rtdo.addError(this.getClass(), "Debe informar R.U.T. del trabajador" );
         }
-        
         if( StringUtils.isBlank(trabajador.getCargo()))
         {
             rtdo.addError(this.getClass(), "Debe informar el cargo del trabajador" );
         }
-        
         if( StringUtils.isBlank(trabajador.getNombre()))
         {
             rtdo.addError(this.getClass(), "Debe informar el nombre del trabajador" );
         }
-
         if( trabajador.getTieneCursoBloqueo()==null)
         {
             rtdo.addError(this.getClass(), "Debe informar si el trabajador tuvo curso del bloqueo" );
         }
-
         if( trabajador.getVigente()==null)
         {
             rtdo.addError(this.getClass(), "Debe informar la vigencia del trabajador" );
         }
-
         if( trabajador.getEmpresa() == null || Rut.isBlank( trabajador.getEmpresa().getRut() ) )
         {
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la Empresa");
         } else
         {
-            EmpresaTO empresa = empresaPO.get(trabajador.getEmpresa());
+            EmpresaTO empresa = empresaPO.obtener(trabajador.getEmpresa());
             if( empresa == null )
             {
                 rtdo.addError(this.getClass(), "No existe empresa con R.U.T. #{1}", trabajador.getEmpresa().getRut().toText() );
@@ -91,41 +84,64 @@ public class TrabajadorBean implements TrabajadorBO
             }
         }
 
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+        
+        TrabajadorTO otro = trabajadorPO.obtener(trabajador);
+        if( esNuevo )
+        {
+            if(otro != null)
+            {
+                rtdo.addError(this.getClass(), "Ya existe relación entre Trabajador [RUT: #{1}] y Empresa [RUT: #{2}]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );
+            }
+        } else if ( otro == null )
+        {
+            rtdo.addError(this.getClass(), "No existe relación entre Trabajador [RUT: #{1}] y Empresa [RUT: #{2}]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );    
+        } else
+        {
+            trabajador.setId(otro.getId());
+        }
+
         if(!rtdo.esExitoso())
         {
             logger.info("guardar[FIN] se detectaron errores de validación: {}", trabajador);
             return Respuesta.of(rtdo);
         }
-        
-        TrabajadorTO actual = trabajadorPO.getVigente(trabajador);
-        if(actual != null)
-        {
-            trabajador.setId(actual.getId());
 
-            // Si ya existe registro del trabajador y no hay cambio de
-            // empresa, entonces procedemos a actualizar su registro
-            if(trabajador.getEmpresa().getRut().equals(actual.getEmpresa().getRut()))
-            {
-                trabajador.getEmpresa().setId(actual.getEmpresa().getId());
-                trabajadorPO.guardar(trabajador);
-                logger.info("guardar[FIN] registro del trabajador actualizado con éxito: {}", trabajador);
-                return Respuesta.of(rtdo,trabajador);
-            } else if( trabajador.getVigente() && actual.getVigente() ) 
-            {
-                actual.setVigente(Boolean.FALSE);
-                trabajadorPO.guardar(actual);
-                trabajadorPO.guardar(trabajador);
-                logger.info("guardar[FIN] se desactivo registro actual y se activo una nueva relación: actual {} nuevo {}", actual, trabajador);                
-                return Respuesta.of(rtdo,trabajador);
-            }
+        // Si el trabajador ya tiene relación con otra empresa y ahora se está asignando
+        // una relación con otra empresa,  entonces  es necesario marcar como no vigente
+        // la relación actual.
+        TrabajadorTO actual = trabajadorPO.getVigente(trabajador);
+        if( trabajador.getVigente() && actual != null && !Objects.equals(trabajador.getEmpresa().getId(), actual.getEmpresa().getId()))
+        {
+            actual.setVigente(Boolean.FALSE);
+            trabajadorPO.guardar(actual);
         }
 
-        // Si se llega a este punto, entonces solor esta guardar el registro del trabajador
         trabajadorPO.guardar(trabajador);
+        rtdo.addMensaje(this.getClass(), "Trabajador guardado con éxito");
+
         logger.info("guardar[FIN] trabajador guardado con éxito: {}", trabajador);
         return Respuesta.of(rtdo,trabajador);
     }
 
+    @Override
+    @Transaccional
+    public Respuesta<TrabajadorTO> crear(TrabajadorTO datos) throws Exception
+    {
+        return guardar(datos, true);
+    }
+
+    @Override
+    @Transaccional    
+    public Respuesta<TrabajadorTO> modificar(TrabajadorTO datos) throws Exception
+    {
+        return guardar(datos, false);
+    }
+    
     @Override
     public Respuesta<TrabajadorTO> eliminar(TrabajadorTO pkTrabajador) throws Exception
     {
@@ -148,7 +164,7 @@ public class TrabajadorBean implements TrabajadorBO
             logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            trabajador = trabajadorPO.get(pkTrabajador);
+            trabajador = trabajadorPO.obtener(pkTrabajador);
             logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 
@@ -194,7 +210,7 @@ public class TrabajadorBean implements TrabajadorBO
             logger.debug("get[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            trabajador = trabajadorPO.get(pkTrabajador);
+            trabajador = trabajadorPO.obtener(pkTrabajador);
             logger.debug("get[002] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 
@@ -203,49 +219,37 @@ public class TrabajadorBean implements TrabajadorBO
     }
 
     @Override
-    public Respuesta<List<TrabajadorTO>> getVigentes()
+    public Respuesta<List<TrabajadorTO>> getTrabajadores(Optional<Boolean> vigencia)
     {
-        return getTodos(Optional.of(Boolean.TRUE));
-    }
-
-    @Override
-    public Respuesta<List<TrabajadorTO>> getVigentes(EmpresaTO pkEmpresa)
-    {
-        return getTodos(pkEmpresa, Optional.of(Boolean.TRUE));
-    }
-
-    @Override
-    public Respuesta<List<TrabajadorTO>> getTodos(Optional<Boolean> vigencia)
-    {
-        logger.info("getTodos[INI] vigencia: {}", vigencia);
+        logger.info("getTrabajadores[INI] vigencia: {}", vigencia);
 
         Resultado rtdo = new ResultadoProceso();
         List<TrabajadorTO> lista = trabajadorPO.getList(vigencia);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
         
-        logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
+        logger.info("getTrabajadores[FIN] cantidad de registros retornados: {}", lista.size());
         return Respuesta.of(rtdo, lista);
     }
 
     @Override
-    public Respuesta<List<TrabajadorTO>> getTodos(EmpresaTO pkEmpresa,
-                                                  Optional<Boolean> vigencia)
+    public Respuesta<List<TrabajadorTO>> getTrabajadores(EmpresaTO pkEmpresa,
+                                                         Optional<Boolean> vigencia)
     {
-        logger.info("getTodos[INI] pkEmpresa: {}", pkEmpresa);
-        logger.info("getTodos[INI] vigencia: {}", vigencia);
-        
+        logger.info("getTrabajadores[INI] pkEmpresa: {}", pkEmpresa);
+        logger.info("getTrabajadores[INI] vigencia: {}", vigencia);
+
         Resultado rtdo = new ResultadoProceso();
         if( pkEmpresa == null || pkEmpresa.isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Debe informar la Empresa" );
-            logger.info("getTodos[FIN] no se informaron todos los filtros: {}", pkEmpresa);
+            logger.info("getTrabajadores[FIN] no se informaron todos los filtros: {}", pkEmpresa);
             return Respuesta.of(rtdo);
         }
         
         List<TrabajadorTO> lista = trabajadorPO.getList(pkEmpresa, Optional.empty());
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
-        
-        logger.info("getTodos[FIN] cantidad de registros retornados: {}", lista.size());
+
+        logger.info("getTrabajadores[FIN] cantidad de registros retornados: {}", lista.size());
         return Respuesta.of(rtdo, lista);
     }
 }

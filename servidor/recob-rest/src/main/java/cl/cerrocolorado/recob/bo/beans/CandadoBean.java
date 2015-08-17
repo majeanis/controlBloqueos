@@ -111,6 +111,12 @@ public class CandadoBean implements CandadoBO
             }
         }
 
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+
         CandadoTO otro = candadoPO.obtener(candado);
         if(esNuevo)
         {

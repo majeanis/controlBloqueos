@@ -57,6 +57,12 @@ public class EmpresaBean implements EmpresaBO
             rtdo.addError(EmpresaBean.class, "Debe informar RUT de la empresa" );
         }
 
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+        
         EmpresaTO otra = empresaPO.obtener(empresa);
         if(esNuevo)
         {

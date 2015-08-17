@@ -72,6 +72,12 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 		    }
         }
 
+        if( !rtdo.esExitoso() )
+        {
+            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            return Respuesta.of(rtdo);
+        }
+
         CajaBloqueoTO otra = cajaPO.obtener( caja );
         if( esNuevo )
         {
