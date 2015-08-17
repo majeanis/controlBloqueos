@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public interface TrabajadorBO extends BaseBO<TrabajadorTO>
 {
-    public Respuesta<List<TrabajadorTO>> getTrabajador(Optional<Boolean> vigencia);
+    public Respuesta<List<TrabajadorTO>> getTrabajadores(Optional<Boolean> vigencia);
 
-    public Respuesta<List<TrabajadorTO>> getTrabajador(EmpresaTO pkEmpresa, Optional<Boolean> vigencia);
+    public Respuesta<List<TrabajadorTO>> getTrabajadores(EmpresaTO pkEmpresa, Optional<Boolean> vigencia);
 }
