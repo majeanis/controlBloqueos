@@ -14,6 +14,7 @@ import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Transaccional;
+import cl.cerrocolorado.recob.utils.Utils;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 
 import java.util.Date;
@@ -41,12 +42,11 @@ public class LibroBloqueoBean implements LibroBloqueoBO
     @Autowired
     private CajaBloqueoPO cajaBloqueoPO;
     
-    @Override
-    @Transaccional
-    public Respuesta<LibroBloqueoTO> guardar(LibroBloqueoTO libro) throws Exception
+    public Respuesta<LibroBloqueoTO> guardar(LibroBloqueoTO libro, boolean esNuevo)
     {
         logger.info("guardar[INI] libro: {}", libro);
-        
+        logger.info("guardar[INI] esNuevo: {}", esNuevo);
+
         Resultado rtdo = new ResultadoProceso();
 
         if(libro == null)
@@ -62,17 +62,20 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             libro.getCaja().setUbicacion(libro.getUbicacion());
         }
-        if(libro.getCaja() == null || libro.getCaja().isKeyBlank())
+        if(libro.getCaja()==null || libro.getCaja().isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar la Caja asociada al Libro");
         } else
         {
-            CajaBloqueoTO caja = cajaBloqueoPO.get(libro.getCaja());
+            CajaBloqueoTO caja = cajaBloqueoPO.obtener(libro.getCaja());
             if( caja == null )
             {
                 rtdo.addError(this.getClass(), "Caja informada no existe");
             }
-            libro.setCaja(caja);
+            else
+            {
+                libro.setCaja(caja);
+            }
         }
         if(libro.getFecha()==null)
         {
@@ -95,16 +98,17 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             rtdo.addError(this.getClass(), "La fecha de cierre no puede ser anterior a la fecha del libro");
         }
 
-        // Los libros son autoenumerados, por lo tanto, si el objeto viene con un
-        // N° entonces se asumirá que se intenta actualizar un libro existente.
-        // Por lo tanto, si el objeto llega sin Id y sin Número, entonces se trata
-        // de un nuevo libro y en consecuencia, se le asigna un nuevo número
-        if(libro.getId()==null && libro.getNumero()==null)
+        if(esNuevo && Utils.nvl(libro.getNumero(),0) > 0 )
         {
-            libro.setNumero(libroBloqueoPO.getNumeroLibro());
-        } else
+            rtdo.addError(this.getClass(), "No debe informar el N° de Libro");
+        } else if( !esNuevo && Utils.nvl( libro.getNumero(), 0) == 0)
         {
-            LibroBloqueoTO otro = libroBloqueoPO.get(libro);
+            rtdo.addError(this.getClass(), "Debe informar el N° de Libro" );
+        }
+
+        if( !esNuevo )
+        {
+            LibroBloqueoTO otro = libroBloqueoPO.obtener(libro);
             if( otro == null )
             {
                 rtdo.addError(this.getClass(), "No existe Libro con Número #{1}", String.valueOf(libro.getNumero()) );
@@ -113,24 +117,45 @@ public class LibroBloqueoBean implements LibroBloqueoBO
                 libro.setId(otro.getId());
                 libro.setNumero(otro.getNumero());
                 libro.setFecha(otro.getFecha());
+                libro.setUbicacion(otro.getUbicacion());
+                libro.setCaja(otro.getCaja());
             }
         }
-    
+
         if(!rtdo.esExitoso())
         {
             logger.info("guardar[FIN] se detectaron errores de validación");
             return Respuesta.of(rtdo);
         }
 
+        if( esNuevo )
+        {
+            libro.setNumero(libroBloqueoPO.obtenerNumeroLibro());
+            logger.debug("guardar[001] después de obtener un nuevo número de lirbo: {}", libro.getNumero() );
+        }
+
         libroBloqueoPO.guardar(libro);
-        rtdo.addMensaje(this.getClass(), "Libro guardado con éxito");
+        rtdo.addMensaje(this.getClass(), "Libro guardado con éxito [N° #{1}]", String.valueOf(libro.getNumero()));
         
         logger.info("guardar[FIN] libro guardado con éxito: {}", libro);
         return Respuesta.of(libro);
     }
 
-    @Deprecated
     @Override
+    @Transaccional
+    public Respuesta<LibroBloqueoTO> crear(LibroBloqueoTO libro)
+    {
+        return guardar(libro,true);
+    }
+
+    @Override
+    @Transaccional
+    public Respuesta<LibroBloqueoTO> modificar(LibroBloqueoTO libro)
+    {
+        return guardar(libro,false);
+    }
+
+    @Deprecated
     @Transaccional    
     public Respuesta<LibroBloqueoInfoTO> guardarLibro(LibroBloqueoInfoTO libro) throws Exception
     {
@@ -150,7 +175,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        LibroBloqueoTO libro = libroBloqueoPO.get(pk);
+        LibroBloqueoTO libro = libroBloqueoPO.obtener(pk);
         logger.info("get[FIN] registro retornado: {}", libro);
         return Respuesta.of(libro);
     }
@@ -168,29 +193,29 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        LibroBloqueoInfoTO libro = libroBloqueoPO.getLibro(pk);
+        LibroBloqueoInfoTO libro = libroBloqueoPO.obtenerLibro(pk);
         logger.info("getLibro[FIN] registro retornado: {}", libro);
         return Respuesta.of(libro);
     }
 
     @Override
-    public Respuesta<List<LibroBloqueoTO>> getVigentes(CajaBloqueoTO pk, Optional<Date> fechaLibro)
+    public Respuesta<List<LibroBloqueoTO>> getAbiertos(CajaBloqueoTO pk, Optional<Date> fechaLibro)
     {
-        logger.info("getVigentes[INI] pkCaja: {}", pk);
-        logger.info("getVigentes[INI] fechaLibro: {}", fechaLibro);
+        logger.info("getAbiertos[INI] pkCaja: {}", pk);
+        logger.info("getAbiertos[INI] fechaLibro: {}", fechaLibro);
         
         Resultado rtdo = new ResultadoProceso();
         if(pk==null || pk.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar identificación de la Caja");
-            logger.info("getVigentes[FIN] no se enviaron los valores de la pk: {}", pk);
+            logger.info("getAbiertos[FIN] no se enviaron los valores de la pk: {}", pk);
             return Respuesta.of(rtdo);
         }
         
-        List<LibroBloqueoTO> lista = libroBloqueoPO.getList(pk, Optional.of(Boolean.TRUE), fechaLibro, null);
+        List<LibroBloqueoTO> lista = libroBloqueoPO.obtenerList(pk, Optional.of(Boolean.TRUE), fechaLibro, Optional.empty());
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
-        logger.info("getVigentes[FIN] registros retornados: {}", lista.size());
+        logger.info("getAbiertos[FIN] registros retornados: {}", lista.size());
         return Respuesta.of(rtdo,lista);
     }
 
@@ -208,7 +233,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<LibroBloqueoTO> lista = libroBloqueoPO.getList(pk, Optional.of(Boolean.FALSE), null, fechaCierre);
+        List<LibroBloqueoTO> lista = libroBloqueoPO.obtenerList(pk, Optional.of(Boolean.FALSE), Optional.empty(), fechaCierre);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getCerrados[FIN] registros retornados: {}", lista.size());
@@ -228,7 +253,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        TagLibroTO tag = libroBloqueoPO.getTag(pk);
+        TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
         logger.info("getTag[FIN] registro retornado: {}", tag);
         return Respuesta.of(rtdo,tag);
     }
@@ -247,7 +272,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<TagLibroTO> lista = libroBloqueoPO.getTags(pk, energiaCero);
+        List<TagLibroTO> lista = libroBloqueoPO.obtenerTags(pk, energiaCero);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getTags[FIN] registros encontrados: {}", lista.size());
@@ -268,7 +293,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        TagLibroTO tag = libroBloqueoPO.getTag(pk);
+        TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
         if(tag==null)
         {
             rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getTag().getNumero()));
@@ -296,7 +321,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<EnergiaLibroTO> lista = libroBloqueoPO.getEnergias(pk);
+        List<EnergiaLibroTO> lista = libroBloqueoPO.obtenerEnergias(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getEnergias[FIN] registros encontrados: {}", lista.size());
@@ -304,7 +329,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
     }
 
     @Deprecated
-    @Override
     @Transaccional
     public Respuesta<List<EnergiaLibroTO>> guardarEnergias(List<EnergiaLibroTO> energias) throws Exception
     {
@@ -325,7 +349,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        EnergiaLibroTO energia = libroBloqueoPO.getEnergia(pk);
+        EnergiaLibroTO energia = libroBloqueoPO.obtenerEnergia(pk);
         if(energia==null)
         {
             rtdo.addError(this.getClass(), "No existe Energia: #{1}", pk.getNombre() );
@@ -353,7 +377,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<DotacionLibroTO> lista = libroBloqueoPO.getDotaciones(pk);
+        List<DotacionLibroTO> lista = libroBloqueoPO.obtenerDotaciones(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getDotacion[FIN] registros encontrados: {}", lista.size());
@@ -361,7 +385,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
     }
 
     @Deprecated
-    @Override
     @Transaccional
     public Respuesta<DotacionLibroTO> guardarDotacion(DotacionLibroTO dotacion) throws Exception
     {
@@ -382,7 +405,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        DotacionLibroTO dotacion = libroBloqueoPO.getDotacion(pk);
+        DotacionLibroTO dotacion = libroBloqueoPO.obtenerDotacion(pk);
         if(dotacion==null)
         {
             rtdo.addError(this.getClass(), "No existe registro de dotacion: #{1}", pk.getTrabajador().getRut().toText() );
@@ -410,7 +433,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<RespLibroTO> lista = libroBloqueoPO.getResponsables(pk);
+        List<RespLibroTO> lista = libroBloqueoPO.obtenerResponsables(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getResponsables[FIN] registros encontrados: {}", lista.size());
@@ -424,7 +447,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Respuesta<TagLibroTO> guardarTag(TagLibroTO tag) throws Exception
     {
         logger.info("guardarTag[INI] tag: {}", tag);
@@ -455,27 +477,66 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.getTag(tag);
+        libroBloqueoPO.obtenerTag(tag);
         rtdo.addMensaje(this.getClass(), "Registro guardado con éxito");
 
         logger.info("guardarTag[INI] registro guardado con éxito: {}", tag);
         return Respuesta.of(rtdo);
     }
 
-    @Override
     public Respuesta<List<TagLibroTO>> guardarTags(List<TagLibroTO> tags) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Respuesta<EnergiaLibroTO> guardarEnergia(LibroBloqueoTO pk)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Respuesta<EnergiaLibroTO> getEnergia(EnergiaLibroTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<TagLibroTO> crearTag(TagLibroTO tag) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<TagLibroTO> modificarTag(TagLibroTO tag) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<EnergiaLibroTO> crearEnergia(LibroBloqueoTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<EnergiaLibroTO> modificarEnergia(LibroBloqueoTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<DotacionLibroTO> crearDotacion(DotacionLibroTO dotacion) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<DotacionLibroTO> modificarDotacion(DotacionLibroTO dotacion) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<LibroBloqueoTO> eliminar(LibroBloqueoTO pk) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -37,7 +37,7 @@ public class TrabajadorBean implements TrabajadorBO
     @Autowired
     private EmpresaPO empresaPO;
     
-    public Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador, boolean esNuevo)
+    private Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador, boolean esNuevo)
     {
         logger.info ("guardar[INI] trabajador: {}", trabajador);
         

@@ -39,7 +39,7 @@ public class ResponsableBean implements ResponsableBO
     @Autowired
     private TrabajadorPO trabajadorPO;
 
-    public Respuesta<ResponsableTO> guardar(ResponsableTO responsable, boolean esNuevo)
+    private Respuesta<ResponsableTO> guardar(ResponsableTO responsable, boolean esNuevo)
     {
         logger.info ("guardar[INI] responsable: {}", responsable);
         
