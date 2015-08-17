@@ -36,11 +36,10 @@ public class EquipoBean implements EquipoBO
     @Autowired
     private EquipoPO equipoPO;
 
-    @Transaccional
-    @Override
-    public Respuesta<EquipoTO> guardar(EquipoTO equipo) throws Exception
+    public Respuesta<EquipoTO> guardar(EquipoTO equipo, boolean esNuevo)
     {
         logger.info("guardar[INI] equipo: {}", equipo);
+        logger.info("guardar[INI] esNuevo: {}", esNuevo);
 
         Resultado rtdo = new ResultadoProceso();
         if (equipo == null)
@@ -61,6 +60,29 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "Debe informar el código del equipo");
         }
+        if(!rtdo.esExitoso())
+        {
+            logger.info("guardar[FIN] se detectaron errores de validación");
+            return Respuesta.of(rtdo);
+        }
+        
+        EquipoTO otro = equipoPO.obtener(equipo);
+        logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
+        if(esNuevo)
+        {
+            if (otro != null)
+            {
+                rtdo.addError(this.getClass(), "Ya existe equipo con código #{1}", equipo.getCodigo());
+            }
+        } 
+        else if ( otro == null )
+        {
+            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", equipo.getCodigo());
+        } 
+        else
+        {
+            equipo.setId(otro.getId());
+        }
 
         if(!rtdo.esExitoso())
         {
@@ -68,22 +90,30 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTO otro = equipoPO.get(equipo);
-        logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
-        if (otro != null)
-        {
-            equipo.setId(otro.getId());
-        }
-
         equipoPO.guardar(equipo);
         logger.debug("guardar[002] después de guardar el equipo: {}", equipo);
         
         rtdo.addMensaje(this.getClass(), "Equipo guardado con éxito");
+        
+        logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
         return Respuesta.of(rtdo,equipo);
     }
-    
+
     @Override
-    public Respuesta<EquipoTagsTO> guardar(EquipoTagsTO equipo) throws Exception
+    @Transaccional
+    public Respuesta<EquipoTO> crear(EquipoTO datos) throws Exception
+    {
+        return guardar(datos, true);
+    }
+
+    @Override
+    @Transaccional
+    public Respuesta<EquipoTO> modificar(EquipoTO datos) throws Exception
+    {
+        return guardar(datos, false);
+    }
+    
+    public Respuesta<EquipoTagsTO> guardar(EquipoTagsTO equipo, boolean esNuevo) throws Exception
     {
         logger.info("guardar[INI] equipo: {}", equipo);
 
@@ -141,9 +171,7 @@ public class EquipoBean implements EquipoBO
         }
     }
 
-    @Transaccional
-    @Override
-    public Respuesta<TagTO> guardarTag(TagTO tag) throws Exception
+    private Respuesta<TagTO> guardarTag(TagTO tag) throws Exception
     {
     	logger.info("guardarTag[INI] tag: {}", tag);
     	
@@ -217,7 +245,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTagsTO equipo = equipoPO.get(pk);
+        EquipoTagsTO equipo = equipoPO.obtener(pk);
         if(equipo == null)
         {
             rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
@@ -295,9 +323,9 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<EquipoTagsTO> get(EquipoTO pk)
+    public Respuesta<EquipoTagsTO> getEquipo(EquipoTO pk)
     {
-        logger.info("get[INI] pk: {}", pk);
+        logger.info("getEquipo[INI] pk: {}", pk);
 
         Resultado rtdo = new ResultadoProceso();
 
@@ -307,42 +335,38 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTagsTO equipo = equipoPO.get(pk);
+        EquipoTagsTO equipo = equipoPO.obtener(pk);
         if( equipo == null )
         {
             rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
         }
 
-        logger.info("get[FIN] registro encontrado: {}", equipo);
+        logger.info("getEquipo[FIN] registro encontrado: {}", equipo);
         return Respuesta.of(rtdo, equipo);
     }
 
     @Override
-    public Respuesta<List<EquipoTO>> getTodos(UbicacionTO pkUbicacion, 
-                                              Optional<Boolean> vigencia)
+    public Respuesta<List<EquipoTO>> getEquipos(UbicacionTO pkUbicacion, 
+                                                Optional<Boolean> vigencia)
     {
-        logger.info("getTodos[INI] pkUbicacion: {}", pkUbicacion);
-        logger.info("getTodos[INI] vigencia: {}", vigencia);
+        logger.info("getEquipos[INI] pkUbicacion: {}", pkUbicacion);
+        logger.info("getEquipos[INI] vigencia: {}", vigencia);
 
         Resultado rtdo = new ResultadoProceso();
         if(pkUbicacion == null || pkUbicacion.isKeyBlank())
         {
             rtdo.addMensaje(this.getClass(), "Debe informar la ubicación" );
-            logger.info("getTodos[FIN] no se informo la ubicación");
+            logger.info("getEquipos[FIN] no se informo la ubicación");
             return Respuesta.of(rtdo);
         }
         
         List<EquipoTO> lista = equipoPO.getList(pkUbicacion, vigencia);
+        logger.debug("getEquipos[001] después de buscar los datos: {}", lista.size() );
+
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
-        logger.info("getTodos[FIN] cantidad de equipos encontrados: {}", lista.size() );
+        logger.info("getEquipos[FIN] cantidad de equipos encontrados: {}", lista.size() );
         return Respuesta.of(rtdo, lista);
-    }
-
-    @Override
-    public Respuesta<List<EquipoTO>> getVigentes(UbicacionTO pkUbicacion)
-    {
-        return getTodos(pkUbicacion, Optional.of(Boolean.TRUE));
     }
     
     @Override
@@ -389,8 +413,8 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<List<TagTO>> getTagsTodos(EquipoTO pk, 
-                                               Optional<Boolean> vigencia)
+    public Respuesta<List<TagTO>> getTags(EquipoTO pk, 
+                                          Optional<Boolean> vigencia)
     {
         logger.info("getTagsTodos[INI] pk: {}", pk);
         logger.info("getTagsTodos[INI] vigencia: {}", vigencia);
@@ -411,8 +435,21 @@ public class EquipoBean implements EquipoBO
     }
 
     @Override
-    public Respuesta<List<TagTO>> getTagsVigentes(EquipoTO pk)
+    @Transaccional
+    public Respuesta<TagTO> crearTag(TagTO tag) throws Exception
     {
-        return getTagsTodos(pk, Optional.of(Boolean.TRUE));
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<TagTO> modificarTag(TagTO tag) throws Exception
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<EquipoTO> get(EquipoTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
