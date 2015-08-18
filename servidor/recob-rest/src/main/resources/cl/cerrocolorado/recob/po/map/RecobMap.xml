@@ -67,8 +67,7 @@
 
     <resultMap id="tagMap" type="TagTO" >
         <id property="id" column="taeq_id" />
-        <result property="numero" column="taeq_nume" />
-        <result property="nombre" column="taeq_nomb" />
+        <result property="codigo" column="taeq_codi" />
         <result property="descripcion" column="taeq_desc" />
         <result property="energiaCero" column="taeq_enrg_cero" />
         <result property="vigente" column="taeq_vige" />
@@ -555,8 +554,7 @@
 
     <select id="selectTags" parameterType="map" resultMap="tagMap" >
         select a.taeq_id
-              ,a.taeq_nume
-              ,a.taeq_nomb
+              ,a.taeq_codi
               ,a.taeq_desc
               ,a.taeq_enrg_cero
               ,a.taeq_vige
@@ -571,9 +569,9 @@
             <when test="tag!=null and tag.id != null" >
                 and a.taeq_id = #{tag.id}
             </when>
-            <when test="tag!=null and tag.numero!=null and equipo!=null and equipo.id!=null" >
+            <when test="tag!=null and tag.codigo!=null and equipo!=null and equipo.id!=null" >
                 and a.eqpo_id   = #{equipo.id}
-                and a.taeq_nume = #{tag.numero}
+                and a.taeq_codi = #{tag.codigo}
             </when>
             <when test="equipo!=null and equipo.id!=null" >
                 and a.eqpo_id = #{equipo.id}
@@ -589,14 +587,14 @@
             and a.taeq_enrg_cero = #{energiaCero}
         </if>
 
-        order by a.eqpo_id, a.taeq_nume
+        order by a.eqpo_id, a.taeq_codi
     </select>
 
     <select id="childsTag" parameterType="TagTO" resultType="int" >
         select count(*) 
         from   rcb_taeq_lcbl a inner join rcb_tags_eqpo b
            on (a.taeq_id = b.taeq_id)
-        where  b.taeq_nume = #{numero}
+        where  b.taeq_codi = #{codigo}
           and  b.eqpo_id   = #{equipo.id}
     </select>
     
@@ -604,14 +602,13 @@
         <selectKey keyProperty="id" resultType="int" order="BEFORE" >
             select get_nuevo_id()
         </selectKey>
-        insert into rcb_tags_eqpo(taeq_id, taeq_nume, taeq_nomb, taeq_desc, taeq_enrg_cero, taeq_vige, eqpo_id, audi_fech_crea)
-             values(#{id},#{numero},#{nombre},#{descripcion},#{energiaCero},#{vigente},#{equipo.id},localtimestamp)
+        insert into rcb_tags_eqpo(taeq_id, taeq_codi, taeq_desc, taeq_enrg_cero, taeq_vige, eqpo_id, audi_fech_crea)
+             values(#{id},#{codigo},#{descripcion},#{energiaCero},#{vigente},#{equipo.id},localtimestamp)
     </insert>
 
     <update id="updateTag" parameterType="TagTO" >
         update rcb_tags_eqpo set
-               taeq_nume      = #{numero}
-              ,taeq_nomb      = #{nombre}
+               taeq_codi      = #{codigo}
               ,taeq_desc      = #{descripcion}
               ,taeq_enrg_cero = #{energiaCero}
               ,taeq_vige      = #{vigente}
@@ -871,8 +868,7 @@
               ,c.talc_enrg_cero
               ,c.talc_fech_enrg_cero
               ,d.taeq_id
-              ,d.taeq_nume
-              ,d.taeq_nomb
+              ,d.taeq_codi
               ,d.taeq_desc
               ,d.taeq_enrg_cero
               ,d.taeq_vige
@@ -892,15 +888,15 @@
             <when test="tag!=null and tag.id!=null" >
                 and d.taeq_id = #{tag.id}
             </when>
-            <when test="tag!=null and tag.numero!=null" >
-                and d.taeq_nume = #{tag.numero}
+            <when test="tag!=null and tag.codigo!=null" >
+                and d.taeq_codi = #{tag.codigo}
             </when>
         </choose>
         <if test="energiaCero!=null" >
             and c.talc_enrg_cero = #{energiaCero}
         </if>
 
-        order by e.eqpo_codi, d.taeq_nume
+        order by e.eqpo_codi, d.taeq_codi
     </select>
     
     <insert id="insertTagLibro" parameterType="TagLibroTO" >

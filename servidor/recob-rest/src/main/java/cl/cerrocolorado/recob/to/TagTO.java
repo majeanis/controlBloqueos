@@ -2,6 +2,7 @@ package cl.cerrocolorado.recob.to;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -14,8 +15,7 @@ public class TagTO extends EntidadTO
     @JsonIgnore    
 	private Integer id;
 
-    private Integer numero;
-    private String nombre;
+    private String codigo;
     private String descripcion;
     private Boolean energiaCero;
     private Boolean vigente;
@@ -42,24 +42,14 @@ public class TagTO extends EntidadTO
         this.id = id;
     }
 
-    public Integer getNumero()
+    public String getCodigo()
     {
-        return numero;
+        return codigo;
     }
 
-    public void setNumero(Integer numero)
+    public void setCodigo(String codigo)
     {
-        this.numero = numero;
-    }
-
-    public String getNombre()
-    {
-        return nombre;
-    }
-
-    public void setNombre(String nombre)
-    {
-        this.nombre = nombre;
+        this.codigo = codigo;
     }
 
     public String getDescripcion()
@@ -95,7 +85,7 @@ public class TagTO extends EntidadTO
     @Override
     public boolean isKeyBlank()
     {
-        return isIdBlank() && (numero==null || numero==0 || equipo.isKeyBlank());
+        return isIdBlank() && (StringUtils.isBlank(codigo) || equipo.isKeyBlank());
     }
 
     @Override
