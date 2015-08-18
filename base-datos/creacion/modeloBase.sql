@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Monday, July 27, 2015 20:16:03
+-- Date Created : Monday, August 17, 2015 21:32:56
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -311,9 +311,8 @@ COMMENT ON TABLE rcb_taeq_lcbl IS 'Equipos registrados en el Libro de Control de
 
 CREATE TABLE rcb_tags_eqpo(
     taeq_id           numeric(14, 0)    NOT NULL,
-    taeq_nume         numeric(4, 0)     NOT NULL,
-    taeq_nomb         varchar(40)       NOT NULL,
-    taeq_desc         varchar(150),
+    taeq_codi         numeric(25, 0)    NOT NULL,
+    taeq_desc         varchar(150)      NOT NULL,
     taeq_enrg_cero    boolean           NOT NULL,
     taeq_vige         boolean           NOT NULL,
     eqpo_id           numeric(14, 0)    NOT NULL,
@@ -465,7 +464,7 @@ CREATE UNIQUE INDEX talc_uk ON rcb_taeq_lcbl(lcbl_id, taeq_id)
 -- INDEX: taeq_uk 
 --
 
-CREATE UNIQUE INDEX taeq_uk ON rcb_tags_eqpo(eqpo_id, taeq_nume)
+CREATE UNIQUE INDEX taeq_uk ON rcb_tags_eqpo(taeq_codi, eqpo_id)
 ;
 -- 
 -- TABLE: rcb_caja_bloq 
