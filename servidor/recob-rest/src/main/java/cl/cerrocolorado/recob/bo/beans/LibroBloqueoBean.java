@@ -97,7 +97,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "La fecha de cierre no puede ser anterior a la fecha del libro");
         }
-
         if(esNuevo && Utils.nvl(libro.getNumero(),0) > 0 )
         {
             rtdo.addError(this.getClass(), "No debe informar el N° de Libro");
@@ -111,7 +110,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             LibroBloqueoTO otro = libroBloqueoPO.obtener(libro);
             if( otro == null )
             {
-                rtdo.addError(this.getClass(), "No existe Libro con Número #{1}", String.valueOf(libro.getNumero()) );
+                rtdo.addError(this.getClass(), "No existe Libro con Número %d", libro.getNumero() );
             } else
             {
                 libro.setId(otro.getId());
@@ -131,11 +130,11 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         if( esNuevo )
         {
             libro.setNumero(libroBloqueoPO.obtenerNumeroLibro());
-            logger.debug("guardar[001] después de obtener un nuevo número de lirbo: {}", libro.getNumero() );
+            logger.debug("guardar[001] después de obtener un nuevo número de libro: {}", libro.getNumero() );
         }
 
         libroBloqueoPO.guardar(libro);
-        rtdo.addMensaje(this.getClass(), "Libro guardado con éxito [N° #{1}]", String.valueOf(libro.getNumero()));
+        rtdo.addMensaje(this.getClass(), "Libro guardado con éxito [N° %d]", libro.getNumero());
         
         logger.info("guardar[FIN] libro guardado con éxito: {}", libro);
         return Respuesta.of(libro);
@@ -155,13 +154,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         return guardar(libro,false);
     }
 
-    @Deprecated
-    @Transaccional    
-    public Respuesta<LibroBloqueoInfoTO> guardarLibro(LibroBloqueoInfoTO libro) throws Exception
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public Respuesta<LibroBloqueoTO> get(LibroBloqueoTO pk)
     {
@@ -176,8 +168,13 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         }
         
         LibroBloqueoTO libro = libroBloqueoPO.obtener(pk);
+        if(libro == null)
+        {
+            rtdo.addError(this.getClass(), "No existe Libro con N° %d", pk.getNumero());
+        }
+
         logger.info("get[FIN] registro retornado: {}", libro);
-        return Respuesta.of(libro);
+        return Respuesta.of(rtdo,libro);
     }
 
     @Override
@@ -194,8 +191,12 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         }
         
         LibroBloqueoInfoTO libro = libroBloqueoPO.obtenerLibro(pk);
+        if(libro==null)
+        {
+            rtdo.addError(this.getClass(), "No existe Libro con N° %d", pk.getNumero());
+        }
         logger.info("getLibro[FIN] registro retornado: {}", libro);
-        return Respuesta.of(libro);
+        return Respuesta.of(rtdo,libro);
     }
 
     @Override
@@ -254,6 +255,11 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         }
         
         TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
+        if(tag==null)
+        {
+            rtdo.addError(this.getClass(), "No existe TAG con código %s", pk.getTag().getCodigo());
+        }
+
         logger.info("getTag[FIN] registro retornado: {}", tag);
         return Respuesta.of(rtdo,tag);
     }
@@ -296,7 +302,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
         if(tag==null)
         {
-            rtdo.addError(this.getClass(), "No existe TAG: #{1}", String.valueOf(pk.getTag().getCodigo()));
+            rtdo.addError(this.getClass(), "No existe TAG: %s", pk.getTag().getCodigo());
             logger.info("eliminarTag[FIN] no existe el TAG que se desea eliminar: {}", pk);
             return Respuesta.of(rtdo);
         }
@@ -352,7 +358,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         EnergiaLibroTO energia = libroBloqueoPO.obtenerEnergia(pk);
         if(energia==null)
         {
-            rtdo.addError(this.getClass(), "No existe Energia: #{1}", pk.getNombre() );
+            rtdo.addError(this.getClass(), "No existe Energia: %s", pk.getNombre() );
             logger.info("eliminarEnergia[FIN] no existe registro de energía: {}", pk);
             return Respuesta.of(rtdo);
         }
@@ -401,7 +407,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         DotacionLibroTO dotacion = libroBloqueoPO.obtenerDotacion(pk);
         if(dotacion==null)
         {
-            rtdo.addError(this.getClass(), "No existe registro de dotacion: #{1}", pk.getTrabajador().getRut().toText() );
+            rtdo.addError(this.getClass(), "No existe registro de dotacion: %s", pk.getTrabajador().getRut().toText() );
             logger.info("eliminarDotacion[FIN] no existe registro de dotacion: {}", pk);
             return Respuesta.of(rtdo);
         }
@@ -433,11 +439,21 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         return Respuesta.of(rtdo,lista);
     }
 
+    @Deprecated
     @Override
     @Transaccional
     public Respuesta<RespLibroTO> asignarResponsable(RespLibroTO responsable) throws Exception
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info ("asignarResponsable[INI] responsable: {}", responsable);
+
+        Resultado rtdo = new ResultadoProceso();
+        if( responsable == null || responsable.isKeyBlank())
+        {
+            rtdo.addError(this.getClass(), "Debe informar la identificación del Responsable");
+            return Respuesta.of(rtdo);
+        }
+
+        return null;
     }
 
     private Respuesta<TagLibroTO> guardarTag(TagLibroTO tag, boolean esNuevo) throws Exception
@@ -471,12 +487,12 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             if(otro!=null)
             {
-                rtdo.addError(this.getClass(), "Ya existe TAG #{1}", tag.getTag().getCodigo());
+                rtdo.addError(this.getClass(), "Ya existe TAG %s", tag.getTag().getCodigo());
             }
         }
         else if(otro==null)
         {
-            rtdo.addError(this.getClass(), "No existe TAG #{1}", tag.getTag().getCodigo());
+            rtdo.addError(this.getClass(), "No existe TAG %s", tag.getTag().getCodigo());
         } 
         else
         {
