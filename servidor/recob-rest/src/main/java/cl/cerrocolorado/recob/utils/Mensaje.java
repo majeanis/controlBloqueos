@@ -9,12 +9,12 @@ public class Mensaje extends Throwable
     private final Severidad   severidad;
     private final Exception   exception;
 
-    protected Mensaje(Severidad severidad, String codigo, String textoBase, String...valores)
+    protected Mensaje(Severidad severidad, String codigo, String textoBase, Object...valores)
     {
         this.severidad = severidad;
         this.exception = null;
         this.codigo = codigo;
-        this.texto = ToStringUtils.toString(textoBase, valores);
+        this.texto = ToStringUtils.format(textoBase, valores);
     }
 
     protected Mensaje(String codigo, Exception exception)
@@ -22,7 +22,15 @@ public class Mensaje extends Throwable
         this.severidad = Severidad.ERROR;
         this.exception = exception;
         this.codigo = codigo;
-        this.texto = ToStringUtils.toString("Error no controlado. Consulte con el Administrador [#{1}]", String.valueOf(this.hashCode()) );
+        this.texto = ToStringUtils.format("Error no esperado. Consulte con el Administrador [%d]", this.hashCode() );
+    }
+
+    protected Mensaje(String codigo, String textoBase, Object...valores)
+    {
+        this.severidad = Severidad.OK;
+        this.exception = null;
+        this.codigo = codigo;
+        this.texto = ToStringUtils.format(textoBase, valores);
     }
 
     protected Mensaje(Mensaje another)

@@ -12,13 +12,15 @@ public class ResultadoProceso
     private Severidad           severidad;
     private final List<Mensaje> mensajes;
     
-    public ResultadoProceso() {
+    public ResultadoProceso() 
+    {
         this.mensajes = new ArrayList<>();
         this.severidad = Severidad.OK;
         this.hayExceptions = false;        
     }
 
-    public ResultadoProceso(Resultado another) {
+    public ResultadoProceso(Resultado another) 
+    {
         this.severidad = another.getSeveridad();
         this.mensajes  = new ArrayList<>();
         this.mensajes.addAll(another.getMensajes());
@@ -41,7 +43,8 @@ public class ResultadoProceso
     }
 
     private void refreshSeveridad(Mensaje mensaje) {
-        if (mensaje.getSeveridad().getId() > severidad.getId()) {
+        if ( mensaje.getSeveridad().compareTo(severidad) > 0 )
+        {
             severidad = mensaje.getSeveridad();
         }
     }
@@ -72,14 +75,14 @@ public class ResultadoProceso
     }
 
     @Override
-    public Mensaje addError(Class<?> clazz, String textoBase, String... valores)
+    public Mensaje addError(Class<?> clazz, String textoBase, Object... valores)
     {
         return this.addMensaje( new MensajeError( clazz, textoBase, valores) );
     }
 
     @Override
-    public Mensaje addMensaje(Class<?> clazz, String textoBase, String... valores)
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, Object... valores)
     {
-        return this.addMensaje( new MensajeInfo( clazz, textoBase, valores) );
+        return this.addMensaje( new Mensaje( clazz.getSimpleName(), textoBase, valores) );
     }
 }

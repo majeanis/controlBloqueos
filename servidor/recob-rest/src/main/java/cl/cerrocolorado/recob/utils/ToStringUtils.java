@@ -91,7 +91,7 @@ public class ToStringUtils
      *            Valores que se debe aplicar en el Texto Base
      * @return Cadena que resulta de la combinación del textBase y valores
      */
-    public static String toString(String textoBase, final String... valores)
+    public static String toString(String textoBase, final Object...valores)
     {
         if (textoBase == null)
             return "";
@@ -103,8 +103,13 @@ public class ToStringUtils
 
         for (int i = 0; i < valores.length; i++)
         {
-            String values = toString(valores[i]);
-            textoFormateado = textoFormateado.replace("#{" + (i + 1) + "}", values);
+            String valor = "";
+            if( valores[i] != null)
+            {
+                valor = String.valueOf(valores[i]);
+            }
+            
+            textoFormateado = textoFormateado.replace("#{" + (i + 1) + "}", valor);
         }
 
         /*
@@ -125,9 +130,10 @@ public class ToStringUtils
      * @param valores
      * @return 
      */
-    public String format(String textoBase, Object... valores)
+    public static String format(String textoBase, Object... valores)
     {
-        return new Formatter().format(textoBase, valores).toString();
+        if(valores==null) return textoBase.trim();
+        return String.format(textoBase, valores).trim();
     }
     
     /**

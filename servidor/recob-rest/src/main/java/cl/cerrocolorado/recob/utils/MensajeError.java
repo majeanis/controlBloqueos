@@ -4,7 +4,7 @@ public class MensajeError extends Mensaje
 {
     private static final long serialVersionUID = 1L;
 
-    public MensajeError(Class<?> clazz, String textoBase, String...valores)
+    public MensajeError(Class<?> clazz, String textoBase, Object...valores)
     {
         super(Severidad.ERROR, clazz.getSimpleName(), textoBase, valores );
     }

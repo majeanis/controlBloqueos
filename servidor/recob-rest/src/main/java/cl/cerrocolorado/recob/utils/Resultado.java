@@ -8,7 +8,7 @@ public interface Resultado extends Serializable
     default boolean esExitoso()
     {
         Severidad severidad = getSeveridad();
-        return (severidad == Severidad.OK || severidad == Severidad.INFO);
+        return severidad == Severidad.OK;
     }
 
     public boolean hayExceptions();
@@ -19,9 +19,9 @@ public interface Resultado extends Serializable
 
     public Mensaje addException(Class<?> clazz, Exception exception);
     
-    public Mensaje addError(Class<?> clazz, String textoBase, String...valores);
+    public Mensaje addError(Class<?> clazz, String textoBase, Object...valores);
     
-    public Mensaje addMensaje(Class<?> clazz, String textoBase, String...valores);
+    public Mensaje addMensaje(Class<?> clazz, String textoBase, Object...valores);
 
     public Mensaje addMensaje(Mensaje mensaje);
 
