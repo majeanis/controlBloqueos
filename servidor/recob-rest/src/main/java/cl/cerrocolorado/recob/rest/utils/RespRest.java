@@ -1,29 +1,30 @@
 package cl.cerrocolorado.recob.rest.utils;
 
 import cl.cerrocolorado.recob.utils.Resultado;
+import cl.cerrocolorado.recob.utils.ToStringUtils;
 
 public class RespRest<T> 
 {
-	private final RespHead encabezado;
-	private final RespMensaje[] mensajes;
-	private final T contenido;
+	private final RespHead head;
+	private final T body;
 
-	public RespRest(Resultado rtdo, T contenido)
+	public RespRest(Resultado rtdo, T body)
 	{
-		this.encabezado = RespFactory.getRespHead(rtdo);
-		this.mensajes = RespFactory.getRespMensajes(rtdo);
-		this.contenido = contenido;
+		this.head = new RespHead( rtdo ); 
+		this.body = body;
 	}
 
-	public RespHead getEncabezado() {
-		return encabezado;
+	public RespHead getHead() {
+		return head;
 	}
 
-	public RespMensaje[] getMensajes() {
-		return mensajes;
+	public T getBody() {
+		return body;
 	}
-
-	public T getContenido() {
-		return contenido;
-	}
+    
+    @Override
+    public String toString()
+    {
+        return ToStringUtils.toString(this);
+    }
 }

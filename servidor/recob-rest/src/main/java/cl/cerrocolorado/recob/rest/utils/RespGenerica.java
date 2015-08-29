@@ -7,27 +7,21 @@ import cl.cerrocolorado.recob.utils.ResultadoProceso;
 
 public class RespGenerica
 {
-	private final RespHead encabezado;
-	private final RespMensaje[] mensajes;
-	private final Object contenido;
+	private final RespHead head;
+	private final Object body;
 
-	private RespGenerica(Resultado rtdo, Object contenido)
+	private RespGenerica(Resultado rtdo, Object body)
 	{
-		this.encabezado = RespFactory.getRespHead(rtdo);
-		this.mensajes = RespFactory.getRespMensajes(rtdo);
-		this.contenido = contenido;
+		this.head = new RespHead(rtdo);
+		this.body = body;
 	}
 
-	public RespHead getEncabezado() {
-		return encabezado;
+	public RespHead getHead() {
+		return head;
 	}
 
-	public RespMensaje[] getMensajes() {
-		return mensajes;
-	}
-
-	public Object getContenido() {
-		return contenido;
+	public Object getBody() {
+		return body;
 	}
 
     public static RespGenerica of(Resultado rtdo, Object contenido)

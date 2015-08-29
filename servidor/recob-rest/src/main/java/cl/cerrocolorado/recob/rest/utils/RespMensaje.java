@@ -32,6 +32,7 @@ public class RespMensaje
     {
         this.severidad = severidad;
     }
+    @Override
     public String toString()
     {
         return ToStringUtils.toString(this);
