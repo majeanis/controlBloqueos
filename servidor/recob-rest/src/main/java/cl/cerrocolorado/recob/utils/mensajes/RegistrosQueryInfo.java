@@ -10,6 +10,6 @@ public class RegistrosQueryInfo extends MensajeInfo
 {
     public RegistrosQueryInfo(Class<?> clazz, int registros)
     {
-        super(clazz, "Se han encontrado #{1} registros", String.valueOf(registros));
+        super(clazz, "Se han encontrado %d registros", registros);
     }
 }
