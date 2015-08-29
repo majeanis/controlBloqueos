@@ -77,7 +77,7 @@ public class TrabajadorBean implements TrabajadorBO
             EmpresaTO empresa = empresaPO.obtener(trabajador.getEmpresa());
             if( empresa == null )
             {
-                rtdo.addError(this.getClass(), "No existe empresa con R.U.T. #{1}", trabajador.getEmpresa().getRut().toText() );
+                rtdo.addError(this.getClass(), "No existe empresa con R.U.T. %s", trabajador.getEmpresa().getRut().toText() );
             } else
             {
                 trabajador.setEmpresa(empresa);
@@ -95,11 +95,11 @@ public class TrabajadorBean implements TrabajadorBO
         {
             if(otro != null)
             {
-                rtdo.addError(this.getClass(), "Ya existe relación entre Trabajador [RUT: #{1}] y Empresa [RUT: #{2}]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );
+                rtdo.addError(this.getClass(), "Ya existe relación entre Trabajador [RUT: %s] y Empresa [RUT: %s]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );
             }
         } else if ( otro == null )
         {
-            rtdo.addError(this.getClass(), "No existe relación entre Trabajador [RUT: #{1}] y Empresa [RUT: #{2}]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );    
+            rtdo.addError(this.getClass(), "No existe relación entre Trabajador [RUT: %s] y Empresa [RUT: %s]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );    
         } else
         {
             trabajador.setId(otro.getId());
@@ -184,7 +184,7 @@ public class TrabajadorBean implements TrabajadorBO
 
         // Si llegamos a este punto, es posible eliminar al trabajador
         trabajadorPO.eliminar(trabajador);
-        rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. #{1} eliminado con éxito", trabajador.getRut().toText() );
+        rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. %s eliminado con éxito", trabajador.getRut().toText() );
 
         logger.info("eliminar[FIN] registro eliminado con éxito");
         return Respuesta.of(rtdo,trabajador);

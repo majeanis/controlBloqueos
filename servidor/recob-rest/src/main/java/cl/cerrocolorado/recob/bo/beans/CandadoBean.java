@@ -76,7 +76,7 @@ public class CandadoBean implements CandadoBO
             UsoCandadoTO uso = candadoPO.getUsoCandado(candado.getUso());
             if(uso==null)
             {
-                rtdo.addError(this.getClass(), "No existe uso de candado con código #{1}", candado.getUso().getCodigo());
+                rtdo.addError(this.getClass(), "No existe uso de candado con código %s", candado.getUso().getCodigo());
             } else
             {
                 candado.setUso(uso);
@@ -90,7 +90,7 @@ public class CandadoBean implements CandadoBO
 	        UbicacionTO ubicacion = ubicacionPO.get(candado.getUbicacion());
 	        if( ubicacion == null )
 	        {
-	            rtdo.addError(this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(candado.getUbicacion().getId()));
+	            rtdo.addError(this.getClass(), "La ubicación informada no existe [id: %d]", candado.getUbicacion().getId());
 	        } else
             {
                 candado.setUbicacion(ubicacion);
@@ -104,7 +104,7 @@ public class CandadoBean implements CandadoBO
 	        PersonaTO persona = trabajadorPO.getPersona(candado.getPersona());
 	        if( persona == null )
 	        {
-	            rtdo.addError(CandadoBean.class, "Persona informada no existe [RUT: #{1}]", candado.getPersona().getRut().toText());
+	            rtdo.addError(CandadoBean.class, "Persona informada no existe [RUT: %s]", candado.getPersona().getRut().toText());
 	        } else
             {
                 candado.setPersona(persona);
@@ -122,12 +122,12 @@ public class CandadoBean implements CandadoBO
         {
             if( otro != null )
             {
-                rtdo.addError(this.getClass(), "Ya existe candado con N° #{1}", String.valueOf(candado.getNumero()));
+                rtdo.addError(this.getClass(), "Ya existe candado con N° %d", candado.getNumero());
             }
         }
         else if( otro == null )
         {
-            rtdo.addError(this.getClass(), "No existe candado con N° #{1}", String.valueOf(candado.getNumero()));
+            rtdo.addError(this.getClass(), "No existe candado con N° %d", candado.getNumero());
         } 
         else
         {
@@ -140,10 +140,10 @@ public class CandadoBean implements CandadoBO
         {
             if( esNuevo )
             {
-                rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie #{1} [Candado: #{2}]", candado.getSerie(), String.valueOf(otroSerie.getNumero()));
+                rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie %s [Candado: %d]", candado.getSerie(), otroSerie.getNumero());
             } else if( !Objects.equals(otroSerie.getNumero(), candado.getNumero()) )
             {
-                rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie #{1} [Candado: #{2}]", candado.getSerie(), String.valueOf(otroSerie.getNumero()));
+                rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie %s [Candado: %d]", candado.getSerie(), otroSerie.getNumero());
             }
         }
         
@@ -200,7 +200,7 @@ public class CandadoBean implements CandadoBO
         CandadoTO candado = candadoPO.obtener(pkCandado);
         if( candado == null )
         {
-            rtdo.addError(this.getClass(), "No existe Candado con N° #{1}", String.valueOf(pkCandado.getNumero()) );
+            rtdo.addError(this.getClass(), "No existe Candado con N° %d", pkCandado.getNumero());
             logger.info ("eliminar[FIN] no existe candado: {}", pkCandado );
             return Respuesta.of(rtdo);
         }
@@ -216,7 +216,7 @@ public class CandadoBean implements CandadoBO
         candadoPO.eliminar(candado);
         logger.debug("eliminar[001] despues de eliminar el candado: {}", candado );
         
-        rtdo.addMensaje(this.getClass(), "Candado con N° de serie #{1} eliminado con éxito", candado.getSerie() );
+        rtdo.addMensaje(this.getClass(), "Candado con N° de serie %s eliminado con éxito", candado.getSerie() );
         logger.info ("eliminar[FIN] candado eliminado con exito: {} {}", rtdo, candado );
         return Respuesta.of(rtdo,candado);
     }
@@ -238,7 +238,7 @@ public class CandadoBean implements CandadoBO
         CandadoTO candado = candadoPO.obtener(pkCandado);
         if( candado == null)
         {
-            rtdo.addError(this.getClass(), "No existe candado con N° #{1}", String.valueOf(pkCandado.getNumero()));
+            rtdo.addError(this.getClass(), "No existe candado con N° %d", pkCandado.getNumero());
         }
 
         logger.info ("get[FIN] resultado busqueda: {}", candado );
@@ -267,7 +267,7 @@ public class CandadoBean implements CandadoBO
         
         if( candado == null )
         {
-            rtdo.addMensaje(this.getClass(), "No existe candado con N° de serie #{1}", serieCandado);
+            rtdo.addMensaje(this.getClass(), "No existe candado con N° de serie %s", serieCandado);
         }
         
         logger.info ("get[FIN] resultado búsqueda: {}", candado );

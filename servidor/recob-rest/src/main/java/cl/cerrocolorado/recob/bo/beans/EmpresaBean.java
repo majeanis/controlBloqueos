@@ -68,11 +68,11 @@ public class EmpresaBean implements EmpresaBO
         {
             if(otra!=null)
             {
-                rtdo.addError(this.getClass(), "Ya existe Empresa con R.U.T. #{1}", empresa.getRut().toText());
+                rtdo.addError(this.getClass(), "Ya existe Empresa con R.U.T. %s", empresa.getRut().toText());
             }
         } else if ( otra == null )
         {
-            rtdo.addError(this.getClass(), "No existe Empresa con R.U.T. #{1}", empresa.getRut().toText());
+            rtdo.addError(this.getClass(), "No existe Empresa con R.U.T. %s", empresa.getRut().toText());
         } else
         {
             empresa.setId(otra.getId());
@@ -123,7 +123,7 @@ public class EmpresaBean implements EmpresaBO
         EmpresaTO empresa = empresaPO.obtener(pkEmpresa);
         if( empresa == null )
         {
-            rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: #{1}", String.valueOf( pkEmpresa.getRut() ) );
+            rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: %s", pkEmpresa.getRut().toText() );
             logger.info ("eliminar[FIN] no existe el registro: {}", pkEmpresa );
             return Respuesta.of(rtdo);
         }
@@ -138,7 +138,7 @@ public class EmpresaBean implements EmpresaBO
         empresaPO.eliminar(empresa);
         logger.debug("eliminar[001] despues de eliminar el registro: {}", empresa );
         
-        rtdo.addMensaje(EmpresaBean.class, "Empresa RUT: #{1} eliminada con éxito", pkEmpresa.getRut().toText() );
+        rtdo.addMensaje(EmpresaBean.class, "Empresa RUT: %s eliminada con éxito", pkEmpresa.getRut().toText() );
         logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, empresa );
         return Respuesta.of(rtdo,empresa);
     }

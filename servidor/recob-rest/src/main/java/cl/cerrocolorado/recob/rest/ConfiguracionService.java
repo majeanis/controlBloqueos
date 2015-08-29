@@ -36,6 +36,7 @@ import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 
 @Path("configuracion")
@@ -71,7 +72,7 @@ public class ConfiguracionService
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
             Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
-            Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getTodos(ubicacion,vigencia);
+            Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getCajas(ubicacion,vigencia);
             
             logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
             return RespGenerica.of(r1);
@@ -119,7 +120,7 @@ public class ConfiguracionService
     @Path("cajasBloqueo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @PUT
+    @POST
     public RespGenerica guardarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("caja") String jsonCaja)
@@ -158,6 +159,18 @@ public class ConfiguracionService
 			logger.error("guardarCajaBloqueo[ERR] al guardar caja de bloqueo:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
+    }
+
+    @Path("cajasBloqueo/{numeroCaja}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @PUT
+    public RespGenerica guardarCajaBloqueo(
+    		@HeaderParam("token") String tokenUbicacion,
+            @PathParam("numeroCaja") Integer numeroCaja,
+    		@FormParam("caja") String jsonCaja)
+    {
+        
     }
 
     @Path("cajasBloqueo/{numeroCaja}")
@@ -216,7 +229,7 @@ public class ConfiguracionService
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
             Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
-            Respuesta<List<CandadoTO>> r = FactoryBO.getCandadoBO().getTodos(ubicacion, vigencia);
+            Respuesta<List<CandadoTO>> r = FactoryBO.getCandadoBO().getCandados(ubicacion, vigencia);
 
             logger.info("verCandados[FIN] retorno de todos los registros: {}", r);
             return RespGenerica.of(r);
@@ -579,7 +592,7 @@ public class ConfiguracionService
             equipo.setCodigo(codigoEquipo);
             TagTO tag = new TagTO();
             tag.setEquipo(equipo);
-            tag.setNumero(numeroTag);
+            tag.setCodigo(numeroTag);
             logger.debug("verTag[001] antes de ejecutar al método BO: {}", tag);
             
             Respuesta<TagTO> r = FactoryBO.getEquipoBO().getTag(tag);
@@ -613,7 +626,7 @@ public class ConfiguracionService
         try
         {
             Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
-            Respuesta<List<EmpresaTO>> r1 = FactoryBO.getEmpresaBO().getTodos(vigencia);
+            Respuesta<List<EmpresaTO>> r1 = FactoryBO.getEmpresaBO().getEmpresas(vigencia);
             logger.info("verEmpresas[FIN] retorno de todos los registros: {}", r1.getResultado());
             return RespGenerica.of(r1);
         } catch(Exception e)
@@ -819,7 +832,7 @@ public class ConfiguracionService
         try
         {
             Optional<Boolean> vigencia = Optional.ofNullable(vigentes);
-            Respuesta<List<TrabajadorTO>> r = FactoryBO.getTrabajadorBO().getTodos(vigencia);
+            Respuesta<List<TrabajadorTO>> r = FactoryBO.getTrabajadorBO().getTrabajador(vigencia);
             logger.info("verTrabajadores[FIN] retorno de todos los registros: {}", r.getResultado());
             return RespGenerica.of(r);
         } catch(Exception e)

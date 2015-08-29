@@ -74,7 +74,7 @@ public class ControlBloqueosService
             caja.setNumero(numeroCaja);
             logger.debug("verLibrosAbiertos[001] objeto caja con el que se buscará el libro: {}", caja);
 
-            Respuesta<List<LibroBloqueoTO>> r = FactoryBO.getLibroBloqueoBO().getVigentes(caja, Optional.ofNullable(fechaInicial));
+            Respuesta<List<LibroBloqueoTO>> r = FactoryBO.getLibroBloqueoBO().getAbiertos(caja, Optional.ofNullable(fechaInicial));
             logger.info("verLibrosAbiertos[FIN] retorno de registros vigentes: {}", r);
             return RespGenerica.of(r);
         } catch(Exception e)

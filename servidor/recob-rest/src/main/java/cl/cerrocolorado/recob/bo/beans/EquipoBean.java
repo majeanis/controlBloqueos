@@ -71,12 +71,12 @@ public class EquipoBean implements EquipoBO
         {
             if (otro != null)
             {
-                rtdo.addError(this.getClass(), "Ya existe equipo con código #{1}", equipo.getCodigo());
+                rtdo.addError(this.getClass(), "Ya existe equipo con código %s", equipo.getCodigo());
             }
         } 
         else if ( otro == null )
         {
-            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", equipo.getCodigo());
+            rtdo.addError(this.getClass(), "No existe equipo con código %s", equipo.getCodigo());
         } 
         else
         {
@@ -130,7 +130,7 @@ public class EquipoBean implements EquipoBO
         EquipoTagsTO equipo = equipoPO.obtener(pk);
         if(equipo == null)
         {
-            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
+            rtdo.addError(this.getClass(), "No existe equipo con código %s", pk.getCodigo());
             logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
             return Respuesta.of(rtdo);
         }
@@ -140,7 +140,7 @@ public class EquipoBean implements EquipoBO
         {
             if( !equipoPO.esTagEliminable(tag) )
             {
-                rtdo.addError(this.getClass(), "TAG #{1} tiene registros asociados", String.valueOf(tag.getCodigo()));
+                rtdo.addError(this.getClass(), "TAG %s tiene registros asociados", tag.getCodigo());
             }
         }
 
@@ -198,12 +198,12 @@ public class EquipoBean implements EquipoBO
         {
             if( otro != null )
             {
-                rtdo.addError(this.getClass(), "Ya existe TAG con código #{1}", tag.getCodigo());
+                rtdo.addError(this.getClass(), "Ya existe TAG con código %s", tag.getCodigo());
             }
         } 
         else if( otro == null )
         {
-            rtdo.addError(this.getClass(), "No existe TAG con código #{1}", tag.getCodigo());
+            rtdo.addError(this.getClass(), "No existe TAG con código %s", tag.getCodigo());
         } 
         else
         {
@@ -256,7 +256,7 @@ public class EquipoBean implements EquipoBO
         TagTO tag = equipoPO.getTag(pk);
         if( tag == null)
         {
-            rtdo.addError(this.getClass(), "No existe TAG con N° #{1}", String.valueOf(pk.getCodigo()) );
+            rtdo.addError(this.getClass(), "No existe TAG con N° %s", pk.getCodigo() );
             logger.info("eliminarTag[FIN] no existe el TAG: {}", pk);
             return Respuesta.of(rtdo);
         }
@@ -299,7 +299,7 @@ public class EquipoBean implements EquipoBO
         EquipoTagsTO equipo = equipoPO.obtener(pk);
         if( equipo == null )
         {
-            rtdo.addError(this.getClass(), "No existe equipo con código #{1}", pk.getCodigo());
+            rtdo.addError(this.getClass(), "No existe equipo con código %s", pk.getCodigo());
         }
 
         logger.info("getEquipo[FIN] registro encontrado: {}", equipo);
@@ -346,7 +346,7 @@ public class EquipoBean implements EquipoBO
         TagTO tag = equipoPO.getTag(pk);
         if( tag == null )
         {
-            rtdo.addError(this.getClass(), "No existe TAG #{1}", String.valueOf(pk.getCodigo()));
+            rtdo.addError(this.getClass(), "No existe TAG %s", pk.getCodigo());
         }
         
         logger.info ("getTag[FIN] tag retornado: {}", tag);

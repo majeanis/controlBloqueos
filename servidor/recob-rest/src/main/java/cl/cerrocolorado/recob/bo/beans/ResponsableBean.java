@@ -105,7 +105,7 @@ public class ResponsableBean implements ResponsableBO
             if(Objects.equals(actual.getEmpresa().getId(), responsable.getEmpresa().getId()) &&
                Objects.equals(actual.getPersona().getId(), responsable.getPersona().getId()) )
             {
-                rtdo.addError(this.getClass(), "Trabajador [#{1}] ya es el responsable actual", responsable.getPersona().getRut().toText());
+                rtdo.addError(this.getClass(), "Trabajador [%s] ya es el responsable actual", responsable.getPersona().getRut().toText());
             }
             else
             {
@@ -116,12 +116,12 @@ public class ResponsableBean implements ResponsableBO
         }
         else if( actual == null)
         {
-            rtdo.addError(this.getClass(), "Trabajador [#{1}] no es el Responsable actual", responsable.getPersona().getRut().toText());
+            rtdo.addError(this.getClass(), "Trabajador [%s] no es el Responsable actual", responsable.getPersona().getRut().toText());
         }
         else if( !Objects.equals(actual.getEmpresa().getId(), responsable.getEmpresa().getId()) ||
                  !Objects.equals(actual.getPersona().getId(), responsable.getPersona().getId()))
         {
-            rtdo.addError(this.getClass(), "Trabajador [#{1}] no es el responsable actual", responsable.getPersona().getRut().toText());
+            rtdo.addError(this.getClass(), "Trabajador [%s] no es el responsable actual", responsable.getPersona().getRut().toText());
         }
         else
         {
@@ -177,7 +177,7 @@ public class ResponsableBean implements ResponsableBO
         ResponsableTO resp = responsablePO.obtener(pk);
         if( resp == null )
         {
-            rtdo.addError(this.getClass(), "No existe Responsable #{1}", pk.getPersona().getRut().toText() );
+            rtdo.addError(this.getClass(), "No existe Responsable %s", pk.getPersona().getRut().toText() );
             logger.info ("eliminar[FIN] no existe el responsable: {}", pk );
             return Respuesta.of(rtdo);
         } 
@@ -192,7 +192,7 @@ public class ResponsableBean implements ResponsableBO
         responsablePO.eliminar(resp);
         logger.debug("eliminar[001] despues de eliminar al Responsanle: {}", resp );
         
-        rtdo.addMensaje(this.getClass(), "Responsable #{1} eliminada con éxito", resp.getEmpresa().getRut().toText() );
+        rtdo.addMensaje(this.getClass(), "Responsable %s eliminado con éxito", resp.getEmpresa().getRut().toText() );
         logger.info ("eliminar[FIN] responsable eliminado con exito: {} {}", rtdo, resp );
         return Respuesta.of(rtdo,resp);
     }
@@ -236,7 +236,7 @@ public class ResponsableBean implements ResponsableBO
         ResponsableTO resp = responsablePO.obtener(pk);
         if(resp==null)
         {
-            rtdo.addMensaje(this.getClass(), "No se encontró al Responsable [#{1}]", pk.getPersona().getRut().toText() );
+            rtdo.addMensaje(this.getClass(), "No se encontró al Responsable %s", pk.getPersona().getRut().toText() );
         }
 
         logger.info ("get[FIN] responsable retornado: {}", resp);

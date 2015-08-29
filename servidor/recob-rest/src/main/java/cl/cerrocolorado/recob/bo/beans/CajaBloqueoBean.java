@@ -68,7 +68,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 		    UbicacionTO ubicacion = ubicacionPO.get(caja.getUbicacion());
 		    if( ubicacion == null )
 		    {
-		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: #{1}]", String.valueOf(caja.getUbicacion().getId()));
+		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: %d]", caja.getUbicacion().getId());
 		    }
         }
 
@@ -83,11 +83,11 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         {
             if(otra != null)
             {
-                rtdo.addError(this.getClass(), "Ya existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );
+                rtdo.addError(this.getClass(), "Ya existe Caja con el N° %d", caja.getNumero());
             }
         } else if( otra == null )
         {
-            rtdo.addError(this.getClass(), "No existe Caja con el N° #{1}", String.valueOf(caja.getNumero()) );            
+            rtdo.addError(this.getClass(), "No existe Caja con el N° %d", caja.getNumero());
         } else
         {
             caja.setId(otra.getId());
@@ -137,7 +137,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
         if( caja == null )
         {
-            rtdo.addError(this.getClass(), "No existe Caja N° #{1}", String.valueOf( pkCaja.getNumero() ) );
+            rtdo.addError(this.getClass(), "No existe Caja N° %d", pkCaja.getNumero() );
             logger.info ("eliminar[FIN] no existe caja: {}", pkCaja );
             return Respuesta.of(rtdo);
         }
@@ -152,7 +152,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         cajaPO.eliminar(caja);
         logger.debug("eliminar[001] despues de eliminar la caja: {}", caja );
         
-        rtdo.addMensaje(this.getClass(), "Caja N° #{1} eliminada con éxito", String.valueOf( caja.getNumero() ) );
+        rtdo.addMensaje(this.getClass(), "Caja N° %d eliminada con éxito", caja.getNumero());
         logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, caja );
         return Respuesta.of(rtdo,caja);
     }
@@ -173,7 +173,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
         if( caja == null )
         {
-            rtdo.addMensaje(this.getClass(), "No se encontró registro para Caja N° #{1}", String.valueOf(pkCaja.getNumero()));
+            rtdo.addMensaje(this.getClass(), "No se encontró registro para Caja N° %d", pkCaja.getNumero());
         }
 
         logger.info ("get[FIN] resultado búsqueda: {}", caja );
