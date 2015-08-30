@@ -4,6 +4,7 @@ import cl.cerrocolorado.recob.utils.Mensaje;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.ToStringUtils;
 
 public class RespGenerica
 {
@@ -23,6 +24,12 @@ public class RespGenerica
 	public Object getBody() {
 		return body;
 	}
+
+    @Override
+    public String toString()
+    {
+        return ToStringUtils.toString(this);
+    }
 
     public static RespGenerica of(Resultado rtdo, Object contenido)
     {
