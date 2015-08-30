@@ -3,7 +3,8 @@ package cl.cerrocolorado.recob.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Formatter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -164,5 +165,11 @@ public class ToStringUtils
             sb.deleteCharAt(sb.length() - sep.length());
 
         return sb.toString();
+    }
+
+    public static String toString(Date fecha, boolean incluirHora)
+    {
+        SimpleDateFormat sf = (incluirHora) ? new SimpleDateFormat("dd-MM-yyyy hh:mm:ss") : new SimpleDateFormat("dd-MM-yyyy");
+        return sf.format(fecha);
     }
 }
