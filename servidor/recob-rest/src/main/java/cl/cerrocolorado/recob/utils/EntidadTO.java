@@ -1,7 +1,6 @@
 package cl.cerrocolorado.recob.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang.StringUtils;
 
 public abstract class EntidadTO extends BaseTO
 {
