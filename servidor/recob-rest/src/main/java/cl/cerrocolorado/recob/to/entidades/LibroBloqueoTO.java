@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,9 +15,7 @@ public class LibroBloqueoTO extends EntidadTO
 
     @JsonIgnore
     private UbicacionTO ubicacion;
-
-    @JsonIgnore    
-    private String id;
+    
     private Integer numero;
     private Date fecha;
     private Boolean cerrado;
@@ -32,16 +30,6 @@ public class LibroBloqueoTO extends EntidadTO
     public void setUbicacion(UbicacionTO ubicacion)
     {
         this.ubicacion = ubicacion;
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
     }
 
     public Integer getNumero()
@@ -99,11 +87,4 @@ public class LibroBloqueoTO extends EntidadTO
     {
         return isIdBlank() && (numero == 0 || caja == null || caja.isKeyBlank());
     }
-    
-    @Override
-    public boolean isIdBlank()
-    {
-        return StringUtils.isBlank(id);
-    }
-
 }

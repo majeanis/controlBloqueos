@@ -1,8 +1,8 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.FuncionBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

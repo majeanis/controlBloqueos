@@ -1,7 +1,7 @@
 package cl.cerrocolorado.recob.bo;
 
-import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.FuncionBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import java.util.List;
 import java.util.Optional;

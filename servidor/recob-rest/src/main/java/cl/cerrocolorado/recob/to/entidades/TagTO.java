@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,9 +11,6 @@ import org.apache.commons.lang.StringUtils;
 public class TagTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
-
-    @JsonIgnore    
-	private Integer id;
 
     private String codigo;
     private String descripcion;
@@ -31,17 +28,6 @@ public class TagTO extends EntidadTO
     {
         this.equipo = equipo;
     }
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
     public String getCodigo()
     {
         return codigo;
@@ -86,11 +72,5 @@ public class TagTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank() && (StringUtils.isBlank(codigo) || equipo.isKeyBlank());
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

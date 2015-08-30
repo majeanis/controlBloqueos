@@ -1,13 +1,13 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.DotacionLibroTO;
-import cl.cerrocolorado.recob.to.EnergiaLibroTO;
-import cl.cerrocolorado.recob.to.LibroBloqueoInfoTO;
-import cl.cerrocolorado.recob.to.LibroBloqueoTO;
-import cl.cerrocolorado.recob.to.RespLibroTO;
-import cl.cerrocolorado.recob.to.TagLibroTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.DotacionLibroTO;
+import cl.cerrocolorado.recob.to.entidades.EnergiaLibroTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoInfoTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.RespLibroTO;
+import cl.cerrocolorado.recob.to.entidades.TagLibroTO;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

@@ -2,8 +2,8 @@ package cl.cerrocolorado.recob.bo;
 
 import java.util.List;
 
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
+import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
+import cl.cerrocolorado.recob.to.entidades.TrabajadorTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import java.util.Optional;
 

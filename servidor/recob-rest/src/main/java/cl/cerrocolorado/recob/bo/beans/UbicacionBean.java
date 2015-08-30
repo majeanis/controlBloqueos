@@ -2,8 +2,8 @@ package cl.cerrocolorado.recob.bo.beans;
 
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.po.UbicacionPO;
-import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.FuncionBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;

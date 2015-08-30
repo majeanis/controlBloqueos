@@ -18,16 +18,16 @@ import org.apache.logging.log4j.Logger;
 import cl.cerrocolorado.recob.bo.utils.FactoryBO;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.rest.utils.RespGenerica;
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.CandadoTO;
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.EquipoTO;
-import cl.cerrocolorado.recob.to.EquipoTagsTO;
-import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
-import cl.cerrocolorado.recob.to.TagTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.to.UsoCandadoTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.CandadoTO;
+import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTagsTO;
+import cl.cerrocolorado.recob.to.entidades.FuncionBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.TagTO;
+import cl.cerrocolorado.recob.to.entidades.TrabajadorTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.UsoCandadoTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Rut;
@@ -74,6 +74,8 @@ public class ConfiguracionService
             Respuesta<List<CajaBloqueoTO>> r1 = FactoryBO.getCajaBloqueoBO().getCajas(ubicacion,vigencia);
             
             logger.info("verCajasBloqueo[FIN] retorno de todos los registros: {}", r1);
+            RespGenerica r2 = RespGenerica.of(r1);
+            logger.info("verCajasBloqueo[FIN] retorno: {}", r2);
             return RespGenerica.of(r1);
         } catch(Exception e)
         {

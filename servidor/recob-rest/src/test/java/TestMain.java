@@ -1,7 +1,7 @@
 
-import cl.cerrocolorado.recob.to.ResponsableTO;
-import cl.cerrocolorado.recob.to.CandadoTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
+import cl.cerrocolorado.recob.to.entidades.ResponsableTO;
+import cl.cerrocolorado.recob.to.entidades.CandadoTO;
+import cl.cerrocolorado.recob.to.entidades.PersonaTO;
 import cl.cerrocolorado.recob.utils.Rut;
 
 /*

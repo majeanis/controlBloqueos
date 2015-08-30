@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cl.cerrocolorado.recob.bo.EquipoBO;
 import cl.cerrocolorado.recob.po.EquipoPO;
-import cl.cerrocolorado.recob.to.EquipoTO;
-import cl.cerrocolorado.recob.to.EquipoTagsTO;
-import cl.cerrocolorado.recob.to.TagTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTagsTO;
+import cl.cerrocolorado.recob.to.entidades.TagTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;

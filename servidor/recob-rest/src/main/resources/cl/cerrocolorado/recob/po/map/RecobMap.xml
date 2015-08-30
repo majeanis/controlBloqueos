@@ -222,7 +222,7 @@
                 ,a.cabl_nume
     </select>
     
-    <select id="childsCajaBloqueo" parameterType="CajaBloqueoTO" resultType="int" >
+    <select id="childsCajaBloqueo" parameterType="CajaBloqueoTO" resultType="long" >
         select count(*)
         from   rcb_libr_ctrl_bloq a inner join rcb_caja_bloq b
            on (a.cabl_id = b.cabl_id) 
@@ -240,8 +240,8 @@
     </select>
 
     <insert id="insertCajaBloqueo" parameterType="CajaBloqueoTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_caja_bloq(cabl_id, cabl_nume, cabl_nomb, cabl_vige, ubic_id, audi_fech_crea)
             values(#{id},#{numero},#{nombre},#{vigente},#{ubicacion.id},localtimestamp)
@@ -308,15 +308,15 @@
                 ,a.cand_seri
     </select>    
 
-    <select id="childsCandado" parameterType="CandadoTO" resultType="int" >
+    <select id="childsCandado" parameterType="CandadoTO" resultType="long" >
         select count(*)
         from   rcb_dota_lcbl
         where  lcbl_id = #{id}
     </select>
 
     <insert id="insertCandado" parameterType="CandadoTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_cand(cand_id, cand_nume, cand_seri, cand_vige, dval_id_uso, pers_id, ubic_id, audi_fech_crea)
             values(#{id},#{numero},#{serie},#{vigente},#{uso.id},#{persona.id},#{ubicacion.id},localtimestamp)
@@ -358,8 +358,8 @@
     </select>
 
     <insert id="insertPersona" parameterType="PersonaTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_pers(pers_id, pers_rut, pers_nomb, audi_fech_crea)
             values(#{id},#{rut,typeHandler=RutTypeHandler},#{nombre},localtimestamp)
@@ -412,7 +412,7 @@
                 ,b.pers_rut
     </select>
 
-    <select id="childsTrabajador" parameterType="TrabajadorTO" resultType="int" >
+    <select id="childsTrabajador" parameterType="TrabajadorTO" resultType="long" >
         select sum( canti )
         from
         (
@@ -470,7 +470,7 @@
         order by a.empr_rut
     </select>
 
-    <select id="childsEmpresa" parameterType="EmpresaTO" resultType="int" >
+    <select id="childsEmpresa" parameterType="EmpresaTO" resultType="long" >
         select count(*) 
         from   rcb_trab a inner join rcb_empr b
            on (a.empr_id = b.empr_id)
@@ -478,8 +478,8 @@
     </select>
     
     <insert id="insertEmpresa" parameterType="EmpresaTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_empr(empr_id, empr_rut, empr_nomb, empr_vige, audi_fech_crea)
              values(#{id},#{rut,typeHandler=RutTypeHandler},#{nombre},#{vigente},localtimestamp)
@@ -523,7 +523,7 @@
         order by a.ubic_id, a.eqpo_codi
     </select>
 
-    <select id="childsEquipo" parameterType="EquipoTO" resultType="int" >
+    <select id="childsEquipo" parameterType="EquipoTO" resultType="long" >
         select count(*) 
         from   rcb_tags_eqpo a inner join rcb_eqpo b
            on (a.eqpo_id = b.eqpo_id)
@@ -531,8 +531,8 @@
     </select>
     
     <insert id="insertEquipo" parameterType="EquipoTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_eqpo(eqpo_id, eqpo_codi, eqpo_vige, ubic_id, audi_fech_crea)
              values(#{id},#{codigo},#{vigente},#{ubicacion.id},localtimestamp)
@@ -590,7 +590,7 @@
         order by a.eqpo_id, a.taeq_codi
     </select>
 
-    <select id="childsTag" parameterType="TagTO" resultType="int" >
+    <select id="childsTag" parameterType="TagTO" resultType="long" >
         select count(*) 
         from   rcb_taeq_lcbl a inner join rcb_tags_eqpo b
            on (a.taeq_id = b.taeq_id)
@@ -599,8 +599,8 @@
     </select>
     
     <insert id="insertTag" parameterType="TagTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_tags_eqpo(taeq_id, taeq_codi, taeq_desc, taeq_enrg_cero, taeq_vige, eqpo_id, audi_fech_crea)
              values(#{id},#{codigo},#{descripcion},#{energiaCero},#{vigente},#{equipo.id},localtimestamp)
@@ -700,7 +700,7 @@
         order by c.empr_rut, b.pers_rut, a.pers_fech_ingr
     </select>
     
-    <select id="childsResponsable" parameterType="ResponsableTO" resultType="int" >
+    <select id="childsResponsable" parameterType="ResponsableTO" resultType="long" >
         select count(*)
         from   rcb_resp a inner join rcb_libr_ctrl_bloq b
            on (a.resp_fech_ini >= b.lcbl_fech )
@@ -716,8 +716,8 @@
     </select>
     
     <insert id="insertResponsable" parameterType="ResponsableTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_resp(resp_id, pers_id, empr_id, ubic_id, resp_fech_ingr, resp_fech_sali)
              values(#{id},#{persona.id},#{empresa.id},#{ubicacion.id},#{fechaIngreso,jdbcType=TIMESTAMP},#{fechaSalida,jdbcType=TIMESTAMP});
@@ -804,7 +804,7 @@
         order by b.ubic_id, b.cabl_nume, a.lcbl_nume
     </select>
     
-    <select id="childsLibro" parameterType="LibroBloqueoTO" resultType="int" >
+    <select id="childsLibro" parameterType="LibroBloqueoTO" resultType="long" >
         select sum(*)
         from
         (
@@ -825,12 +825,12 @@
         ) as todo
     </select>
 
-    <select id="selectNumeroLibro" resultType="int" >
+    <select id="selectNumeroLibro" resultType="long" >
         select nextval( 'SEQ_NUME_LIBR' )
     </select>
     
     <insert id="insertLibro" parameterType="LibroBloqueoTO" >
-        <selectKey keyProperty="id" resultType="String" order="BEFORE" >
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE" >
             select get_global_id()
         </selectKey>
         insert into rcb_libr_ctrl_bloq(lcbl_id, lcbl_nume, lcbl_fech, lcbl_cerr, lcbl_fech_cerr, cabl_id, audi_fech_crea )
@@ -900,8 +900,8 @@
     </select>
     
     <insert id="insertTagLibro" parameterType="TagLibroTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_taeq_lcbl(talc_id, lcbl_id, taeq_id, talc_enrg_cero, talc_fech_enrg_cero, audi_fech_crea )
              values(#{id},#{libro.id},#{tag.id},#{energiaCero},#{fechaEnergiaCero,jdbcType=TIMESTAMP},localtimestamp)
@@ -952,8 +952,8 @@
     </select>
     
     <insert id="insertEnergiaLibro" parameterType="EnergiaLibroTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_enrg_lcbl(lcbl_id, dval_id_item, audi_fech_crea )
              values(#{libro.id},#{id},localtimestamp)
@@ -1031,8 +1031,8 @@
     </select>
 
     <insert id="insertDotacionLibro" parameterType="DotacionLibroTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         insert into rcb_dota_lcbl(dolc_id, lcbl_id, fubl_id, empr_id, pers_id, cand_id, pers_id_bloq, 
                                   pers_id_desb, dolc_fech_bloq, dolc_fech_desb, audi_fech_crea)
@@ -1122,8 +1122,8 @@
     </select>
     
     <insert id="insertRespLibro" parameterType="RespLibroTO" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE" >
-            select get_nuevo_id()
+        <selectKey keyProperty="id" resultType="long" order="BEFORE" >
+            select get_global_id()
         </selectKey>
         
         insert into rcb_resp_lcbl(relc_id,lcbl_id,pers_id,empr_id,relc_fech_ingr,relc_fech_sali,audi_fech_crea)

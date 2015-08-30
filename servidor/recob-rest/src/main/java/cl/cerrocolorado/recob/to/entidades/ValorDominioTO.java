@@ -1,7 +1,6 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -12,21 +11,9 @@ public class ValorDominioTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
-    @JsonIgnore    
-    private Integer id;
     private String  codigo;
     private String  nombre;
     private Boolean vigente;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public String getCodigo()
     {
@@ -62,11 +49,5 @@ public class ValorDominioTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank() && StringUtils.isBlank(codigo);
-    }
-    
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

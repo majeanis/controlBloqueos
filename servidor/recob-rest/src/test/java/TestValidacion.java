@@ -1,5 +1,5 @@
 
-import cl.cerrocolorado.recob.to.LibroBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
 
 /**
  *

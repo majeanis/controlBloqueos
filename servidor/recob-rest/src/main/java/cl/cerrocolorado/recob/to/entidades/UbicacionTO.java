@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,8 +10,6 @@ public class UbicacionTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
-    @JsonIgnore    
-    private Integer id;
     private String nombre;
     private String descripcion;
     private Boolean vigente;
@@ -19,16 +17,6 @@ public class UbicacionTO extends EntidadTO
 
     @JsonIgnore
     private String token;
-        
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public String getNombre()
     {
@@ -84,11 +72,5 @@ public class UbicacionTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank();
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

@@ -1,10 +1,10 @@
 package cl.cerrocolorado.recob.bo;
 
 import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.to.CandadoTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.to.UsoCandadoTO;
+import cl.cerrocolorado.recob.to.entidades.CandadoTO;
+import cl.cerrocolorado.recob.to.entidades.PersonaTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.UsoCandadoTO;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,10 +1,10 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.EquipoTO;
-import cl.cerrocolorado.recob.to.EquipoTagsTO;
-import cl.cerrocolorado.recob.to.TagTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTagsTO;
+import cl.cerrocolorado.recob.to.entidades.TagTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

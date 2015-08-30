@@ -1,8 +1,8 @@
 package cl.cerrocolorado.recob.bo;
 
 import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 
 import java.util.List;
 import java.util.Optional;

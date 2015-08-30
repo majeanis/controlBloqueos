@@ -1,9 +1,8 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import java.util.Date;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mauricio.camara
@@ -12,8 +11,6 @@ public class DotacionLibroTO extends EntidadTO
 {
     private static final long serialVersionUID = 1L;
 
-    @JsonIgnore    
-    private Integer id;
     private LibroBloqueoTO libro;
     private FuncionBloqueoTO funcion;
     private TrabajadorTO trabajador;
@@ -22,16 +19,6 @@ public class DotacionLibroTO extends EntidadTO
     private PersonaTO autorizaDesbloqueo;
     private Date fechaBloqueo;
     private Date fechaDesbloqueo;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public LibroBloqueoTO getLibro()
     {
@@ -119,11 +106,5 @@ public class DotacionLibroTO extends EntidadTO
         return isIdBlank() && (libro == null || libro.isKeyBlank() || 
                                funcion == null || funcion.isKeyBlank() || 
                                trabajador == null || trabajador.isKeyBlank());
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -16,20 +10,8 @@ public class EstacionTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
-    @JsonIgnore	
-    private Integer id;
     private String nombre;
     private Boolean vigente;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public String getNombre()
     {
@@ -55,11 +37,5 @@ public class EstacionTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank();
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

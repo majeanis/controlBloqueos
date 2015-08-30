@@ -1,7 +1,6 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 
 /**
@@ -12,8 +11,6 @@ public class ResponsableTO extends EntidadTO
 {
     private static final long serialVersionUID = 1L;
 
-    @JsonIgnore    
-    private Integer id;
     private PersonaTO persona;
     private EmpresaTO empresa;
     private Date fechaIngreso;
@@ -49,22 +46,10 @@ public class ResponsableTO extends EntidadTO
     {
         this.ubicacion = ubicacion;
     }
-    
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
     public Date getFechaIngreso()
     {
         return fechaIngreso;
     }
-
     public void setFechaIngeso(Date fechaIngreso)
     {
         this.fechaIngreso = fechaIngreso;
@@ -84,11 +69,5 @@ public class ResponsableTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank() && (persona == null || persona.isKeyBlank() || fechaIngreso == null);
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

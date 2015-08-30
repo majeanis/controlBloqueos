@@ -1,28 +1,15 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
 import cl.cerrocolorado.recob.utils.Rut;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class EmpresaTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
-    @JsonIgnore
-    private Integer id;
     private Rut     rut;
     private String  nombre;
     private Boolean vigente;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public Rut getRut() {
         return rut;
@@ -53,10 +40,4 @@ public class EmpresaTO extends EntidadTO
     {
         return isIdBlank() && Rut.isBlank(rut);
     }    
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
-    }
 }

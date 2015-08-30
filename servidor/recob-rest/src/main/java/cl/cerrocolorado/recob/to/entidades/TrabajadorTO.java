@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 public class TrabajadorTO extends PersonaTO
 {

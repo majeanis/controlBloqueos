@@ -20,14 +20,15 @@ import org.apache.logging.log4j.Logger;
 import cl.cerrocolorado.recob.bo.UbicacionBO;
 import cl.cerrocolorado.recob.bo.utils.FactoryBO;
 import cl.cerrocolorado.recob.rest.utils.RespGenerica;
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.LibroBloqueoInfoTO;
-import cl.cerrocolorado.recob.to.LibroBloqueoTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoInfoTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 
 @Path("controlBloqueos")
 public class ControlBloqueosService
@@ -124,20 +125,20 @@ public class ControlBloqueosService
     @Path("{numeroCaja}/libros")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @PUT
-    public RespGenerica guardarLibro(
+    @POST
+    public RespGenerica crearLibro(
     		@HeaderParam("token") String tokenUbicacion,
             @PathParam  ("numeroCaja") Integer numeroCaja,
     		@FormParam  ("libro") String jsonLibro)
     {
-    	logger.info ("guardarLibro[INI] token: {}", tokenUbicacion);
-        logger.info ("guardarLibro[INI] numeroCaja: {}", numeroCaja);
-    	logger.info ("guardarLibro[INI] jsonLibro: {}", jsonLibro);
+    	logger.info ("crearLibro[INI] token: {}", tokenUbicacion);
+        logger.info ("crearLibro[INI] numeroCaja: {}", numeroCaja);
+    	logger.info ("crearLibro[INI] jsonLibro: {}", jsonLibro);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("guardarLibro[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("crearLibro[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -147,25 +148,25 @@ public class ControlBloqueosService
             LibroBloqueoTO libro = JsonUtils.fromJson(jsonLibro, LibroBloqueoTO.class);
             if( libro == null )
             {
-                logger.info("guardarLibro[FIN] no se pudo parsear el JSON: {}", jsonLibro);
+                logger.info("crearLibro[FIN] no se pudo parsear el JSON: {}", jsonLibro);
                 return RespGenerica.of(new ParsearJsonError(this.getClass(),"Libro"));
             }
 
-            logger.debug("guardarLibro[001] después de parsear el JSON: {}", libro);
+            logger.debug("crearLibro[001] después de parsear el JSON: {}", libro);
 
             libro.setUbicacion(ubicacion);
             libro.setCaja( new CajaBloqueoTO() );
             libro.getCaja().setNumero(numeroCaja);
             libro.getCaja().setUbicacion(ubicacion);
-            logger.debug("guardarLibro[002] antes de llamar al método BO: {}", libro);
+            logger.debug("crearLibro[002] antes de llamar al método BO: {}", libro);
 
-            Respuesta<LibroBloqueoTO> r = FactoryBO.getLibroBloqueoBO().guardar(libro);
+            Respuesta<LibroBloqueoTO> r = FactoryBO.getLibroBloqueoBO().crear(libro);
 
-            logger.info("guardarLibro[FIN] resultado registro libro: {}", r);
+            logger.info("crearLibro[FIN] resultado registro libro: {}", r);
             return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			logger.error("guardarLibro[ERR] al guardar libro de bloqueo:", e);
+			logger.error("crearLibro[ERR] al guardar libro de bloqueo:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }

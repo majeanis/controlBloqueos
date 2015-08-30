@@ -1,7 +1,6 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -11,24 +10,12 @@ public class CandadoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 	
-    @JsonIgnore
-    private Integer id;
     private Integer numero;
     private String serie;
     private Boolean vigente;
     private UsoCandadoTO uso;
     private PersonaTO persona;
     private UbicacionTO ubicacion;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public Integer getNumero()
     {
@@ -94,11 +81,5 @@ public class CandadoTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank() && (numero==null || numero==0 || ubicacion == null || ubicacion.isKeyBlank());
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }

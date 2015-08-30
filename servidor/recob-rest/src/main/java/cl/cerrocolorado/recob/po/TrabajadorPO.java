@@ -1,9 +1,9 @@
 package cl.cerrocolorado.recob.po;
 
 import cl.cerrocolorado.recob.po.map.RecobMap;
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
+import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
+import cl.cerrocolorado.recob.to.entidades.PersonaTO;
+import cl.cerrocolorado.recob.to.entidades.TrabajadorTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

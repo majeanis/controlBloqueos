@@ -1,4 +1,4 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 /**
  *
@@ -22,11 +22,5 @@ public class EnergiaLibroTO extends EnergiaTO
     public boolean isKeyBlank()
     {
         return libro == null || libro.isKeyBlank() || super.isKeyBlank();
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return super.isIdBlank();
     }
 }

@@ -1,21 +1,21 @@
 package cl.cerrocolorado.recob.po.map;
 
-import cl.cerrocolorado.recob.to.CajaBloqueoTO;
-import cl.cerrocolorado.recob.to.CandadoTO;
-import cl.cerrocolorado.recob.to.DotacionLibroTO;
-import cl.cerrocolorado.recob.to.EmpresaTO;
-import cl.cerrocolorado.recob.to.EnergiaLibroTO;
-import cl.cerrocolorado.recob.to.EquipoTO;
-import cl.cerrocolorado.recob.to.FuncionBloqueoTO;
-import cl.cerrocolorado.recob.to.LibroBloqueoTO;
-import cl.cerrocolorado.recob.to.PersonaTO;
-import cl.cerrocolorado.recob.to.RespLibroTO;
-import cl.cerrocolorado.recob.to.ResponsableTO;
-import cl.cerrocolorado.recob.to.TagLibroTO;
-import cl.cerrocolorado.recob.to.TagTO;
-import cl.cerrocolorado.recob.to.TrabajadorTO;
-import cl.cerrocolorado.recob.to.UbicacionTO;
-import cl.cerrocolorado.recob.to.UsoCandadoTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.CandadoTO;
+import cl.cerrocolorado.recob.to.entidades.DotacionLibroTO;
+import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
+import cl.cerrocolorado.recob.to.entidades.EnergiaLibroTO;
+import cl.cerrocolorado.recob.to.entidades.EquipoTO;
+import cl.cerrocolorado.recob.to.entidades.FuncionBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.PersonaTO;
+import cl.cerrocolorado.recob.to.entidades.RespLibroTO;
+import cl.cerrocolorado.recob.to.entidades.ResponsableTO;
+import cl.cerrocolorado.recob.to.entidades.TagLibroTO;
+import cl.cerrocolorado.recob.to.entidades.TagTO;
+import cl.cerrocolorado.recob.to.entidades.TrabajadorTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
+import cl.cerrocolorado.recob.to.entidades.UsoCandadoTO;
 import java.util.List;
 import java.util.Map;
 

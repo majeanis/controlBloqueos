@@ -1,7 +1,6 @@
-package cl.cerrocolorado.recob.to;
+package cl.cerrocolorado.recob.to.entidades;
 
 import cl.cerrocolorado.recob.utils.EntidadTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 
 /**
@@ -10,23 +9,10 @@ import java.util.Date;
  */
 public class TagLibroTO extends EntidadTO
 {
-    @JsonIgnore    
-    private Integer id;
-
     private LibroBloqueoTO libro;
     private TagTO tag;
     private Boolean energiaCero;
     private Date fechaEnergiaCero;
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     public LibroBloqueoTO getLibro()
     {
@@ -73,11 +59,5 @@ public class TagLibroTO extends EntidadTO
     public boolean isKeyBlank()
     {
         return isIdBlank() && (libro==null || libro.isKeyBlank() || tag == null || tag.isKeyBlank());
-    }
-
-    @Override
-    public boolean isIdBlank()
-    {
-        return id==null || id==0;
     }
 }
