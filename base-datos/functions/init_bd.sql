@@ -24,7 +24,7 @@ BEGIN
     delete from rcb_ubic;
     delete from rcb_estc;
 
-    select nextval( 'SEQ_ID' ) into l_EstacionId;
+    select get_global_id() into l_EstacionId;
 
     insert into RCB_ESTC (ESTC_ID, ESTC_NOMB, ESTC_VIGE, AUDI_FECH_CREA)
        values ( l_EstacionId
@@ -33,7 +33,7 @@ BEGIN
               ,localtimestamp )
     ;
 
-    select nextval( 'SEQ_ID' ) into l_UbicacionId;
+    select get_global_id() into l_UbicacionId;
 
     insert into rcb_ubic(ubic_id, ubic_nomb, ubic_desc, ubic_vige, estc_id, audi_fech_crea)
        values ( l_UbicacionId

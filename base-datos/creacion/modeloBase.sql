@@ -2,7 +2,7 @@
 -- ER/Studio Data Architect 10.0 SQL Code Generation
 -- Project :      Registro y Control de Bloqueos
 --
--- Date Created : Monday, August 17, 2015 21:32:56
+-- Date Created : Sunday, August 30, 2015 17:22:18
 -- Target DBMS : PostgreSQL 9.x
 --
 
@@ -11,11 +11,11 @@
 --
 
 CREATE TABLE rcb_caja_bloq(
-    cabl_id           numeric(14, 0)    NOT NULL,
+    cabl_id           numeric(20, 0)    NOT NULL,
     cabl_nume         numeric(3, 0)     NOT NULL,
     cabl_nomb         varchar(40)       NOT NULL,
     cabl_vige         boolean           NOT NULL,
-    ubic_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
@@ -33,13 +33,13 @@ COMMENT ON TABLE rcb_caja_bloq IS 'Cajas de Bloqueo'
 --
 
 CREATE TABLE rcb_cand(
-    cand_id           numeric(14, 0)    NOT NULL,
+    cand_id           numeric(20, 0)    NOT NULL,
     cand_nume         numeric(4, 0)     NOT NULL,
     cand_seri         varchar(30)       NOT NULL,
     cand_vige         boolean           NOT NULL,
-    dval_id_uso       numeric(14, 0)    NOT NULL,
-    pers_id           numeric(14, 0)    NOT NULL,
-    ubic_id           numeric(14, 0)    NOT NULL,
+    dval_id_uso       numeric(20, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
@@ -59,7 +59,7 @@ COMMENT ON TABLE rcb_cand IS 'Candados'
 --
 
 CREATE TABLE rcb_domi_valo(
-    dval_id      numeric(14, 0)    NOT NULL,
+    dval_id      numeric(20, 0)    NOT NULL,
     dval_codi    varchar(40),
     dval_nomb    varchar(60)       NOT NULL,
     dval_vige    boolean           NOT NULL,
@@ -77,14 +77,14 @@ COMMENT ON TABLE rcb_domi_valo IS 'Dominio de Valores'
 --
 
 CREATE TABLE rcb_dota_lcbl(
-    dolc_id           numeric(14, 0)    NOT NULL,
-    lcbl_id           varchar(20)       NOT NULL,
-    empr_id           numeric(14, 0)    NOT NULL,
-    pers_id           numeric(14, 0)    NOT NULL,
-    cand_id           numeric(14, 0),
-    fubl_id           numeric(14, 0)    NOT NULL,
-    pers_id_bloq      numeric(14, 0)    NOT NULL,
-    pers_id_desb      numeric(14, 0)    NOT NULL,
+    dolc_id           numeric(20, 0)    NOT NULL,
+    lcbl_id           numeric(20, 0)    NOT NULL,
+    empr_id           numeric(20, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
+    cand_id           numeric(20, 0),
+    fubl_id           numeric(20, 0)    NOT NULL,
+    pers_id_bloq      numeric(20, 0)    NOT NULL,
+    pers_id_desb      numeric(20, 0)    NOT NULL,
     dolc_fech_bloq    timestamp,
     dolc_fech_desb    timestamp,
     audi_fech_crea    timestamp         NOT NULL,
@@ -104,7 +104,7 @@ COMMENT ON TABLE rcb_dota_lcbl IS 'Dotación registrada en el Libro de Control de
 --
 
 CREATE TABLE rcb_empr(
-    empr_id           numeric(14, 0)    NOT NULL,
+    empr_id           numeric(20, 0)    NOT NULL,
     empr_rut          varchar(11)       NOT NULL,
     empr_nomb         varchar(60)       NOT NULL,
     empr_vige         boolean           NOT NULL,
@@ -125,8 +125,8 @@ COMMENT ON TABLE rcb_empr IS 'Empresas'
 --
 
 CREATE TABLE rcb_enrg_lcbl(
-    lcbl_id           varchar(20)       NOT NULL,
-    dval_id_item      numeric(14, 0)    NOT NULL,
+    lcbl_id           numeric(20, 0)    NOT NULL,
+    dval_id_item      numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL
 )
 ;
@@ -139,10 +139,10 @@ CREATE TABLE rcb_enrg_lcbl(
 --
 
 CREATE TABLE rcb_eqpo(
-    eqpo_id           numeric(14, 0)    NOT NULL,
+    eqpo_id           numeric(20, 0)    NOT NULL,
     eqpo_codi         varchar(20)       NOT NULL,
     eqpo_vige         boolean           NOT NULL,
-    ubic_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
@@ -160,7 +160,7 @@ COMMENT ON TABLE rcb_eqpo IS 'Equipos'
 --
 
 CREATE TABLE rcb_estc(
-    estc_id           numeric(14, 0)    NOT NULL,
+    estc_id           numeric(20, 0)    NOT NULL,
     estc_nomb         varchar(60)       NOT NULL,
     estc_vige         boolean           NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
@@ -180,7 +180,7 @@ COMMENT ON TABLE rcb_estc IS 'Estaciones'
 --
 
 CREATE TABLE rcb_func_bloq(
-    fubl_id           numeric(14, 0)    NOT NULL,
+    fubl_id           numeric(20, 0)    NOT NULL,
     fubl_nomb         varchar(40)       NOT NULL,
     fubl_maxi         numeric(2, 0),
     fubl_vige         boolean           NOT NULL,
@@ -201,12 +201,12 @@ COMMENT ON TABLE rcb_func_bloq IS 'Bloqueos Departamentales'
 --
 
 CREATE TABLE rcb_libr_ctrl_bloq(
-    lcbl_id           varchar(20)       NOT NULL,
+    lcbl_id           numeric(20, 0)    NOT NULL,
     lcbl_nume         numeric(9, 0)     NOT NULL,
     lcbl_fech         timestamp         NOT NULL,
     lcbl_cerr         boolean           NOT NULL,
     lcbl_fech_cerr    timestamp,
-    cabl_id           numeric(14, 0),
+    cabl_id           numeric(20, 0),
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
@@ -226,7 +226,7 @@ COMMENT ON TABLE rcb_libr_ctrl_bloq IS 'Libros de Control de Bloqueos'
 --
 
 CREATE TABLE rcb_pers(
-    pers_id           numeric(14, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
     pers_rut          varchar(11)       NOT NULL,
     pers_nomb         varchar(60)       NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
@@ -246,10 +246,10 @@ COMMENT ON TABLE rcb_pers IS 'Personas'
 --
 
 CREATE TABLE rcb_resp(
-    resp_id           numeric(14, 0)    NOT NULL,
-    ubic_id           numeric(14, 0)    NOT NULL,
-    pers_id           numeric(14, 0)    NOT NULL,
-    empr_id           numeric(14, 0)    NOT NULL,
+    resp_id           numeric(20, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
+    empr_id           numeric(20, 0)    NOT NULL,
     resp_fech_ingr    timestamp         NOT NULL,
     resp_fech_sali    timestamp
 )
@@ -265,10 +265,10 @@ COMMENT ON TABLE rcb_resp IS 'Registro Históricos de Responsables'
 --
 
 CREATE TABLE rcb_resp_lcbl(
-    relc_id           numeric(14, 0)    NOT NULL,
-    lcbl_id           varchar(20)       NOT NULL,
-    pers_id           numeric(14, 0)    NOT NULL,
-    empr_id           numeric(14, 0)    NOT NULL,
+    relc_id           numeric(20, 0)    NOT NULL,
+    lcbl_id           numeric(20, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
+    empr_id           numeric(20, 0)    NOT NULL,
     relc_fech_ingr    timestamp         NOT NULL,
     relc_fech_sali    timestamp,
     audi_fech_crea    timestamp         NOT NULL,
@@ -288,9 +288,9 @@ COMMENT ON TABLE rcb_resp_lcbl IS 'Responsables asociados al Libro de Control de
 --
 
 CREATE TABLE rcb_taeq_lcbl(
-    talc_id                numeric(14, 0)    NOT NULL,
-    lcbl_id                varchar(20)       NOT NULL,
-    taeq_id                numeric(14, 0)    NOT NULL,
+    talc_id                numeric(20, 0)    NOT NULL,
+    lcbl_id                numeric(20, 0)    NOT NULL,
+    taeq_id                numeric(20, 0)    NOT NULL,
     talc_enrg_cero         boolean           NOT NULL,
     talc_fech_enrg_cero    timestamp,
     audi_fech_crea         timestamp         NOT NULL,
@@ -310,12 +310,12 @@ COMMENT ON TABLE rcb_taeq_lcbl IS 'Equipos registrados en el Libro de Control de
 --
 
 CREATE TABLE rcb_tags_eqpo(
-    taeq_id           numeric(14, 0)    NOT NULL,
+    taeq_id           numeric(20, 0)    NOT NULL,
     taeq_codi         numeric(25, 0)    NOT NULL,
     taeq_desc         varchar(150)      NOT NULL,
     taeq_enrg_cero    boolean           NOT NULL,
     taeq_vige         boolean           NOT NULL,
-    eqpo_id           numeric(14, 0)    NOT NULL,
+    eqpo_id           numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
@@ -334,7 +334,7 @@ COMMENT ON TABLE rcb_tags_eqpo IS 'TAGs de los Equipos'
 
 CREATE TABLE rcb_tokn(
     tokn_id           varchar(40)       NOT NULL,
-    ubic_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
     audi_fech_crea    timestamp         NOT NULL
 )
 ;
@@ -349,8 +349,8 @@ COMMENT ON TABLE rcb_tokn IS 'Toke para identificación de Ubicaciones'
 --
 
 CREATE TABLE rcb_trab(
-    pers_id           numeric(14, 0)    NOT NULL,
-    empr_id           numeric(14, 0)    NOT NULL,
+    pers_id           numeric(20, 0)    NOT NULL,
+    empr_id           numeric(20, 0)    NOT NULL,
     trab_carg         varchar(60)       NOT NULL,
     trab_curs_bloq    boolean           NOT NULL,
     trab_vige         boolean           NOT NULL,
@@ -371,11 +371,11 @@ COMMENT ON TABLE rcb_trab IS 'Trabajadores'
 --
 
 CREATE TABLE rcb_ubic(
-    ubic_id           numeric(14, 0)    NOT NULL,
+    ubic_id           numeric(20, 0)    NOT NULL,
     ubic_nomb         varchar(40)       NOT NULL,
     ubic_desc         varchar(150),
     ubic_vige         boolean           NOT NULL,
-    estc_id           numeric(14, 0),
+    estc_id           numeric(20, 0),
     audi_fech_crea    timestamp         NOT NULL,
     audi_fech_modi    timestamp
 )
