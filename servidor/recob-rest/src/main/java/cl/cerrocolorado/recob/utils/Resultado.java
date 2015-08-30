@@ -8,7 +8,7 @@ public interface Resultado extends Serializable
     default boolean esExitoso()
     {
         Severidad severidad = getSeveridad();
-        return severidad == Severidad.OK;
+        return severidad == Severidad.OK || severidad == Severidad.INFO;
     }
 
     public boolean hayExceptions();

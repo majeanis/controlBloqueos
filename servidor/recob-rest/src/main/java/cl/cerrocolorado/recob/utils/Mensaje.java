@@ -25,14 +25,6 @@ public class Mensaje extends Throwable
         this.texto = ToStringUtils.format("Error no esperado. Consulte con el Administrador [%d]", this.hashCode() );
     }
 
-    protected Mensaje(String codigo, String textoBase, Object...valores)
-    {
-        this.severidad = Severidad.OK;
-        this.exception = null;
-        this.codigo = codigo;
-        this.texto = ToStringUtils.format(textoBase, valores);
-    }
-
     protected Mensaje(Mensaje another)
     {
         this.severidad = another.severidad;

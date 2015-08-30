@@ -2,7 +2,8 @@ package cl.cerrocolorado.recob.utils;
 
 public enum Severidad
 {
-    OK, 
+    OK,
+    INFO,
     ERROR;
 
     public static Severidad of(int id)
@@ -12,6 +13,8 @@ public enum Severidad
             case 0:
                 return Severidad.OK;
             case 1:
+                return Severidad.INFO;
+            case 2:
                 return Severidad.ERROR;
         }
 
@@ -22,6 +25,9 @@ public enum Severidad
     {
         if (codigo.equalsIgnoreCase("OK"))
             return Severidad.OK;
+
+        if (codigo.equalsIgnoreCase("INFO"))
+            return Severidad.INFO;
 
         if (codigo.equalsIgnoreCase("ERROR"))
             return Severidad.ERROR;

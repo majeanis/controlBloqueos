@@ -83,6 +83,6 @@ public class ResultadoProceso
     @Override
     public Mensaje addMensaje(Class<?> clazz, String textoBase, Object... valores)
     {
-        return this.addMensaje( new Mensaje( clazz.getSimpleName(), textoBase, valores) );
+        return this.addMensaje( new Mensaje( Severidad.INFO, clazz.getSimpleName(), textoBase, valores) );
     }
 }

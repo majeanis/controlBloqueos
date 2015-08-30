@@ -6,7 +6,7 @@ public class MensajeInfo extends Mensaje
 
     public MensajeInfo(Class<?> clazz, String textoBase, Object...valores)
     {
-        super(Severidad.OK, clazz.getSimpleName(), textoBase, valores );
+        super(Severidad.INFO, clazz.getSimpleName(), textoBase, valores );
     }
 
     public MensajeInfo(Class<?> clazz, Exception exception)
@@ -16,6 +16,6 @@ public class MensajeInfo extends Mensaje
 
     public MensajeInfo(Mensaje another)
     {
-        super(Severidad.OK, another.getCodigo(), another.getTexto() );
+        super(Severidad.INFO, another.getCodigo(), another.getTexto() );
     }
 }

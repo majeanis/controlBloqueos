@@ -93,6 +93,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             caja.setId(otra.getId());
         }
 
+        logger.debug ("guardar[001] antes de revisar el resultado de las validaciones: {}", rtdo);
         if( !rtdo.esExitoso() )
         {
             logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );

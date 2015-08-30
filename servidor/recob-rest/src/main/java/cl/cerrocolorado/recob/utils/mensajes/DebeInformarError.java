@@ -1,12 +1,12 @@
 package cl.cerrocolorado.recob.utils.mensajes;
 
-import cl.cerrocolorado.recob.utils.MensajeInfo;
+import cl.cerrocolorado.recob.utils.MensajeError;
 
 /**
  *
  * @author mauricio.camara
  */
-public class DebeInformarError extends MensajeInfo
+public class DebeInformarError extends MensajeError
 {
     public DebeInformarError(Class<?> clazz, String nombreParametro)
     {
