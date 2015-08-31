@@ -43,17 +43,18 @@ public class CandadoBean implements CandadoBO
     @Autowired
     private TrabajadorPO trabajadorPO;
 
-    private Respuesta<CandadoTO> guardar(CandadoTO candado, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<CandadoTO> save(CandadoTO candado)
     {
-        logger.info ("guardar[INI] candadoo: {}", candado);
-        logger.info ("guardar[FIN] esNuevo: {}", esNuevo);
+        logger.info ("save[INI] candadoo: {}", candado);
         
         Resultado rtdo = new ResultadoProceso();
 
         if( candado == null )
         {
         	rtdo.addError(this.getClass(), "Debe informar datos del Candado" );
-        	logger.info("guardar[FIN] no se informaron datos");
+        	logger.info("save[FIN] no se informaron datos");
         	return Respuesta.of(rtdo);
         }
         if( Utils.nvl( candado.getNumero(), 0 ) == 0 )
@@ -111,14 +112,11 @@ public class CandadoBean implements CandadoBO
             }
         }
 
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
+
+        logger.debug("save[001] es un nuevo registro?: {}", candado.isIdBlank() );
 
         CandadoTO otro = candadoPO.obtener(candado);
-        if(esNuevo)
+        if(candado.isIdBlank())
         {
             if( otro != null )
             {
@@ -131,14 +129,16 @@ public class CandadoBean implements CandadoBO
         } 
         else
         {
-            candado.setId(otro.getId());
+            candado.setUbicacion(otro.getUbicacion());
         }
 
         // Verificamos si existe otro Candado con el mismo N° de Serie
         CandadoTO otroSerie = candadoPO.getBySerie(candado);
+        logger.debug("save[002] después de buscar otro candado según N° de serie: {}", otroSerie);
+
         if( otroSerie!=null )
         {
-            if( esNuevo )
+            if( candado.isIdBlank() )
             {
                 rtdo.addError(this.getClass(), "Ya existe candado con el N° de serie %s [Candado: %d]", candado.getSerie(), otroSerie.getNumero());
             } else if( !Objects.equals(otroSerie.getNumero(), candado.getNumero()) )
@@ -147,9 +147,10 @@ public class CandadoBean implements CandadoBO
             }
         }
         
+        logger.debug("save[003] resultado validaciones: {}", rtdo);
         if( !rtdo.esExitoso() )
         {
-            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            logger.info ("save[FIN] saliendo por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
         }
 
@@ -157,34 +158,20 @@ public class CandadoBean implements CandadoBO
         candadoPO.guardar(candado);
         rtdo.addMensaje(this.getClass(), "Candado guardado con éxito");
 
-        logger.info ("guardar[FIN] candado guardado con exito: {}", candado );
+        logger.info ("save[FIN] candado guardado con exito: {}", candado );
         return Respuesta.of(rtdo,candado);
     }
-    
-    @Override
-    @Transaccional
-    public Respuesta<CandadoTO> crear(CandadoTO candado) throws Exception
-    {
-        return guardar(candado,true);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<CandadoTO> modificar(CandadoTO candado) throws Exception
-    {
-        return guardar(candado,false);
-    }
 
     @Transaccional
     @Override
-    public Respuesta<CandadoTO> eliminar(CandadoTO pkCandado) throws Exception
+    public Respuesta<CandadoTO> delete(CandadoTO pkCandado) throws Exception
     {
-        logger.info ("eliminar[INI] candado: {}", pkCandado );
+        logger.info ("delete[INI] candado: {}", pkCandado );
         Resultado rtdo = new ResultadoProceso();
         
         if(pkCandado==null)
         {
-            logger.info("eliminar[FIN] pkCandado llego en NULL");
+            logger.info("delete[FIN] pkCandado llego en NULL");
         	rtdo.addError(this.getClass(), "Debe informar el candado que desea eliminar" );
         	return Respuesta.of(rtdo);
         }
@@ -201,23 +188,23 @@ public class CandadoBean implements CandadoBO
         if( candado == null )
         {
             rtdo.addError(this.getClass(), "No existe Candado con N° %d", pkCandado.getNumero());
-            logger.info ("eliminar[FIN] no existe candado: {}", pkCandado );
+            logger.info ("delete[FIN] no existe candado: {}", pkCandado );
             return Respuesta.of(rtdo);
         }
 
         if(!candadoPO.esEliminable(candado))
         {
             rtdo.addError(this.getClass(), "Candado tiene registros asociados" );
-            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
         // Si llegamos a este punto, entonces es posible la eliminación
         candadoPO.eliminar(candado);
-        logger.debug("eliminar[001] despues de eliminar el candado: {}", candado );
+        logger.debug("delete[001] despues de eliminar el candado: {}", candado );
         
         rtdo.addMensaje(this.getClass(), "Candado con N° de serie %s eliminado con éxito", candado.getSerie() );
-        logger.info ("eliminar[FIN] candado eliminado con exito: {} {}", rtdo, candado );
+        logger.info ("delete[FIN] candado eliminado con exito: {} {}", rtdo, candado );
         return Respuesta.of(rtdo,candado);
     }
     

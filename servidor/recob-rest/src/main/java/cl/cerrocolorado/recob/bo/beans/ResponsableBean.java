@@ -10,14 +10,18 @@ import cl.cerrocolorado.recob.bo.ResponsableBO;
 import cl.cerrocolorado.recob.po.EmpresaPO;
 import cl.cerrocolorado.recob.po.ResponsablePO;
 import cl.cerrocolorado.recob.po.TrabajadorPO;
+import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
 import cl.cerrocolorado.recob.to.entidades.ResponsableTO;
 import cl.cerrocolorado.recob.to.entidades.TrabajadorTO;
 import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
+import cl.cerrocolorado.recob.utils.FechaUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
+import cl.cerrocolorado.recob.utils.ToStringUtils;
 import cl.cerrocolorado.recob.utils.Transaccional;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -39,35 +43,57 @@ public class ResponsableBean implements ResponsableBO
     @Autowired
     private TrabajadorPO trabajadorPO;
 
-    private Respuesta<ResponsableTO> guardar(ResponsableTO responsable, boolean esNuevo)
+    @Autowired
+    private UbicacionPO ubicacionPO;
+    
+    @Override
+    @Transaccional
+    public Respuesta<ResponsableTO> save(ResponsableTO responsable)
     {
-        logger.info ("guardar[INI] responsable: {}", responsable);
+        logger.info ("save[INI] responsable: {}", responsable);
         
         Resultado rtdo = new ResultadoProceso();
 
         if( responsable == null )
         {
         	rtdo.addError( this.getClass(), "Debe informar los datos del Responsable");
-            logger.info ("guardar[FIN] responsable informado en null" );        	
+            logger.info ("save[FIN] responsable informado en null" );        	
             return Respuesta.of(rtdo);
         } 
-        if(responsable.getUbicacion()==null)
+        if(responsable.getFechaIngreso() != null)
         {
-            rtdo.addError(this.getClass(), "Debe informa la Ubicación");
+            rtdo.addError(this.getClass(), "No debe informar Fecha de Ingreso [%s]", ToStringUtils.toString(responsable.getFechaIngreso(),true) );
         }
-        if( responsable.getFechaIngreso() == null)
+        if(responsable.getFechaSalida() != null)
         {
-            rtdo.addError(this.getClass(), "Debe informar la fecha de ingreso" );
+            rtdo.addError(this.getClass(), "No debe informar Fecha de Salida [%s]", ToStringUtils.toString(responsable.getFechaSalida(),true) );
+        }
+        if(responsable.getUbicacion()==null || responsable.getUbicacion().isKeyBlank())
+        {
+            rtdo.addError(this.getClass(), "Responsable debe estar asociado a una Ubicación" );
+        }
+        else
+        {
+		    UbicacionTO ubicacion = ubicacionPO.get(responsable.getUbicacion());
+		    if( ubicacion == null )
+		    {
+		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: %d]", responsable.getUbicacion().getId());
+		    }
+            else
+            {
+                responsable.setUbicacion(ubicacion);
+            }
         }
         if ( responsable.getEmpresa() == null || responsable.getEmpresa().isKeyBlank() )
         {
             rtdo.addError( this.getClass(), "Debe informar la empresa asociada al Trabajador");
-        } else
+        }
+        else
         {
             EmpresaTO empr = empresaPO.obtener(responsable.getEmpresa());
             if( empr == null )
             {
-                rtdo.addError(this.getClass(), "Empresa informada no existe");
+                rtdo.addError(this.getClass(), "Empresa informada no existe [RUT: %s]", responsable.getEmpresa().getRut().toText() );
             } else
             {
                 responsable.setEmpresa(empr);
@@ -76,7 +102,8 @@ public class ResponsableBean implements ResponsableBO
         if( responsable.getPersona() == null || responsable.getPersona().isKeyBlank())
         {
             rtdo.addError( this.getClass(), "Debe informar el Trabajador");
-        } else if( responsable.getEmpresa() != null)
+        }
+        else if( responsable.getEmpresa() != null)
         {
             TrabajadorTO aux = new TrabajadorTO();
             aux.setEmpresa(responsable.getEmpresa());
@@ -85,92 +112,62 @@ public class ResponsableBean implements ResponsableBO
             TrabajadorTO trab = trabajadorPO.obtener(aux);
             if( trab == null)
             {
-                rtdo.addError(this.getClass(), "Trabajador informado no existe");
+                rtdo.addError(this.getClass(), "Trabajador informado no existe [RUT: %s]", aux.getRut().toText());
             } else
             {
                 responsable.setPersona(trab);
             }
         }
 
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] hubo fallas de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
-
-        // Buscamos la preexistencia del registro
+        // Solo es posible agregar nuevos Responsables
         ResponsableTO actual = responsablePO.getVigente(responsable.getUbicacion());
-        if(esNuevo)
+        logger.debug("save[001] después de obtener al responsable actual: actual{}-responsable{}", actual, responsable);
+        
+        if(actual != null &&
+           responsable.getEmpresa() != null &&
+           responsable.getPersona() != null &&
+           Objects.equals(actual.getEmpresa().getId(), responsable.getEmpresa().getId()) &&
+           Objects.equals(actual.getPersona().getId(), responsable.getPersona().getId()) )
         {
-            if(Objects.equals(actual.getEmpresa().getId(), responsable.getEmpresa().getId()) &&
-               Objects.equals(actual.getPersona().getId(), responsable.getPersona().getId()) )
-            {
-                rtdo.addError(this.getClass(), "Trabajador [%s] ya es el responsable actual", responsable.getPersona().getRut().toText());
-            }
-            else
-            {
-                // como se trata de un nuevo turno, nos aseguramos de darle la salida al anterior
-                actual.setFechaSalida(responsable.getFechaIngreso());
-                responsablePO.guardar(actual);
-            }
-        }
-        else if( actual == null)
-        {
-            rtdo.addError(this.getClass(), "Trabajador [%s] no es el Responsable actual", responsable.getPersona().getRut().toText());
-        }
-        else if( !Objects.equals(actual.getEmpresa().getId(), responsable.getEmpresa().getId()) ||
-                 !Objects.equals(actual.getPersona().getId(), responsable.getPersona().getId()))
-        {
-            rtdo.addError(this.getClass(), "Trabajador [%s] no es el responsable actual", responsable.getPersona().getRut().toText());
-        }
-        else
-        {
-            responsable.setId(actual.getId());
-            responsable.setFechaIngeso(actual.getFechaIngreso());
-            responsable.setEmpresa(actual.getEmpresa());
-            responsable.setPersona(actual.getPersona());
-            responsable.setUbicacion(actual.getUbicacion());
+            rtdo.addError(this.getClass(), "Trabajador [%s] ya es el responsable actual", responsable.getPersona().getRut().toText());
         }
 
+        logger.debug("save[002] resultado de validaciones: {}", rtdo);
         if( !rtdo.esExitoso() )
         {
-            logger.info ("guardar[FIN] salida por errores de validación: {}", rtdo );
+            logger.info ("save[FIN] salida por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
         }
 
-        // Si llegamos a este punto el Responsable puede ser Guardado
+        // Guardamos la salida del Responsable actual
+        if (actual != null)
+        {
+            actual.setFechaSalida( new Date() );
+            responsablePO.guardar(actual);
+            logger.debug("save[003] después de guardar la salida en el responsable actual: {}", actual);
+        }
+
+        responsable.setFechaIngeso( new Date() );
         responsablePO.guardar(responsable);
+        logger.debug("save[004] después de guardar al responsable: {}", responsable);
+        
         rtdo.addMensaje(this.getClass(), "Responsable guardado con éxito");
         
-        logger.info ("guardar[FIN] responsable guardado con exito: {}", responsable );
+        logger.info ("save[FIN] responsable guardado con exito: {}", responsable );
         return Respuesta.of(rtdo, responsable);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<ResponsableTO> crear(ResponsableTO datos) throws Exception
-    {
-        return guardar(datos,true);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<ResponsableTO> modificar(ResponsableTO datos) throws Exception
-    {
-        return guardar(datos,false);
     }
     
     @Transaccional
     @Override
-    public Respuesta<ResponsableTO> eliminar(ResponsableTO pk) throws Exception
+    public Respuesta<ResponsableTO> delete(ResponsableTO pk) throws Exception
     {
-        logger.info ("eliminar[INI] pkResponsable: {}", pk );
+        logger.info ("delete[INI] pkResponsable: {}", pk );
         Resultado rtdo = new ResultadoProceso();
         
         if( pk == null || pk.isKeyBlank() )
         {
         	rtdo.addError(this.getClass(), "Debe informar la identificación del Responsable" );
-        	logger.info( "eliminar[FIN] no se informaron todos los filtros: {}", pk );
+        	logger.info( "delete[FIN] no se informaron todos los filtros: {}", pk );
         	return Respuesta.of(rtdo);
         }
         
@@ -178,22 +175,22 @@ public class ResponsableBean implements ResponsableBO
         if( resp == null )
         {
             rtdo.addError(this.getClass(), "No existe Responsable %s", pk.getPersona().getRut().toText() );
-            logger.info ("eliminar[FIN] no existe el responsable: {}", pk );
+            logger.info ("delete[FIN] no existe el responsable: {}", pk );
             return Respuesta.of(rtdo);
         } 
         
         if(!responsablePO.esEliminable(resp))
         {
             rtdo.addError(this.getClass(), "Responsable tiene registros asociados" );
-            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
         responsablePO.eliminar(resp);
-        logger.debug("eliminar[001] despues de eliminar al Responsanle: {}", resp );
+        logger.debug("delete[001] despues de eliminar al Responsanle: {}", resp );
         
         rtdo.addMensaje(this.getClass(), "Responsable %s eliminado con éxito", resp.getEmpresa().getRut().toText() );
-        logger.info ("eliminar[FIN] responsable eliminado con exito: {} {}", rtdo, resp );
+        logger.info ("delete[FIN] responsable eliminado con exito: {} {}", rtdo, resp );
         return Respuesta.of(rtdo,resp);
     }
     

@@ -445,7 +445,7 @@
     <delete id="deleteTrabajador" parameterType="TrabajadorTO" >
         delete from rcb_trab
         where  pers_id = #{id}
-          and empr_id = #{empresa.id}
+          and empr_id  = #{empresa.id}
     </delete>
 
     <select id="selectEmpresas" parameterType="map" resultMap="empresaMap" >
@@ -510,10 +510,10 @@
            on (a.ubic_id = b.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="equipo.id != null" >
+            <when test="equipo!=null and equipo.id != null" >
                 and a.eqpo_id = #{equipo.id}
             </when>
-            <when test="equipo.codigo != null" >
+            <when test="equipo!=null and equipo.codigo != null" >
                 and a.eqpo_codi = #{equipo.codigo}
             </when>
         </choose>            
@@ -765,10 +765,14 @@
               ,c.ubic_id
               ,c.ubic_nomb
               ,c.ubic_desc
-              ,c.ubic_vige 
+              ,c.ubic_vige
+              ,d.estc_id
+              ,d.estc_nomb
+              ,d.estc_vige
         from   rcb_libr_ctrl_bloq a inner join rcb_caja_bloq b
            on (a.cabl_id = b.cabl_id) inner join rcb_ubic c
-           on (b.ubic_id = c.ubic_id) 
+           on (b.ubic_id = c.ubic_id) inner join rcb_estc d
+           on (c.estc_id = d.estc_id)
         where  c.ubic_id = #{ubicacion.id}
         <choose>
             <when test="libro != null and libro.id!=null" >
@@ -882,7 +886,7 @@
            on (e.eqpo_id = e.eqpo_id)
         where  a.lcbl_id = #{libro.id}
         <choose>
-            <when test="id!=null" >
+            <when test="tagLibro!=null and tagLibro.id!=null" >
                 and c.talc_id = #{id}
             </when>
             <when test="tag!=null and tag.id!=null" >

@@ -85,25 +85,19 @@ public class UbicacionBean implements UbicacionBO
     }
 
     @Override
-    public Respuesta<UbicacionTO> crear(UbicacionTO data) throws Exception
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Respuesta<UbicacionTO> modificar(UbicacionTO data) throws Exception
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Respuesta<UbicacionTO> eliminar(UbicacionTO pk) throws Exception
+    public Respuesta<UbicacionTO> delete(UbicacionTO pk) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Respuesta<UbicacionTO> get(UbicacionTO pk)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Respuesta<UbicacionTO> save(UbicacionTO datos) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

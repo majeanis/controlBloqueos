@@ -170,9 +170,9 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("obtenerTag[INI] pkTag: {}", tag);
         
         Map<String,Object> parms = new HashMap<>();
+        parms.put("tagLibro", tag);
         parms.put("libro", tag.getLibro());
         parms.put("tag", tag.getTag());
-        parms.put("id", tag.getId());
         
         List<TagLibroTO> lista = mapper.selectTagsLibro(parms);
         if(lista.isEmpty())

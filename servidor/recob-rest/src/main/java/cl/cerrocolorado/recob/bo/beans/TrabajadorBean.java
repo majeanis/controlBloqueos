@@ -37,16 +37,18 @@ public class TrabajadorBean implements TrabajadorBO
     @Autowired
     private EmpresaPO empresaPO;
     
-    private Respuesta<TrabajadorTO> guardar(TrabajadorTO trabajador, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<TrabajadorTO> save(TrabajadorTO trabajador)
     {
-        logger.info ("guardar[INI] trabajador: {}", trabajador);
+        logger.info ("save[INI] trabajador: {}", trabajador);
         
         Resultado rtdo = new ResultadoProceso();
         
         if( trabajador == null)
         {
             rtdo.addError(this.getClass(), "Debe informar datos del trabajador");
-            logger.info ("guardar[FIN] objeto trabajador llegó en null" );
+            logger.info ("save[FIN] objeto trabajador llegó en null" );
             return Respuesta.of(rtdo);
         }
         if(Rut.isBlank(trabajador.getRut()))
@@ -84,14 +86,9 @@ public class TrabajadorBean implements TrabajadorBO
             }
         }
 
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
-        
+        logger.debug("save[001] es un nuevo registro: {}", trabajador.isIdBlank());
         TrabajadorTO otro = trabajadorPO.obtener(trabajador);
-        if( esNuevo )
+        if( trabajador.isIdBlank() )
         {
             if(otro != null)
             {
@@ -100,14 +97,12 @@ public class TrabajadorBean implements TrabajadorBO
         } else if ( otro == null )
         {
             rtdo.addError(this.getClass(), "No existe relación entre Trabajador [RUT: %s] y Empresa [RUT: %s]", trabajador.getRut().toText(), trabajador.getEmpresa().getRut().toText() );    
-        } else
-        {
-            trabajador.setId(otro.getId());
         }
 
+        logger.debug("save[002] resultado validaciones: {}", rtdo );
         if(!rtdo.esExitoso())
         {
-            logger.info("guardar[FIN] se detectaron errores de validación: {}", trabajador);
+            logger.info("save[FIN] se detectaron errores de validación: {}", rtdo);
             return Respuesta.of(rtdo);
         }
 
@@ -115,7 +110,9 @@ public class TrabajadorBean implements TrabajadorBO
         // una relación con otra empresa,  entonces  es necesario marcar como no vigente
         // la relación actual.
         TrabajadorTO actual = trabajadorPO.getVigente(trabajador);
-        if( trabajador.getVigente() && actual != null && !Objects.equals(trabajador.getEmpresa().getId(), actual.getEmpresa().getId()))
+        if( actual != null && 
+            trabajador.getVigente() && 
+            !Objects.equals(trabajador.getEmpresa().getId(), actual.getEmpresa().getId()))
         {
             actual.setVigente(Boolean.FALSE);
             trabajadorPO.guardar(actual);
@@ -124,35 +121,21 @@ public class TrabajadorBean implements TrabajadorBO
         trabajadorPO.guardar(trabajador);
         rtdo.addMensaje(this.getClass(), "Trabajador guardado con éxito");
 
-        logger.info("guardar[FIN] trabajador guardado con éxito: {}", trabajador);
+        logger.info("save[FIN] trabajador guardado con éxito: {}", trabajador);
         return Respuesta.of(rtdo,trabajador);
     }
 
     @Override
-    @Transaccional
-    public Respuesta<TrabajadorTO> crear(TrabajadorTO datos) throws Exception
+    public Respuesta<TrabajadorTO> delete(TrabajadorTO pkTrabajador) throws Exception
     {
-        return guardar(datos, true);
-    }
-
-    @Override
-    @Transaccional    
-    public Respuesta<TrabajadorTO> modificar(TrabajadorTO datos) throws Exception
-    {
-        return guardar(datos, false);
-    }
-    
-    @Override
-    public Respuesta<TrabajadorTO> eliminar(TrabajadorTO pkTrabajador) throws Exception
-    {
-        logger.info("eliminar[INI] pkTrabajador: {}", pkTrabajador);
+        logger.info("delete[INI] pkTrabajador: {}", pkTrabajador);
 
         Resultado rtdo = new ResultadoProceso();
         
         if(pkTrabajador == null || pkTrabajador.isKeyBlank())
         {
             rtdo.addError(this.getClass(), "Debe informar al R.U.T. del trabajador");
-            logger.info("eliminar[FIN] pkTrabajador llegó en NULL");
+            logger.info("delete[FIN] pkTrabajador llegó en NULL");
             return Respuesta.of(rtdo);
         }
 
@@ -161,24 +144,24 @@ public class TrabajadorBean implements TrabajadorBO
         if( pkTrabajador.getEmpresa() == null || Rut.isBlank(pkTrabajador.getEmpresa().getRut()))
         {
             trabajador = trabajadorPO.getVigente(pkTrabajador);
-            logger.debug("eliminar[001] después de buscar al registro actualmente vigente: {}", trabajador);
+            logger.debug("delete[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
             trabajador = trabajadorPO.obtener(pkTrabajador);
-            logger.debug("eliminar[001] después de buscar al registro asociado a la empresa: {}", trabajador);            
+            logger.debug("delete[001] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 
         if(trabajador==null)
         {
             rtdo.addError(this.getClass(), "No se encontró registro del Trabajador" );
-            logger.info("eliminar[FIN] no se encontró registro eliminable");
+            logger.info("delete[FIN] no se encontró registro eliminable");
             return Respuesta.of(rtdo);
         }
         
         if(!trabajadorPO.esEliminable(trabajador))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
-            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
@@ -186,7 +169,7 @@ public class TrabajadorBean implements TrabajadorBO
         trabajadorPO.eliminar(trabajador);
         rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. %s eliminado con éxito", trabajador.getRut().toText() );
 
-        logger.info("eliminar[FIN] registro eliminado con éxito");
+        logger.info("delete[FIN] registro eliminado con éxito");
         return Respuesta.of(rtdo,trabajador);
     }
 

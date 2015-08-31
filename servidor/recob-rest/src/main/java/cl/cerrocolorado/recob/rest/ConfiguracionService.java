@@ -121,63 +121,18 @@ public class ConfiguracionService
     @Path("cajasBloqueo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @POST
-    public RespGenerica crearCajaBloqueo(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("caja") String jsonCaja)
-    {
-    	logger.info ("crearCajaBloqueo[INI] token: {}", tokenUbicacion);
-    	logger.info ("crearCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
-
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("crearCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespGenerica.of(respUbic);
-        }
-
-        try 
-        {
-            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            CajaBloqueoTO caja = JsonUtils.fromJson(jsonCaja, CajaBloqueoTO.class);
-            if( caja == null )
-            {
-                logger.debug("crearCajaBloqueo[001] no se pudo parsear el JSON: {}", jsonCaja);
-
-                RespGenerica r = RespGenerica.of(new ParsearJsonError(this.getClass(), "Caja"));
-                logger.info ("crearCajaBloqueo[FIN] no se pudo parsear el JSON: {}", r);
-                return r;
-            }
-
-            caja.setUbicacion(ubicacion);
-            logger.debug("crearCajaBloqueo[002] después de parsear el JSON: {}", caja);
-
-            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().crear(caja);
-
-            logger.info("crearCajaBloqueo[FIN] resultado registro caja: {}", r);
-            return RespGenerica.of(r);
-        } catch (Exception e) 
-        {
-			logger.error("crearCajaBloqueo[ERR] al guardar caja de bloqueo:", e);
-			return RespGenerica.of(this.getClass(), e);
-        }
-    }
-
-    @Path("cajasBloqueo")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
-    public RespGenerica modificarCajaBloqueo(
+    public RespGenerica guardarCajaBloqueo(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("caja") String jsonCaja)
     {
-    	logger.info ("modificarCajaBloqueo[INI] token: {}", tokenUbicacion);
-    	logger.info ("modificarCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
+    	logger.info ("guardarCajaBloqueo[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarCajaBloqueo[INI] jsonCaja: {}", jsonCaja);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("modificarCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("guardarCajaBloqueo[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -187,23 +142,23 @@ public class ConfiguracionService
             CajaBloqueoTO caja = JsonUtils.fromJson(jsonCaja, CajaBloqueoTO.class);
             if( caja == null )
             {
-                logger.debug("modificarCajaBloqueo[001] no se pudo parsear el JSON: {}", jsonCaja);
+                logger.debug("guardarCajaBloqueo[001] no se pudo parsear el JSON: {}", jsonCaja);
 
                 RespGenerica r = RespGenerica.of(new ParsearJsonError(this.getClass(), "Caja"));
-                logger.info ("modificarCajaBloqueo[FIN] no se pudo parsear el JSON: {}", r);
+                logger.info ("guardarCajaBloqueo[FIN] no se pudo parsear el JSON: {}", r);
                 return r;
             }
 
             caja.setUbicacion(ubicacion);
-            logger.debug("modificarCajaBloqueo[002] después de parsear el JSON: {}", caja);
+            logger.debug("guardarCajaBloqueo[002] después de parsear el JSON: {}", caja);
 
-            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().modificar(caja);
+            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().save(caja);
 
-            logger.info("modificarCajaBloqueo[FIN] resultado registro caja: {}", r);
+            logger.info("guardarCajaBloqueo[FIN] resultado registro caja: {}", r);
             return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			logger.error("modificarCajaBloqueo[ERR] al guardar caja de bloqueo:", e);
+			logger.error("guardarCajaBloqueo[ERR] al guardar caja de bloqueo:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }
@@ -232,7 +187,7 @@ public class ConfiguracionService
             caja.setNumero(numeroCaja);
             caja.setUbicacion(ubicacion);
 
-            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().eliminar(caja);
+            Respuesta<CajaBloqueoTO> r = FactoryBO.getCajaBloqueoBO().delete(caja);
             
             logger.info("eliminarCajaBloqueo[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -312,60 +267,18 @@ public class ConfiguracionService
     @Path("candados")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @POST
-    public RespGenerica crearCandado(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("candado") String jsonCandado)
-    {
-    	logger.info ("crearCandado[INI] token: {}", tokenUbicacion);
-    	logger.info ("crearCandado[INI] jsonCandado: {}", jsonCandado);
-
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("crearCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespGenerica.of(respUbic);
-        }
-
-        try 
-        {
-            UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            CandadoTO candado = JsonUtils.fromJson(jsonCandado, CandadoTO.class);
-            if( candado == null )
-            {
-                logger.info("crearCandado[FIN] no se pudo parsear el JSON: {}", jsonCandado);
-                return null;
-            }
-
-            candado.setUbicacion(ubicacion);
-            logger.debug("crearCandado[001] después de parsear el JSON: {}", candado);
-
-            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().crear(candado);
-
-            logger.info("crearCandado[FIN] resultado del guardado: {}", r);
-            return RespGenerica.of(r);
-        } catch (Exception e) 
-        {
-			logger.error("crearCandado[ERR] al guardar candado:", e);
-			return RespGenerica.of(this.getClass(), e);
-        }
-    }
-
-    @Path("candados")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
-    public RespGenerica modificarCandado(
+    public RespGenerica guardarCandado(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("candado") String jsonCandado)
     {
-    	logger.info ("modificarCandado[INI] token: {}", tokenUbicacion);
-    	logger.info ("modificarCandado[INI] jsonCandado: {}", jsonCandado);
+    	logger.info ("guardarCandado[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarCandado[INI] jsonCandado: {}", jsonCandado);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("modificarCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("guardarCandado[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -375,20 +288,20 @@ public class ConfiguracionService
             CandadoTO candado = JsonUtils.fromJson(jsonCandado, CandadoTO.class);
             if( candado == null )
             {
-                logger.info("modificarCandado[FIN] no se pudo parsear el JSON: {}", jsonCandado);
+                logger.info("guardarCandado[FIN] no se pudo parsear el JSON: {}", jsonCandado);
                 return null;
             }
 
             candado.setUbicacion(ubicacion);
-            logger.debug("modificarCandado[001] después de parsear el JSON: {}", candado);
+            logger.debug("guardarCandado[001] después de parsear el JSON: {}", candado);
 
-            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().modificar(candado);
+            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().save(candado);
 
-            logger.info("modificarCandado[FIN] resultado del guardado: {}", r);
+            logger.info("guardarCandado[FIN] resultado del guardado: {}", r);
             return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			logger.error("modificarCandado[ERR] al guardar candado:", e);
+			logger.error("guardarCandado[ERR] al guardar candado:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }
@@ -417,7 +330,7 @@ public class ConfiguracionService
             candado.setNumero(numeroCandado);
             candado.setUbicacion(ubicacion);
 
-            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().eliminar(candado);
+            Respuesta<CandadoTO> r = FactoryBO.getCandadoBO().delete(candado);
             
             logger.info("eliminarCandado[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -520,62 +433,22 @@ public class ConfiguracionService
             return RespGenerica.of(this.getClass(), e);
         }
     }
-
-    @Path("equipos")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @POST
-    public RespGenerica crearEquipo(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("equipo") String jsonEquipo)
-    {
-    	logger.info ("crearEquipo[INI] token: {}", tokenUbicacion);
-    	logger.info ("crearEquipo[INI] equipo: {}", jsonEquipo);
-        
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("crearEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespGenerica.of(respUbic);
-        }
-
-        try 
-        {
-            EquipoTagsTO equipo = JsonUtils.fromJson(jsonEquipo, EquipoTagsTO.class);
-            if( equipo == null )
-            {
-                logger.info ("crearEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
-                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Equipo"));
-            }
-            
-            equipo.setUbicacion(respUbic.getContenido().orElse(null));
-            logger.debug("crearEquipo[001] después de parsear el JSON: {}", equipo);
-
-            Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().crear(equipo);
-	        logger.info ("crearEquipo[FIN] equipo modificado on éxito: {}", resp);
-			return RespGenerica.of(resp);
-        } catch (Exception e) 
-        {
-			logger.error("crearEquipo[ERR] al guardar equipo:", e);
-			return RespGenerica.of(this.getClass(), e);
-        }
-    }
     
     @Path("equipos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
-    public RespGenerica modificarEquipo(
+    public RespGenerica guardarEquipo(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("equipo") String jsonEquipo)
     {
-    	logger.info ("modificarEquipo[INI] token: {}", tokenUbicacion);
-    	logger.info ("modificarEquipo[INI] equipo: {}", jsonEquipo);
+    	logger.info ("guardarEquipo[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarEquipo[INI] equipo: {}", jsonEquipo);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("modificarEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("guardarEquipo[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -584,19 +457,19 @@ public class ConfiguracionService
             EquipoTagsTO equipo = JsonUtils.fromJson(jsonEquipo, EquipoTagsTO.class);
             if( equipo == null )
             {
-                logger.info ("modificarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
+                logger.info ("guardarEquipo[FIN] no se pudo parsear el JSON: {}", jsonEquipo);
                 return RespGenerica.of(new ParsearJsonError(this.getClass(),"Equipo"));
             }
             
             equipo.setUbicacion(respUbic.getContenido().orElse(null));
-            logger.debug("modificarEquipo[001] después de parsear el JSON: {}", equipo);
+            logger.debug("guardarEquipo[001] después de parsear el JSON: {}", equipo);
 
-            Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().modificar(equipo);
-	        logger.info ("modificarEquipo[FIN] equipo modificado on éxito: {}", resp);
+            Respuesta<EquipoTO> resp = FactoryBO.getEquipoBO().save(equipo);
+	        logger.info ("guardarEquipo[FIN] equipo modificado on éxito: {}", resp);
 			return RespGenerica.of(resp);
         } catch (Exception e) 
         {
-			logger.error("modificarEquipo[ERR] al guardar equipo:", e);
+			logger.error("guardarEquipo[ERR] al guardar equipo:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }
@@ -625,7 +498,7 @@ public class ConfiguracionService
             equipo.setCodigo(codigoEquipo);
             equipo.setUbicacion(ubicacion);
         
-            Respuesta<EquipoTO> r = FactoryBO.getEquipoBO().eliminar(equipo);
+            Respuesta<EquipoTO> r = FactoryBO.getEquipoBO().delete(equipo);
             
             logger.info("eliminarEquipo[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -781,57 +654,18 @@ public class ConfiguracionService
     @Path("empresas")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @POST
-    public RespGenerica crearEmpresa(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("empresa") String jsonEmpresa)
-    {
-    	logger.info ("crearEmpresa[INI] token: {}", tokenUbicacion);
-    	logger.info ("crearEmpresa[INI] empresa: {}", jsonEmpresa);
-        
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("crearEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespGenerica.of(respUbic);
-        }
-
-        try 
-        {
-            EmpresaTO empresa = JsonUtils.fromJson(jsonEmpresa, EmpresaTO.class);
-            if( empresa == null )
-            {
-                logger.info ("crearEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
-                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Empresa"));
-            }
-            
-            logger.debug("crearEmpresa[001] después de parsear el JSON: {}", empresa);
-
-            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().crear(empresa);
-	        logger.info ("crearEmpresa[FIN] empresa registrada: {}", r);
-			return RespGenerica.of(r);
-        } catch (Exception e) 
-        {
-			logger.error("crearEmpresa[ERR] al guardar empresa:", e);
-			return RespGenerica.of(this.getClass(), e);
-        }
-    }
-
-    @Path("empresas")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
-    public RespGenerica modificarEmpresa(
+    public RespGenerica guardarEmpresa(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("empresa") String jsonEmpresa)
     {
-    	logger.info ("modificarEmpresa[INI] token: {}", tokenUbicacion);
-    	logger.info ("modificarEmpresa[INI] empresa: {}", jsonEmpresa);
+    	logger.info ("guardarEmpresa[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarEmpresa[INI] empresa: {}", jsonEmpresa);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("modificarEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("guardarEmpresa[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
@@ -840,18 +674,18 @@ public class ConfiguracionService
             EmpresaTO empresa = JsonUtils.fromJson(jsonEmpresa, EmpresaTO.class);
             if( empresa == null )
             {
-                logger.info ("modificarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
+                logger.info ("guardarEmpresa[FIN] no se pudo parsear el JSON: {}", jsonEmpresa);
                 return RespGenerica.of(new ParsearJsonError(this.getClass(),"Empresa"));
             }
             
-            logger.debug("modificarEmpresa[001] después de parsear el JSON: {}", empresa);
+            logger.debug("guardarEmpresa[001] después de parsear el JSON: {}", empresa);
 
-            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().modificar(empresa);
-	        logger.info ("modificarEmpresa[FIN] empresa registrada: {}", r);
+            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().save(empresa);
+	        logger.info ("guardarEmpresa[FIN] empresa registrada: {}", r);
 			return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			logger.error("modificarEmpresa[ERR] al guardar empresa:", e);
+			logger.error("guardarEmpresa[ERR] al guardar empresa:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }
@@ -878,7 +712,7 @@ public class ConfiguracionService
             EmpresaTO empresa = new EmpresaTO();
             empresa.setRut(Rut.valueOf(rutEmpresa));
         
-            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().eliminar(empresa);
+            Respuesta<EmpresaTO> r = FactoryBO.getEmpresaBO().delete(empresa);
             
             logger.info("eliminarEmpresa[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -911,7 +745,7 @@ public class ConfiguracionService
             TrabajadorTO trabajador = new TrabajadorTO();
             trabajador.setRut(Rut.valueOf(rutTrabajador));
         
-            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().eliminar(trabajador);
+            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().delete(trabajador);
             
             logger.info("eliminarTrabajador[FIN] resultado de la eliminación: {}", r);
             return RespGenerica.of(r);
@@ -925,77 +759,38 @@ public class ConfiguracionService
     @Path("trabajadores")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @POST
-    public RespGenerica crearTrabajador(
-    		@HeaderParam("token") String tokenUbicacion,
-    		@FormParam("trabajador") String jsonTrabajador)
-    {
-    	logger.info ("crearTrabajador[INI] token: {}", tokenUbicacion);
-    	logger.info ("crearTrabajador[INI] trabajador: {}", jsonTrabajador);
-        
-        Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
-        if( !respUbic.getResultado().esExitoso() )
-        {
-            logger.info ("crearTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
-            return RespGenerica.of(respUbic);
-        }
-
-        try 
-        {
-            TrabajadorTO trabajador = JsonUtils.fromJson(jsonTrabajador, TrabajadorTO.class);
-            logger.debug("crearTrabajador[001] después de parsear el JSON: {}", trabajador);
-            
-            if( trabajador == null )
-            {
-                logger.info ("modificarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
-                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Trabajador"));
-            }
-
-            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().crear(trabajador);
-	        logger.info ("crearTrabajador[FIN] trabajador creado: {}", r);
-			return RespGenerica.of(r);
-        } catch (Exception e) 
-        {
-			logger.error("crearTrabajador[ERR] al crear trabajador:", e);
-			return RespGenerica.of(this.getClass(), e);
-        }
-    }
-
-    @Path("trabajadores")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @PUT
-    public RespGenerica modificarTrabajador(
+    public RespGenerica guardarTrabajador(
     		@HeaderParam("token") String tokenUbicacion,
     		@FormParam("trabajador") String jsonTrabajador)
     {
-    	logger.info ("modificarTrabajador[INI] token: {}", tokenUbicacion);
-    	logger.info ("modificarTrabajador[INI] trabajador: {}", jsonTrabajador);
+    	logger.info ("guardarTrabajador[INI] token: {}", tokenUbicacion);
+    	logger.info ("guardarTrabajador[INI] trabajador: {}", jsonTrabajador);
         
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
         {
-            logger.info ("modificarTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
+            logger.info ("guardarTrabajador[FIN] token de ubicación inválido: {}", tokenUbicacion);
             return RespGenerica.of(respUbic);
         }
 
         try 
         {
             TrabajadorTO trabajador = JsonUtils.fromJson(jsonTrabajador, TrabajadorTO.class);
-            logger.debug("modificarTrabajador[001] después de parsear el JSON: {}", trabajador);
+            logger.debug("guardarTrabajador[001] después de parsear el JSON: {}", trabajador);
             
             if( trabajador == null )
             {
-                logger.info ("modificarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
+                logger.info ("guardarTrabajador[FIN] no se pudo parsear el JSON: {}", jsonTrabajador);
                 return RespGenerica.of(new ParsearJsonError(this.getClass(),"Trabajador"));
             }
 
-            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().modificar(trabajador);
-	        logger.info ("modificarTrabajador[FIN] trabajador registrado: {}", r);
+            Respuesta<TrabajadorTO> r = FactoryBO.getTrabajadorBO().save(trabajador);
+	        logger.info ("guardarTrabajador[FIN] trabajador registrado: {}", r);
 			return RespGenerica.of(r);
         } catch (Exception e) 
         {
-			logger.error("modificarTrabajador[ERR] al guardar trabajador:", e);
+			logger.error("guardarTrabajador[ERR] al guardar trabajador:", e);
 			return RespGenerica.of(this.getClass(), e);
         }
     }

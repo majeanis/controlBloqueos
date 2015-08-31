@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cl.cerrocolorado.recob.bo.EquipoBO;
 import cl.cerrocolorado.recob.po.EquipoPO;
+import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.entidades.EquipoTO;
 import cl.cerrocolorado.recob.to.entidades.EquipoTagsTO;
 import cl.cerrocolorado.recob.to.entidades.TagTO;
@@ -33,24 +34,40 @@ public class EquipoBean implements EquipoBO
     private static final Logger logger = LogManager.getLogger(EquipoBean.class);
 
     @Autowired
+    private UbicacionPO ubicacionPO;
+    
+    @Autowired
     private EquipoPO equipoPO;
 
-    private Respuesta<EquipoTO> guardar(EquipoTO equipo, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<EquipoTO> save(EquipoTO equipo)
     {
-        logger.info("guardar[INI] equipo: {}", equipo);
-        logger.info("guardar[INI] esNuevo: {}", esNuevo);
+        logger.info("save[INI] equipo: {}", equipo);
 
         Resultado rtdo = new ResultadoProceso();
         if (equipo == null)
         {
             rtdo.addError(this.getClass(), "Debe informar los datos del Equipo");
-            logger.info("guardar[FIN] se informó el objeto en NULL");
+            logger.info("save[FIN] se informó el objeto en NULL");
             return Respuesta.of(rtdo);
         }
         if (equipo.getUbicacion() == null || equipo.getUbicacion().isKeyBlank())
         {
             rtdo.addError(this.getClass(), "El equipo debe estar asociado a una ubicación");
         }
+        else
+        {
+	        UbicacionTO ubicacion = ubicacionPO.get(equipo.getUbicacion());
+	        if( ubicacion == null )
+	        {
+	            rtdo.addError(this.getClass(), "La ubicación informada no existe [id: %d]", equipo.getUbicacion().getId());
+	        } else
+            {
+                equipo.setUbicacion(ubicacion);
+            }
+        }
+            
         if (equipo.getVigente() == null)
         {
             rtdo.addError(this.getClass(), "Debe informar la vigencia del Equipo");
@@ -59,15 +76,10 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "Debe informar el código del equipo");
         }
-        if(!rtdo.esExitoso())
-        {
-            logger.info("guardar[FIN] se detectaron errores de validación");
-            return Respuesta.of(rtdo);
-        }
-        
+
+        logger.debug("save[001] es un nuevo registro?: {}", equipo.isIdBlank());
         EquipoTO otro = equipoPO.obtener(equipo);
-        logger.debug("guardar[001] después de buscar otro equipo: {}", otro);
-        if(esNuevo)
+        if(equipo.isIdBlank())
         {
             if (otro != null)
             {
@@ -78,52 +90,35 @@ public class EquipoBean implements EquipoBO
         {
             rtdo.addError(this.getClass(), "No existe equipo con código %s", equipo.getCodigo());
         } 
-        else
-        {
-            equipo.setId(otro.getId());
-        }
 
+        logger.debug("save[002] resultado validaciones: {}", rtdo);
         if(!rtdo.esExitoso())
         {
-            logger.info("guardar[FIN] se detectaron errores de validación");
+            logger.info("save[FIN] se detectaron errores de validación");
             return Respuesta.of(rtdo);
         }
         
         equipoPO.guardar(equipo);
-        logger.debug("guardar[002] después de guardar el equipo: {}", equipo);
+        logger.debug("save[002] después de guardar el equipo: {}", equipo);
         
         rtdo.addMensaje(this.getClass(), "Equipo guardado con éxito");
         
-        logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
+        logger.info ("save[FIN] equipo guardado con éxito: {}", equipo);
         return Respuesta.of(rtdo,equipo);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<EquipoTO> crear(EquipoTO datos) throws Exception
-    {
-        return guardar(datos, true);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<EquipoTO> modificar(EquipoTO datos) throws Exception
-    {
-        return guardar(datos, false);
     }
     
     @Transaccional
     @Override
-    public Respuesta<EquipoTO> eliminar(EquipoTO pk) throws Exception
+    public Respuesta<EquipoTO> delete(EquipoTO pk) throws Exception
     {
-        logger.info ("eliminar[INI] pk: {}", pk);
+        logger.info ("delete[INI] pk: {}", pk);
         
         Resultado rtdo = new ResultadoProceso();
         
         if(pk==null || pk.isKeyBlank() )
         {
             rtdo.addError(this.getClass(), "Debe informar identificación del equipo");
-            logger.info("eliminar[FIN] no se informo la pk del equipo: {}", pk);
+            logger.info("delete[FIN] no se informo la pk del equipo: {}", pk);
             return Respuesta.of(rtdo);
         }
         
@@ -131,7 +126,7 @@ public class EquipoBean implements EquipoBO
         if(equipo == null)
         {
             rtdo.addError(this.getClass(), "No existe equipo con código %s", pk.getCodigo());
-            logger.info("eliminar[FIN] no se encontró registro del equipo: {}", pk);
+            logger.info("delete[FIN] no se encontró registro del equipo: {}", pk);
             return Respuesta.of(rtdo);
         }
     
@@ -146,7 +141,7 @@ public class EquipoBean implements EquipoBO
 
         if(!rtdo.esExitoso())
         {
-            logger.info("eliminar[FIN] se encontraron errores de validación");
+            logger.info("delete[FIN] se encontraron errores de validación");
             return Respuesta.of(rtdo);
         }
         
@@ -155,7 +150,7 @@ public class EquipoBean implements EquipoBO
         
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
 
-        logger.info ("eliminar[FIN] registro eliminado con éxito: {}", equipo);
+        logger.info ("delete[FIN] registro eliminado con éxito: {}", equipo);
         return Respuesta.of(rtdo,equipo);
     }
     
@@ -217,7 +212,7 @@ public class EquipoBean implements EquipoBO
     	}
 
     	equipoPO.guardarTag(tag);
-        logger.debug("guardar[001] después de guardar el TAG: {}", tag);
+        logger.debug("save[001] después de guardar el TAG: {}", tag);
 
         rtdo.addMensaje(this.getClass(), "TAG guardado con éxito");
         

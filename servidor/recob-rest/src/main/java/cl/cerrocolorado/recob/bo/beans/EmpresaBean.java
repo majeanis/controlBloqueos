@@ -31,17 +31,17 @@ public class EmpresaBean implements EmpresaBO
     @Autowired
     private EmpresaPO empresaPO;
 
-    private Respuesta<EmpresaTO> guardar(EmpresaTO empresa, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<EmpresaTO> save(EmpresaTO empresa)
     {
-        logger.info ("guardar[INI] empresa: {}", empresa);
-        logger.info ("guardar[INI] esNuevo: {}", esNuevo);
+        logger.info ("save[INI] empresa: {}", empresa);
         
         Resultado rtdo = new ResultadoProceso();
-
         if(empresa == null)
         {
         	rtdo.addError(this.getClass(), "Debe informar los datos de la empresa" );
-        	logger.info("guardar[FIN] no se informaron los datos de la empresa");
+        	logger.info("save[FIN] no se informaron los datos de la empresa");
         	return Respuesta.of(rtdo);
         }
         if ( empresa.getVigente() == null )
@@ -57,14 +57,9 @@ public class EmpresaBean implements EmpresaBO
             rtdo.addError(EmpresaBean.class, "Debe informar RUT de la empresa" );
         }
 
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
-        
+        logger.debug( "save[001] es un nuevo registro?: {}", empresa.isIdBlank() );
         EmpresaTO otra = empresaPO.obtener(empresa);
-        if(esNuevo)
+        if(empresa.isIdBlank())
         {
             if(otra!=null)
             {
@@ -73,14 +68,12 @@ public class EmpresaBean implements EmpresaBO
         } else if ( otra == null )
         {
             rtdo.addError(this.getClass(), "No existe Empresa con R.U.T. %s", empresa.getRut().toText());
-        } else
-        {
-            empresa.setId(otra.getId());
         }
 
+        logger.debug("save[002] validaciones exitosas?: {}", rtdo.esExitoso() );
         if( !rtdo.esExitoso() )
         {
-            logger.info ("guardar[FIN] saliendo del método por errores de validación: {}", rtdo );
+            logger.info ("save[FIN] saliendo del método por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
         }
 
@@ -88,35 +81,21 @@ public class EmpresaBean implements EmpresaBO
         empresaPO.guardar(empresa);
         rtdo.addMensaje(this.getClass(), "Empresa guardada con éxito");
         
-        logger.info ("guardar[FIN] registro guardado con exito: {}", empresa );
+        logger.info ("save[FIN] registro guardado con exito: {}", empresa );
         return Respuesta.of(rtdo, empresa);
     }
-        
-    @Transaccional
-    @Override
-    public Respuesta<EmpresaTO> crear(EmpresaTO empresa) throws Exception
-    {
-        return guardar(empresa, true);
-    }
 
     @Transaccional
     @Override
-    public Respuesta<EmpresaTO> modificar(EmpresaTO empresa) throws Exception
+    public Respuesta<EmpresaTO> delete(EmpresaTO pkEmpresa) throws Exception
     {
-        return guardar(empresa, false);
-    }
-
-    @Transaccional
-    @Override
-    public Respuesta<EmpresaTO> eliminar(EmpresaTO pkEmpresa) throws Exception
-    {
-        logger.info ("eliminar[INI] pkEmpresa: {}", pkEmpresa );
+        logger.info ("delete[INI] pkEmpresa: {}", pkEmpresa );
         Resultado rtdo = new ResultadoProceso();
         
         if(pkEmpresa == null || pkEmpresa.isKeyBlank())
         {
         	rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la empresa" );
-        	logger.info("eliminar[FIN] no se eliminó por fallas en validación", rtdo);
+        	logger.info("delete[FIN] no se eliminó por fallas en validación", rtdo);
         	return Respuesta.of(rtdo);
         }
         
@@ -124,22 +103,22 @@ public class EmpresaBean implements EmpresaBO
         if( empresa == null )
         {
             rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: %s", pkEmpresa.getRut().toText() );
-            logger.info ("eliminar[FIN] no existe el registro: {}", pkEmpresa );
+            logger.info ("delete[FIN] no existe el registro: {}", pkEmpresa );
             return Respuesta.of(rtdo);
         }
 
         if(!empresaPO.esEliminable(empresa))
         {
             rtdo.addError(this.getClass(), "Empresa tiene registros asociados" );
-            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
         empresaPO.eliminar(empresa);
-        logger.debug("eliminar[001] despues de eliminar el registro: {}", empresa );
+        logger.debug("delete[001] despues de eliminar el registro: {}", empresa );
         
         rtdo.addMensaje(EmpresaBean.class, "Empresa RUT: %s eliminada con éxito", pkEmpresa.getRut().toText() );
-        logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, empresa );
+        logger.info ("delete[FIN] caja eliminada con exito: {} {}", rtdo, empresa );
         return Respuesta.of(rtdo,empresa);
     }
     

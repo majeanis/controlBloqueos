@@ -3,6 +3,7 @@ package cl.cerrocolorado.recob.bo.beans;
 import cl.cerrocolorado.recob.bo.LibroBloqueoBO;
 import cl.cerrocolorado.recob.po.CajaBloqueoPO;
 import cl.cerrocolorado.recob.po.LibroBloqueoPO;
+import cl.cerrocolorado.recob.po.UbicacionPO;
 import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.entidades.DotacionLibroTO;
 import cl.cerrocolorado.recob.to.entidades.EnergiaLibroTO;
@@ -10,6 +11,7 @@ import cl.cerrocolorado.recob.to.entidades.LibroBloqueoInfoTO;
 import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
 import cl.cerrocolorado.recob.to.entidades.RespLibroTO;
 import cl.cerrocolorado.recob.to.entidades.TagLibroTO;
+import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
 import cl.cerrocolorado.recob.utils.Respuesta;
 import cl.cerrocolorado.recob.utils.Resultado;
 import cl.cerrocolorado.recob.utils.ResultadoProceso;
@@ -35,32 +37,29 @@ import org.springframework.stereotype.Service;
 public class LibroBloqueoBean implements LibroBloqueoBO
 {
     private static final Logger logger = LogManager.getLogger(LibroBloqueoBean.class);
-    
+
+    @Autowired
+    private UbicacionPO ubicacionPO;
+
     @Autowired
     private LibroBloqueoPO libroBloqueoPO;
     
     @Autowired
     private CajaBloqueoPO cajaBloqueoPO;
     
-    private Respuesta<LibroBloqueoTO> guardar(LibroBloqueoTO libro, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<LibroBloqueoTO> save(LibroBloqueoTO libro)
     {
-        logger.info("guardar[INI] libro: {}", libro);
-        logger.info("guardar[INI] esNuevo: {}", esNuevo);
+        logger.info("save[INI] libro: {}", libro);
 
         Resultado rtdo = new ResultadoProceso();
 
         if(libro == null)
         {
             rtdo.addError(this.getClass(), "Debe informar los datos del Libro");
-            logger.info("guardar[FIN] no se informó el Libro");
+            logger.info("save[FIN] no se informó el Libro");
             return Respuesta.of(rtdo);
-        }
-        if(libro.getUbicacion()==null)
-        {
-            rtdo.addError(this.getClass(), "Debe informar la ubicación" );
-        } else if( libro.getCaja() != null )
-        {
-            libro.getCaja().setUbicacion(libro.getUbicacion());
         }
         if(libro.getCaja()==null || libro.getCaja().isKeyBlank())
         {
@@ -70,10 +69,11 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             CajaBloqueoTO caja = cajaBloqueoPO.obtener(libro.getCaja());
             if( caja == null )
             {
-                rtdo.addError(this.getClass(), "Caja informada no existe");
+                rtdo.addError(this.getClass(), "Caja N° %d no existe", libro.getCaja().getNumero());
             }
             else
             {
+                libro.setUbicacion(caja.getUbicacion());
                 libro.setCaja(caja);
             }
         }
@@ -83,7 +83,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         }
         if(libro.getCerrado()==null)
         {
-            rtdo.addError(this.getClass(), "Debe informar si el libro está cerrado");
+            rtdo.addError(this.getClass(), "Debe informar si el libro está cerrado [Si/No]");
         } else if (libro.getCerrado() && libro.getFechaCierre() == null )
         {
             rtdo.addError(this.getClass(), "Debe informar la fecha de cierre del libro");
@@ -97,15 +97,19 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         {
             rtdo.addError(this.getClass(), "La fecha de cierre no puede ser anterior a la fecha del libro");
         }
+        
+        boolean esNuevo = libro.isIdBlank();
+        logger.debug("save[001] es un nuevo libro?: {}", esNuevo);
+        
         if(esNuevo && Utils.nvl(libro.getNumero(),0) > 0 )
         {
             rtdo.addError(this.getClass(), "No debe informar el N° de Libro");
-        } else if( !esNuevo && Utils.nvl( libro.getNumero(), 0) == 0)
+        }
+        else if( !esNuevo && Utils.nvl( libro.getNumero(), 0) == 0)
         {
             rtdo.addError(this.getClass(), "Debe informar el N° de Libro" );
         }
-
-        if( !esNuevo )
+        else if( !esNuevo )
         {
             LibroBloqueoTO otro = libroBloqueoPO.obtener(libro);
             if( otro == null )
@@ -113,7 +117,6 @@ public class LibroBloqueoBean implements LibroBloqueoBO
                 rtdo.addError(this.getClass(), "No existe Libro con Número %d", libro.getNumero() );
             } else
             {
-                libro.setId(otro.getId());
                 libro.setNumero(otro.getNumero());
                 libro.setFecha(otro.getFecha());
                 libro.setUbicacion(otro.getUbicacion());
@@ -121,37 +124,24 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             }
         }
 
+        logger.debug( "save[002] resultado de validaciones: {}", rtdo);
         if(!rtdo.esExitoso())
         {
-            logger.info("guardar[FIN] se detectaron errores de validación");
+            logger.info("save[FIN] se detectaron errores de validación");
             return Respuesta.of(rtdo);
         }
 
         if( esNuevo )
         {
             libro.setNumero(libroBloqueoPO.obtenerNumeroLibro());
-            logger.debug("guardar[001] después de obtener un nuevo número de libro: {}", libro.getNumero() );
+            logger.debug("save[003] después de obtener un nuevo número de libro: {}", libro.getNumero() );
         }
 
         libroBloqueoPO.guardar(libro);
         rtdo.addMensaje(this.getClass(), "Libro guardado con éxito [N° %d]", libro.getNumero());
         
-        logger.info("guardar[FIN] libro guardado con éxito: {}", libro);
+        logger.info("save[FIN] libro guardado con éxito: {}", libro);
         return Respuesta.of(libro);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<LibroBloqueoTO> crear(LibroBloqueoTO libro)
-    {
-        return guardar(libro,true);
-    }
-
-    @Override
-    @Transaccional
-    public Respuesta<LibroBloqueoTO> modificar(LibroBloqueoTO libro)
-    {
-        return guardar(libro,false);
     }
 
     @Override
@@ -583,7 +573,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
 
     @Override
     @Transaccional
-    public Respuesta<LibroBloqueoTO> eliminar(LibroBloqueoTO pk) throws Exception
+    public Respuesta<LibroBloqueoTO> delete(LibroBloqueoTO pk) throws Exception
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -35,17 +35,18 @@ public class CajaBloqueoBean implements CajaBloqueoBO
     @Autowired
     private UbicacionPO ubicacionPO;
 
-    private Respuesta<CajaBloqueoTO> guardar(CajaBloqueoTO caja, boolean esNuevo)
+    @Override
+    @Transaccional
+    public Respuesta<CajaBloqueoTO> save(CajaBloqueoTO caja)
     {
-        logger.info ("guardar[INI] caja: {}", caja);
-        logger.info ("guardar[INI] esNuevo: {}", esNuevo);
+        logger.info ("save[INI] caja: {}", caja);
         
         Resultado rtdo = new ResultadoProceso();
 
         if( caja == null )
         {
         	rtdo.addError( this.getClass(), "Debe informar los datos de la Caja");
-            logger.info ("guardar[FIN] caja informada en null" );        	
+            logger.info ("save[FIN] caja informada en null" );        	
             return Respuesta.of(rtdo);
         } 
         if ( caja.getVigente() == null )
@@ -70,16 +71,16 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 		    {
 		        rtdo.addError( this.getClass(), "La ubicación informada no existe [id: %d]", caja.getUbicacion().getId());
 		    }
+            else
+            {
+                caja.setUbicacion(ubicacion);
+            }
         }
 
-        if( !rtdo.esExitoso() )
-        {
-            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
-            return Respuesta.of(rtdo);
-        }
+        logger.debug("save[001] es un nuevo registro?: {}", caja.isIdBlank() );
 
         CajaBloqueoTO otra = cajaPO.obtener( caja );
-        if( esNuevo )
+        if( caja.isIdBlank() )
         {
             if(otra != null)
             {
@@ -88,50 +89,33 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         } else if( otra == null )
         {
             rtdo.addError(this.getClass(), "No existe Caja con el N° %d", caja.getNumero());
-        } else
-        {
-            caja.setId(otra.getId());
         }
 
-        logger.debug ("guardar[001] antes de revisar el resultado de las validaciones: {}", rtdo);
+        logger.debug("save[002] resultado validaciones: {}", rtdo);
         if( !rtdo.esExitoso() )
         {
-            logger.info ("guardar[FIN] saliendo por errores de validación: {}", rtdo );
+            logger.info ("save[FIN] saliendo por errores de validación: {}", rtdo );
             return Respuesta.of(rtdo);
         }
 
         cajaPO.guardar(caja);
         rtdo.addMensaje(this.getClass(), "Caja de Bloqueo guardada con éxito");
         
-        logger.info ("guardar[FIN] caja guardada con exito: {}", caja );
+        logger.info ("save[FIN] caja guardada con exito: {}", caja );
         return Respuesta.of(rtdo, caja);
     }
 
     @Transaccional
     @Override
-    public Respuesta<CajaBloqueoTO> crear(CajaBloqueoTO caja) throws Exception
+    public Respuesta<CajaBloqueoTO> delete(CajaBloqueoTO pkCaja) throws Exception
     {
-        return guardar(caja,true);
-    }
-    
-    @Transaccional
-    @Override
-    public Respuesta<CajaBloqueoTO> modificar(CajaBloqueoTO caja) throws Exception
-    {
-        return guardar(caja,false);
-    }
-    
-    @Transaccional
-    @Override
-    public Respuesta<CajaBloqueoTO> eliminar(CajaBloqueoTO pkCaja) throws Exception
-    {
-        logger.info ("eliminar[INI] caja: {}", pkCaja );
+        logger.info ("delete[INI] caja: {}", pkCaja );
         Resultado rtdo = new ResultadoProceso();
         
         if( pkCaja == null || pkCaja.isKeyBlank() )
         {
         	rtdo.addError(this.getClass(), "Debe informar la identificación de la caja" );
-        	logger.info( "eliminar[FIN] no se informaron todos los filtros: {}", pkCaja );
+        	logger.info( "delete[FIN] no se informaron todos los filtros: {}", pkCaja );
         	return Respuesta.of(rtdo);
         }
         
@@ -139,22 +123,22 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         if( caja == null )
         {
             rtdo.addError(this.getClass(), "No existe Caja N° %d", pkCaja.getNumero() );
-            logger.info ("eliminar[FIN] no existe caja: {}", pkCaja );
+            logger.info ("delete[FIN] no existe caja: {}", pkCaja );
             return Respuesta.of(rtdo);
         }
         
         if(!cajaPO.esEliminable(caja))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
-            logger.info ("eliminar[FIN] registro no puede ser eliminado");
+            logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
         cajaPO.eliminar(caja);
-        logger.debug("eliminar[001] despues de eliminar la caja: {}", caja );
+        logger.debug("delete[001] despues de eliminar la caja: {}", caja );
         
         rtdo.addMensaje(this.getClass(), "Caja N° %d eliminada con éxito", caja.getNumero());
-        logger.info ("eliminar[FIN] caja eliminada con exito: {} {}", rtdo, caja );
+        logger.info ("delete[FIN] caja eliminada con exito: {} {}", rtdo, caja );
         return Respuesta.of(rtdo,caja);
     }
     

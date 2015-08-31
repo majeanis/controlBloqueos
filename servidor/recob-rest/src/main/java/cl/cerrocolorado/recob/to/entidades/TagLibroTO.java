@@ -54,7 +54,6 @@ public class TagLibroTO extends EntidadTO
         this.fechaEnergiaCero = fechaEnergiaCero;
     }
 
-    
     @Override
     public boolean isKeyBlank()
     {
