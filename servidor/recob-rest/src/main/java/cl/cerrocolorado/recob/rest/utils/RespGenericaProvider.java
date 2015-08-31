@@ -19,18 +19,21 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 public class RespGenericaProvider implements MessageBodyWriter<RespGenerica> 
 {
 	@Override
-	public long getSize(RespGenerica arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
+	public long getSize(RespGenerica arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) 
+    {
 		return 0;
 	}
 
 	@Override
-	public boolean isWriteable(Class<?> arg0, Type arg1, Annotation[] arg2, MediaType arg3) {
+	public boolean isWriteable(Class<?> arg0, Type arg1, Annotation[] arg2, MediaType arg3) 
+    {
 		return arg0 == RespGenerica.class;
 	}
 
 	@Override
 	public void writeTo(RespGenerica arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4,
-			MultivaluedMap<String, Object> arg5, OutputStream arg6) throws IOException, WebApplicationException {
+			MultivaluedMap<String, Object> arg5, OutputStream arg6) throws IOException, WebApplicationException 
+    {
 		String json = JsonUtils.toJsonString(arg0);
         if( json != null )
             arg6.write(json.getBytes("UTF-8"));
