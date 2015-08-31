@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import java.io.InputStream;
 
 public class JsonUtils 
 {
@@ -45,4 +46,18 @@ public class JsonUtils
 			return null;
 		}
 	}
+
+  	public static <T> T fromJson(InputStream is, Class<T> clazz)
+	{
+		try {
+			return mapper.readValue(is, clazz);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+    public static ObjectMapper getMapper()
+    {
+        return mapper;
+    }
 }
