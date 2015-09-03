@@ -16,7 +16,7 @@ import cl.cerrocolorado.recob.utils.JsonUtils;
 
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
-public class RespGenericaProvider implements MessageBodyWriter<RespGenerica> 
+public class RespGenericaWriter implements MessageBodyWriter<RespGenerica> 
 {
 	@Override
 	public long getSize(RespGenerica arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) 
