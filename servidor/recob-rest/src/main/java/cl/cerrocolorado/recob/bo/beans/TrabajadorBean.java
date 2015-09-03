@@ -76,7 +76,7 @@ public class TrabajadorBean implements TrabajadorBO
             rtdo.addError(this.getClass(), "Debe informar el R.U.T. de la Empresa");
         } else
         {
-            EmpresaTO empresa = empresaPO.obtener(trabajador.getEmpresa());
+            EmpresaTO empresa = empresaPO.get(trabajador.getEmpresa());
             if( empresa == null )
             {
                 rtdo.addError(this.getClass(), "No existe empresa con R.U.T. %s", trabajador.getEmpresa().getRut().toText() );
@@ -87,7 +87,7 @@ public class TrabajadorBean implements TrabajadorBO
         }
 
         logger.debug("save[001] es un nuevo registro: {}", trabajador.isIdBlank());
-        TrabajadorTO otro = trabajadorPO.obtener(trabajador);
+        TrabajadorTO otro = trabajadorPO.get(trabajador);
         if( trabajador.isIdBlank() )
         {
             if(otro != null)
@@ -115,10 +115,10 @@ public class TrabajadorBean implements TrabajadorBO
             !Objects.equals(trabajador.getEmpresa().getId(), actual.getEmpresa().getId()))
         {
             actual.setVigente(Boolean.FALSE);
-            trabajadorPO.guardar(actual);
+            trabajadorPO.save(actual);
         }
 
-        trabajadorPO.guardar(trabajador);
+        trabajadorPO.save(trabajador);
         rtdo.addMensaje(this.getClass(), "Trabajador guardado con éxito");
 
         logger.info("save[FIN] trabajador guardado con éxito: {}", trabajador);
@@ -147,7 +147,7 @@ public class TrabajadorBean implements TrabajadorBO
             logger.debug("delete[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            trabajador = trabajadorPO.obtener(pkTrabajador);
+            trabajador = trabajadorPO.get(pkTrabajador);
             logger.debug("delete[001] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 
@@ -158,7 +158,7 @@ public class TrabajadorBean implements TrabajadorBO
             return Respuesta.of(rtdo);
         }
         
-        if(!trabajadorPO.esEliminable(trabajador))
+        if(!trabajadorPO.isDeleteable(trabajador))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
             logger.info ("delete[FIN] registro no puede ser eliminado");
@@ -166,7 +166,7 @@ public class TrabajadorBean implements TrabajadorBO
         }
 
         // Si llegamos a este punto, es posible eliminar al trabajador
-        trabajadorPO.eliminar(trabajador);
+        trabajadorPO.delete(trabajador);
         rtdo.addMensaje(this.getClass(), "Trabajador con R.U.T. %s eliminado con éxito", trabajador.getRut().toText() );
 
         logger.info("delete[FIN] registro eliminado con éxito");
@@ -193,7 +193,7 @@ public class TrabajadorBean implements TrabajadorBO
             logger.debug("get[001] después de buscar al registro actualmente vigente: {}", trabajador);
         } else
         {
-            trabajador = trabajadorPO.obtener(pkTrabajador);
+            trabajador = trabajadorPO.get(pkTrabajador);
             logger.debug("get[002] después de buscar al registro asociado a la empresa: {}", trabajador);            
         }
 

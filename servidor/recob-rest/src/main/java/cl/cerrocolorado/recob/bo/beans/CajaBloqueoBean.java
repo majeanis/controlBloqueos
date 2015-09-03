@@ -79,7 +79,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
 
         logger.debug("save[001] es un nuevo registro?: {}", caja.isIdBlank() );
 
-        CajaBloqueoTO otra = cajaPO.obtener( caja );
+        CajaBloqueoTO otra = cajaPO.get( caja );
         if( caja.isIdBlank() )
         {
             if(otra != null)
@@ -98,7 +98,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return Respuesta.of(rtdo);
         }
 
-        cajaPO.guardar(caja);
+        cajaPO.save(caja);
         rtdo.addMensaje(this.getClass(), "Caja de Bloqueo guardada con éxito");
         
         logger.info ("save[FIN] caja guardada con exito: {}", caja );
@@ -119,7 +119,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         	return Respuesta.of(rtdo);
         }
         
-        CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
+        CajaBloqueoTO caja = cajaPO.get(pkCaja);
         if( caja == null )
         {
             rtdo.addError(this.getClass(), "No existe Caja N° %d", pkCaja.getNumero() );
@@ -127,14 +127,14 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        if(!cajaPO.esEliminable(caja))
+        if(!cajaPO.isDeleteable(caja))
         {
             rtdo.addError(this.getClass(), "Caja de Bloqueo tiene registros asociados" );
             logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
-        cajaPO.eliminar(caja);
+        cajaPO.delete(caja);
         logger.debug("delete[001] despues de eliminar la caja: {}", caja );
         
         rtdo.addMensaje(this.getClass(), "Caja N° %d eliminada con éxito", caja.getNumero());
@@ -155,7 +155,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
             return Respuesta.of(rtdo);
         }
 
-        CajaBloqueoTO caja = cajaPO.obtener(pkCaja);
+        CajaBloqueoTO caja = cajaPO.get(pkCaja);
         if( caja == null )
         {
             rtdo.addMensaje(this.getClass(), "No se encontró registro para Caja N° %d", pkCaja.getNumero());

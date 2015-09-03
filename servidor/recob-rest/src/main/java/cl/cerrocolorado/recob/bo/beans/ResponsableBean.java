@@ -90,7 +90,7 @@ public class ResponsableBean implements ResponsableBO
         }
         else
         {
-            EmpresaTO empr = empresaPO.obtener(responsable.getEmpresa());
+            EmpresaTO empr = empresaPO.get(responsable.getEmpresa());
             if( empr == null )
             {
                 rtdo.addError(this.getClass(), "Empresa informada no existe [RUT: %s]", responsable.getEmpresa().getRut().toText() );
@@ -109,7 +109,7 @@ public class ResponsableBean implements ResponsableBO
             aux.setEmpresa(responsable.getEmpresa());
             aux.setRut(responsable.getPersona().getRut());
             
-            TrabajadorTO trab = trabajadorPO.obtener(aux);
+            TrabajadorTO trab = trabajadorPO.get(aux);
             if( trab == null)
             {
                 rtdo.addError(this.getClass(), "Trabajador informado no existe [RUT: %s]", aux.getRut().toText());
@@ -143,12 +143,12 @@ public class ResponsableBean implements ResponsableBO
         if (actual != null)
         {
             actual.setFechaSalida( new Date() );
-            responsablePO.guardar(actual);
+            responsablePO.save(actual);
             logger.debug("save[003] después de guardar la salida en el responsable actual: {}", actual);
         }
 
         responsable.setFechaIngeso( new Date() );
-        responsablePO.guardar(responsable);
+        responsablePO.save(responsable);
         logger.debug("save[004] después de guardar al responsable: {}", responsable);
         
         rtdo.addMensaje(this.getClass(), "Responsable guardado con éxito");
@@ -171,7 +171,7 @@ public class ResponsableBean implements ResponsableBO
         	return Respuesta.of(rtdo);
         }
         
-        ResponsableTO resp = responsablePO.obtener(pk);
+        ResponsableTO resp = responsablePO.get(pk);
         if( resp == null )
         {
             rtdo.addError(this.getClass(), "No existe Responsable %s", pk.getPersona().getRut().toText() );
@@ -179,14 +179,14 @@ public class ResponsableBean implements ResponsableBO
             return Respuesta.of(rtdo);
         } 
         
-        if(!responsablePO.esEliminable(resp))
+        if(!responsablePO.isDeleteable(resp))
         {
             rtdo.addError(this.getClass(), "Responsable tiene registros asociados" );
             logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
-        responsablePO.eliminar(resp);
+        responsablePO.delete(resp);
         logger.debug("delete[001] despues de eliminar al Responsanle: {}", resp );
         
         rtdo.addMensaje(this.getClass(), "Responsable %s eliminado con éxito", resp.getEmpresa().getRut().toText() );
@@ -230,7 +230,7 @@ public class ResponsableBean implements ResponsableBO
             return Respuesta.of(rtdo);
         }
         
-        ResponsableTO resp = responsablePO.obtener(pk);
+        ResponsableTO resp = responsablePO.get(pk);
         if(resp==null)
         {
             rtdo.addMensaje(this.getClass(), "No se encontró al Responsable %s", pk.getPersona().getRut().toText() );

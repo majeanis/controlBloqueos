@@ -66,7 +66,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             rtdo.addError(this.getClass(), "Debe informar la Caja asociada al Libro");
         } else
         {
-            CajaBloqueoTO caja = cajaBloqueoPO.obtener(libro.getCaja());
+            CajaBloqueoTO caja = cajaBloqueoPO.get(libro.getCaja());
             if( caja == null )
             {
                 rtdo.addError(this.getClass(), "Caja N° %d no existe", libro.getCaja().getNumero());
@@ -111,7 +111,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
         }
         else if( !esNuevo )
         {
-            LibroBloqueoTO otro = libroBloqueoPO.obtener(libro);
+            LibroBloqueoTO otro = libroBloqueoPO.get(libro);
             if( otro == null )
             {
                 rtdo.addError(this.getClass(), "No existe Libro con Número %d", libro.getNumero() );
@@ -137,7 +137,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             logger.debug("save[003] después de obtener un nuevo número de libro: {}", libro.getNumero() );
         }
 
-        libroBloqueoPO.guardar(libro);
+        libroBloqueoPO.save(libro);
         rtdo.addMensaje(this.getClass(), "Libro guardado con éxito [N° %d]", libro.getNumero());
         
         logger.info("save[FIN] libro guardado con éxito: {}", libro);
@@ -157,7 +157,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        LibroBloqueoTO libro = libroBloqueoPO.obtener(pk);
+        LibroBloqueoTO libro = libroBloqueoPO.get(pk);
         if(libro == null)
         {
             rtdo.addError(this.getClass(), "No existe Libro con N° %d", pk.getNumero());

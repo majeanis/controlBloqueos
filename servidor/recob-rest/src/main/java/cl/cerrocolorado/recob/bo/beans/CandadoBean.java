@@ -115,7 +115,7 @@ public class CandadoBean implements CandadoBO
 
         logger.debug("save[001] es un nuevo registro?: {}", candado.isIdBlank() );
 
-        CandadoTO otro = candadoPO.obtener(candado);
+        CandadoTO otro = candadoPO.get(candado);
         if(candado.isIdBlank())
         {
             if( otro != null )
@@ -155,7 +155,7 @@ public class CandadoBean implements CandadoBO
         }
 
         // Si llegamos a este punto la Caja puede ser Guardada
-        candadoPO.guardar(candado);
+        candadoPO.save(candado);
         rtdo.addMensaje(this.getClass(), "Candado guardado con éxito");
 
         logger.info ("save[FIN] candado guardado con exito: {}", candado );
@@ -184,7 +184,7 @@ public class CandadoBean implements CandadoBO
             rtdo.addError(this.getClass(), "Debe informar la ubicación del candado" );
         }
         
-        CandadoTO candado = candadoPO.obtener(pkCandado);
+        CandadoTO candado = candadoPO.get(pkCandado);
         if( candado == null )
         {
             rtdo.addError(this.getClass(), "No existe Candado con N° %d", pkCandado.getNumero());
@@ -192,7 +192,7 @@ public class CandadoBean implements CandadoBO
             return Respuesta.of(rtdo);
         }
 
-        if(!candadoPO.esEliminable(candado))
+        if(!candadoPO.isDeleteable(candado))
         {
             rtdo.addError(this.getClass(), "Candado tiene registros asociados" );
             logger.info ("delete[FIN] registro no puede ser eliminado");
@@ -200,7 +200,7 @@ public class CandadoBean implements CandadoBO
         }
 
         // Si llegamos a este punto, entonces es posible la eliminación
-        candadoPO.eliminar(candado);
+        candadoPO.delete(candado);
         logger.debug("delete[001] despues de eliminar el candado: {}", candado );
         
         rtdo.addMensaje(this.getClass(), "Candado con N° de serie %s eliminado con éxito", candado.getSerie() );
@@ -222,7 +222,7 @@ public class CandadoBean implements CandadoBO
             return Respuesta.of(rtdo);
         }
 
-        CandadoTO candado = candadoPO.obtener(pkCandado);
+        CandadoTO candado = candadoPO.get(pkCandado);
         if( candado == null)
         {
             rtdo.addError(this.getClass(), "No existe candado con N° %d", pkCandado.getNumero());

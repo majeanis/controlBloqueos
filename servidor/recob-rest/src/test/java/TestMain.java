@@ -1,8 +1,12 @@
 
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.entidades.ResponsableTO;
 import cl.cerrocolorado.recob.to.entidades.CandadoTO;
 import cl.cerrocolorado.recob.to.entidades.PersonaTO;
+import cl.cerrocolorado.recob.utils.ObjetoTO;
 import cl.cerrocolorado.recob.utils.Rut;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,20 +20,13 @@ import cl.cerrocolorado.recob.utils.Rut;
  */
 public class TestMain
 {
-    public static void main(String[] args)
+   public static void main(String[] args) throws IOException
     {
-        ResponsableTO caja = null;
-        CandadoTO candado = null;
-        PersonaTO persona = new PersonaTO();
-        persona.setRut(Rut.valueOf("13005188-K"));
-        caja = new ResponsableTO();
-//        
-//        caja.setId(1);
-//        System.out.println(ValidUtils.isPropertyBlank(persona, "rut"));
-        persona = null;
-        if( candado == null || candado.getPersona() == null || Rut.isBlank(candado.getPersona().getRut()) )
-        {
-            System.out.println( "works" );
-        }
+        String j2 = "{\"rut\":\"13005188-K\",\"id\":0,\"numero\":3,\"nombre\":\"CAJA N° 3\",\"vigente\":true}";
+        ObjectMapper mapper = new ObjectMapper();
+        CajaBloqueoTO c = mapper.readValue(j2, CajaBloqueoTO.class);
+        
+        System.out.println( c.getClass().isAssignableFrom(ObjetoTO.class) );
+        System.out.println( ObjetoTO.class.isAssignableFrom(c.getClass()) );
     }
 }

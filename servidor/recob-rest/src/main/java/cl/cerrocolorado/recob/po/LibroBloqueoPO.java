@@ -33,7 +33,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     private RecobMap mapper;
 
     @Override
-    public LibroBloqueoTO guardar(LibroBloqueoTO libro)
+    public LibroBloqueoTO save(LibroBloqueoTO libro)
     {
         logger.info ("guardar[INI] libro: {}", libro);
      
@@ -52,7 +52,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     }
 
     @Override
-    public void eliminar(LibroBloqueoTO pk)
+    public void delete(LibroBloqueoTO pk)
     {
         logger.info ("delete[INI] pkLibro: {}", pk );
         mapper.deleteLibro(pk);
@@ -60,7 +60,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     }
 
     @Override
-    public boolean esEliminable(LibroBloqueoTO pk)
+    public boolean isDeleteable(LibroBloqueoTO pk)
     {
         logger.info ("isDeleteable[INI] pkLibro: {}", pk);
         int relaciones = mapper.childsLibro(pk);
@@ -70,7 +70,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     }
     
     @Override
-    public LibroBloqueoTO obtener(LibroBloqueoTO pk)
+    public LibroBloqueoTO get(LibroBloqueoTO pk)
     {
         logger.info ("obtener[INI] pk: {}", pk );
         
@@ -97,7 +97,7 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
     {
         logger.info ("obtener[INI] pkLibro: {}", pk);
         
-        LibroBloqueoTO libro = obtener(pk);
+        LibroBloqueoTO libro = get(pk);
         if( libro == null )
         {
             logger.info ("obtener[FIN] libro no encontrado: {}", pk);

@@ -58,7 +58,7 @@ public class EmpresaBean implements EmpresaBO
         }
 
         logger.debug( "save[001] es un nuevo registro?: {}", empresa.isIdBlank() );
-        EmpresaTO otra = empresaPO.obtener(empresa);
+        EmpresaTO otra = empresaPO.get(empresa);
         if(empresa.isIdBlank())
         {
             if(otra!=null)
@@ -78,7 +78,7 @@ public class EmpresaBean implements EmpresaBO
         }
 
         // Si llegamos a este punto la Caja puede ser Guardada
-        empresaPO.guardar(empresa);
+        empresaPO.save(empresa);
         rtdo.addMensaje(this.getClass(), "Empresa guardada con éxito");
         
         logger.info ("save[FIN] registro guardado con exito: {}", empresa );
@@ -99,7 +99,7 @@ public class EmpresaBean implements EmpresaBO
         	return Respuesta.of(rtdo);
         }
         
-        EmpresaTO empresa = empresaPO.obtener(pkEmpresa);
+        EmpresaTO empresa = empresaPO.get(pkEmpresa);
         if( empresa == null )
         {
             rtdo.addError(EmpresaBean.class, "No existe Empresa con RUT: %s", pkEmpresa.getRut().toText() );
@@ -107,14 +107,14 @@ public class EmpresaBean implements EmpresaBO
             return Respuesta.of(rtdo);
         }
 
-        if(!empresaPO.esEliminable(empresa))
+        if(!empresaPO.isDeleteable(empresa))
         {
             rtdo.addError(this.getClass(), "Empresa tiene registros asociados" );
             logger.info ("delete[FIN] registro no puede ser eliminado");
             return Respuesta.of(rtdo);
         }
 
-        empresaPO.eliminar(empresa);
+        empresaPO.delete(empresa);
         logger.debug("delete[001] despues de eliminar el registro: {}", empresa );
         
         rtdo.addMensaje(EmpresaBean.class, "Empresa RUT: %s eliminada con éxito", pkEmpresa.getRut().toText() );
@@ -135,7 +135,7 @@ public class EmpresaBean implements EmpresaBO
             return Respuesta.of(rtdo);
         }
 
-        EmpresaTO empresa = empresaPO.obtener(pkEmpresa);
+        EmpresaTO empresa = empresaPO.get(pkEmpresa);
         
         logger.info ("get[FIN] resultado busqueda: {}", empresa );
         return Respuesta.of(empresa);

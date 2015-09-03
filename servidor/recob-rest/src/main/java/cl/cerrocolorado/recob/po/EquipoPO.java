@@ -26,7 +26,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     private RecobMap mapper;
 
     @Override
-    public EquipoTO guardar(EquipoTO equipo)
+    public EquipoTO save(EquipoTO equipo)
     {
         logger.info ("guardar[INI] equipo: {}", equipo);
         
@@ -46,7 +46,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     }
     
     @Override
-    public void eliminar(EquipoTO pkEquipo)
+    public void delete(EquipoTO pkEquipo)
     {
         logger.info ("delete[INI] pkEquipo: {}", pkEquipo);
         mapper.deleteEquipo(pkEquipo);
@@ -54,7 +54,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     }
     
     @Override
-    public boolean esEliminable(EquipoTO pk)
+    public boolean isDeleteable(EquipoTO pk)
     {
         logger.info ("isDeleteable[INI] pkEquipo: {}", pk);
         int relaciones = mapper.childsEquipo(pk);
@@ -64,7 +64,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     }
 
     @Override
-    public EquipoTagsTO obtener(EquipoTO pk)
+    public EquipoTagsTO get(EquipoTO pk)
     {
         logger.info("get[INI] pk: {}", pk);
 

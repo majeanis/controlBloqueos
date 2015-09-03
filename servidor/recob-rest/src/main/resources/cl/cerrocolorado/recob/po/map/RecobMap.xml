@@ -213,6 +213,9 @@
             <when test="caja!=null and caja.numero != null" >
                 and a.cabl_nume = #{caja.numero}
             </when>
+            <when test="caja!=null" >
+                and a.cabl_id is null
+            </when>
         </choose>
         <if test="vigencia != null" >
             and a.cabl_vige = #{vigencia}
@@ -297,7 +300,10 @@
                 and a.cand_seri = #{serie}
             </when>
             <when test="persona!=null and persona.rut!=null" >
-                c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
+                and c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
+            </when>
+            <when test="candado!=null" >
+                and a.cand_id is null
             </when>
         </choose>
         <if test="vigencia != null" >
@@ -352,6 +358,9 @@
                 <when test = "persona != null and persona.rut != null" >
                     a.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
                 </when>
+                <when test = "persona != null" >
+                    a.pers_id is null
+                </when>
             </choose>
         </where>
         order by a.pers_rut
@@ -395,6 +404,9 @@
 	            <when test = "trabajador!=null and trabajador.rut!=null" >
 	                b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
 	            </when>
+                <when test = "trabajador!=null" >
+                    b.pers_id is null
+                </when>
         	</choose>
         	<choose>
 	            <when test = "empresa!=null and empresa.id!=null" >
@@ -462,10 +474,13 @@
                 <when test="empresa != null and empresa.rut != null" >
                     a.empr_rut = #{empresa.rut,typeHandler=RutTypeHandler}
                 </when>
-                <when test="vigencia != null" >
-                    a.empr_vige = #{vigencia}
+                <when test="empresa!=null" >
+                    a.empr_id is null
                 </when>
             </choose>
+            <if test="vigencia != null" >
+                and a.empr_vige = #{vigencia}
+            </if>
         </where>
         order by a.empr_rut
     </select>
@@ -511,10 +526,13 @@
         where  a.ubic_id = #{ubicacion.id}
         <choose>
             <when test="equipo!=null and equipo.id != null" >
-                and a.eqpo_id = #{equipo.id}
+                a.eqpo_id = #{equipo.id}
             </when>
             <when test="equipo!=null and equipo.codigo != null" >
-                and a.eqpo_codi = #{equipo.codigo}
+                a.eqpo_codi = #{equipo.codigo}
+            </when>
+            <when test="equipo!=null" >
+                a.eqpo_id is null
             </when>
         </choose>            
         <if test="vigencia != null" >
@@ -567,17 +585,20 @@
         where  b.ubic_id = #{ubicacion.id}
         <choose>
             <when test="tag!=null and tag.id != null" >
-                and a.taeq_id = #{tag.id}
+                a.taeq_id = #{tag.id}
             </when>
             <when test="tag!=null and tag.codigo!=null and equipo!=null and equipo.id!=null" >
-                and a.eqpo_id   = #{equipo.id}
+                a.eqpo_id   = #{equipo.id}
                 and a.taeq_codi = #{tag.codigo}
             </when>
             <when test="equipo!=null and equipo.id!=null" >
-                and a.eqpo_id = #{equipo.id}
+                a.eqpo_id = #{equipo.id}
             </when>
             <when test="equipo!=null and equipo.codigo!=null" >
-                and b.eqpo_codi = #{equipo.codigo}
+                b.eqpo_codi = #{equipo.codigo}
+            </when>
+            <when test="tag!=null" >
+                a.taeq_id is null
             </when>
         </choose>
         <if test="vigencia != null" >
@@ -674,10 +695,13 @@
         where  a.ubic_id = #{ubicacion.id}
         <choose>
             <when test="persona != null and persona.id!=null">
-                and  b.pers_id = #{trabajador.id}
+                b.pers_id = #{trabajador.id}
             </when>
             <when test="persona != null and persona.rut!=null">
-                and  b.pers_rut = #{trabajador.rut}
+                b.pers_rut = #{trabajador.rut}
+            </when>
+            <when test="persona != null" >
+                b.pers_id is null
             </when>
         </choose>
         <choose>
@@ -776,10 +800,13 @@
         where  c.ubic_id = #{ubicacion.id}
         <choose>
             <when test="libro != null and libro.id!=null" >
-                and  a.lcbl_id   = #{libro.id}                
+                a.lcbl_id   = #{libro.id}                
             </when>
             <when test="libro != null and libro.numero!=null" >
-                and  a.lcbl_nume = #{libro.numero}                
+                a.lcbl_nume = #{libro.numero}                
+            </when>
+            <when test="libro != null" >
+                a.lcbl_id is null
             </when>
         </choose>
         <choose>
@@ -887,13 +914,16 @@
         where  a.lcbl_id = #{libro.id}
         <choose>
             <when test="tagLibro!=null and tagLibro.id!=null" >
-                and c.talc_id = #{id}
+                c.talc_id = #{id}
             </when>
             <when test="tag!=null and tag.id!=null" >
-                and d.taeq_id = #{tag.id}
+                d.taeq_id = #{tag.id}
             </when>
             <when test="tag!=null and tag.codigo!=null" >
-                and d.taeq_codi = #{tag.codigo}
+                d.taeq_codi = #{tag.codigo}
+            </when>
+            <when test="tagLibro!=null" >
+                c.talc_id is null
             </when>
         </choose>
         <if test="energiaCero!=null" >
@@ -946,10 +976,10 @@
         where  a.lcbl_id = #{id}
         <choose>
             <when test="energia!=null and energia.id!=null" >
-                and d.dval_id = #{energia.id}
+                d.dval_id = #{energia.id}
             </when>
             <when test="energia!=null and energia.codigo!=null" >
-                and d.dval_codi = #e{energia.codigo}
+                d.dval_codi = #{energia.codigo}
             </when>
         </choose>
         order by d.dval_domi, d.dval_codi
@@ -1022,13 +1052,16 @@
         where  a.lcbl_id = #{id}
         <choose>
             <when test="dotacion!=null and dotacion.id!=null" >
-                and c.dolc_id = #{dotacion.id}
+                c.dolc_id = #{dotacion.id}
             </when>
             <when test="trabajador!=null and trabajador.id!=null" >
-                and g.pers_id = #{trabajador.id}
+                g.pers_id = #{trabajador.id}
             </when>
             <when test="trabajador!=null and trabajador.rut!=null" >
-                and g.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
+                g.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
+            </when>
+            <when test="dotacion!=null" >
+                c.dolc_id is null
             </when>
         </choose>
         order by g.pers_rut
@@ -1106,15 +1139,18 @@
 
         <choose>
             <when test="responsable!=null and responsable.id!=null" >
-                and c.relc_id = #{responsable.id}
+                c.relc_id = #{responsable.id}
             </when>
             <when test="trabajador!=null and trabajador.id!=null" >
-                and f.pers_id = #{trabajador.id}
+                f.pers_id = #{trabajador.id}
                 and c.relc_fech_ingr = #{responsable.fechaIngreso,jdbcType=TIMESTAMP}
             </when>
             <when test="trabajador!=null and trabajador.rut!=null" >
-                and f.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
+                f.pers_id = #{trabajador.rut,typeHandler=RutTypeHandler}
                 and c.relc_fech_ingr = #{responsable.fechaIngreso,jdbcType=TIMESTAMP}
+            </when>
+            <when test="responsable!=null" >
+                c.relc_id is null
             </when>
         </choose>
 

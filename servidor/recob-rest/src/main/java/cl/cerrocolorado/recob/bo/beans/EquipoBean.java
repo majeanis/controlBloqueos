@@ -78,7 +78,7 @@ public class EquipoBean implements EquipoBO
         }
 
         logger.debug("save[001] es un nuevo registro?: {}", equipo.isIdBlank());
-        EquipoTO otro = equipoPO.obtener(equipo);
+        EquipoTO otro = equipoPO.get(equipo);
         if(equipo.isIdBlank())
         {
             if (otro != null)
@@ -98,7 +98,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        equipoPO.guardar(equipo);
+        equipoPO.save(equipo);
         logger.debug("save[002] después de guardar el equipo: {}", equipo);
         
         rtdo.addMensaje(this.getClass(), "Equipo guardado con éxito");
@@ -122,7 +122,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTagsTO equipo = equipoPO.obtener(pk);
+        EquipoTagsTO equipo = equipoPO.get(pk);
         if(equipo == null)
         {
             rtdo.addError(this.getClass(), "No existe equipo con código %s", pk.getCodigo());
@@ -146,7 +146,7 @@ public class EquipoBean implements EquipoBO
         }
         
         equipoPO.eliminarTags(equipo);
-        equipoPO.eliminar(equipo);
+        equipoPO.delete(equipo);
         
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
 
@@ -291,7 +291,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        EquipoTagsTO equipo = equipoPO.obtener(pk);
+        EquipoTagsTO equipo = equipoPO.get(pk);
         if( equipo == null )
         {
             rtdo.addError(this.getClass(), "No existe equipo con código %s", pk.getCodigo());
