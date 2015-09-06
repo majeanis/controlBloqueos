@@ -36,7 +36,7 @@ public interface RecobMap
     public void insertCajaBloqueo(CajaBloqueoTO caja);
     public void updateCajaBloqueo(CajaBloqueoTO caja);
     public void deleteCajaBloqueo(CajaBloqueoTO caja);
-    public int  childsCajaBloqueo(CajaBloqueoTO caja);
+    public long  childsCajaBloqueo(CajaBloqueoTO caja);
     public List<CajaBloqueoTO> selectCajasBloqueos( Map<String,Object> parms );
     /**/
     
@@ -46,7 +46,7 @@ public interface RecobMap
     public void insertCandado(CandadoTO candado);
     public void updateCandado(CandadoTO candado);
     public void deleteCandado(CandadoTO candado);
-    public int  childsCandado(CandadoTO candado);    
+    public long childsCandado(CandadoTO candado);    
     public List<CandadoTO> selectCandados( Map<String,Object> parms );
     public List<UsoCandadoTO> selectUsosCandado( Map<String,Object> parms);
     /**/
@@ -57,7 +57,7 @@ public interface RecobMap
     public void insertPersona(PersonaTO persona);
     public void updatePersona(PersonaTO persona);
     public void deletePersona(PersonaTO persona);
-    public int  childsPersona(PersonaTO persona);
+    public long childsPersona(PersonaTO persona);
     public List<PersonaTO> selectPersonas( Map<String,Object> parms );
     /**/
 
@@ -67,7 +67,7 @@ public interface RecobMap
     public void insertTrabajador(TrabajadorTO trabajador);
     public void updateTrabajador(TrabajadorTO trabajador);
     public void deleteTrabajador(TrabajadorTO trabajador);
-    public int  childsTrabajador(TrabajadorTO trabajador);
+    public long childsTrabajador(TrabajadorTO trabajador);
     public List<TrabajadorTO> selectTrabajadores( Map<String,Object> parms );
     /**/
 
@@ -77,7 +77,7 @@ public interface RecobMap
     public void insertEmpresa(EmpresaTO empresa);
     public void updateEmpresa(EmpresaTO empresa);
     public void deleteEmpresa(EmpresaTO empresa);
-    public int  childsEmpresa(EmpresaTO empresa);
+    public long childsEmpresa(EmpresaTO empresa);
     public List<EmpresaTO> selectEmpresas( Map<String,Object> parms );
     /**/
 
@@ -87,7 +87,7 @@ public interface RecobMap
     public void insertEquipo(EquipoTO equipo);
     public void updateEquipo(EquipoTO equipo);
     public void deleteEquipo(EquipoTO equipo);
-    public int  childsEquipo(EquipoTO equipo);
+    public long childsEquipo(EquipoTO equipo);
     public List<EquipoTO> selectEquipos( Map<String,Object> parms );
     
     /* 
@@ -96,7 +96,7 @@ public interface RecobMap
     public void insertTag(TagTO tag);
     public void updateTag(TagTO tag);
     public void deleteTag(TagTO tag);
-    public int  childsTag(TagTO tag);
+    public long childsTag(TagTO tag);
     public List<TagTO> selectTags( Map<String,Object> parms );
     public int  deleteTags(EquipoTO equipo);
  
@@ -106,7 +106,7 @@ public interface RecobMap
     public void insertResponsable(ResponsableTO responsable);
     public void updateResponsable(ResponsableTO responsable);
     public void deleteResponsable(ResponsableTO responsable);
-    public int  childsResponsable(ResponsableTO responsable);
+    public long childsResponsable(ResponsableTO responsable);
     public List<ResponsableTO> selectResponsables(Map<String,Object> parms );
 
     /*
@@ -115,7 +115,7 @@ public interface RecobMap
     public void insertLibro(LibroBloqueoTO libro);
     public void updateLibro(LibroBloqueoTO libro);
     public void deleteLibro(LibroBloqueoTO libro);
-    public int  childsLibro(LibroBloqueoTO libro);
+    public long childsLibro(LibroBloqueoTO libro);
     public int  selectNumeroLibro();
     public List<LibroBloqueoTO> selectLibros(Map<String,Object> parms);
     
