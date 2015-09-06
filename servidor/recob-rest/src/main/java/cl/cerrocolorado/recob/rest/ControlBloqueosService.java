@@ -24,11 +24,7 @@ import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
 import cl.cerrocolorado.recob.to.entidades.LibroBloqueoInfoTO;
 import cl.cerrocolorado.recob.to.entidades.LibroBloqueoTO;
 import cl.cerrocolorado.recob.to.entidades.UbicacionTO;
-import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Respuesta;
-import cl.cerrocolorado.recob.utils.mensajes.ParsearJsonError;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
 
 @Path("controlBloqueos")
 public class ControlBloqueosService
@@ -124,16 +120,16 @@ public class ControlBloqueosService
 
     @Path("{numeroCaja}/libros")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @PUT
     public RespGenerica guardarLibro(
     		@HeaderParam("token") String tokenUbicacion,
             @PathParam  ("numeroCaja") Integer numeroCaja,
-    		@FormParam  ("libro") String jsonLibro)
+    		LibroBloqueoTO libro)
     {
     	logger.info ("guardarLibro[INI] token: {}", tokenUbicacion);
         logger.info ("guardarLibro[INI] numeroCaja: {}", numeroCaja);
-    	logger.info ("guardarLibro[INI] jsonLibro: {}", jsonLibro);
+    	logger.info ("guardarLibro[INI] libro: {}", libro);
 
         Respuesta<UbicacionTO> respUbic = ubicacionBO.validarToken(tokenUbicacion);
         if( !respUbic.getResultado().esExitoso() )
@@ -145,24 +141,16 @@ public class ControlBloqueosService
         try 
         {
             UbicacionTO ubicacion = respUbic.getContenido().orElse(null);
-            LibroBloqueoTO libro = JsonUtils.fromJson(jsonLibro, LibroBloqueoTO.class);
-            if( libro == null )
-            {
-                logger.info("guardarLibro[FIN] no se pudo parsear el JSON: {}", jsonLibro);
-                return RespGenerica.of(new ParsearJsonError(this.getClass(),"Libro"));
-            }
-
-            logger.debug("guardarLibro[001] después de parsear el JSON: {}", libro);
 
             libro.setUbicacion(ubicacion);
             libro.setCaja( new CajaBloqueoTO() );
             libro.getCaja().setNumero(numeroCaja);
             libro.getCaja().setUbicacion(ubicacion);
-            logger.debug("guardarLibro[002] antes de llamar al método BO: {}", libro);
 
+            logger.debug("guardarLibro[001] antes de llamar al método BO: {}", libro);
             Respuesta<LibroBloqueoTO> r = FactoryBO.getLibroBloqueoBO().save(libro);
 
-            logger.info("guardarLibro[FIN] resultado registro libro: {}", r);
+            logger.info ("guardarLibro[FIN] resultado registro libro: {}", r);
             return RespGenerica.of(r);
         } catch (Exception e) 
         {
