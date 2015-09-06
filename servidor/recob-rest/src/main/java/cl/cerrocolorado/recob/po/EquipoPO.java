@@ -28,19 +28,19 @@ public class EquipoPO implements BasePO<EquipoTO>
     @Override
     public EquipoTO save(EquipoTO equipo)
     {
-        logger.info ("guardar[INI] equipo: {}", equipo);
+        logger.info ("save[INI] equipo: {}", equipo);
         
         if( equipo.isIdBlank() )
         {
             mapper.insertEquipo(equipo);
-            logger.debug("update[001] después de insertar el equipo: {}", equipo);
+            logger.debug("save[001] después de insertar el equipo: {}", equipo);
         } else
         {
             mapper.updateEquipo(equipo);
-            logger.debug("update[002] después de actualizar el equipo: {}", equipo);
+            logger.debug("save[002] después de actualizar el equipo: {}", equipo);
         }
         
-        logger.info ("guardar[FIN] equipo guardado con éxito: {}", equipo);
+        logger.info ("save[FIN] equipo guardado con éxito: {}", equipo);
 
         return equipo;
     }
@@ -57,7 +57,7 @@ public class EquipoPO implements BasePO<EquipoTO>
     public boolean isDeleteable(EquipoTO pk)
     {
         logger.info ("isDeleteable[INI] pkEquipo: {}", pk);
-        int relaciones = mapper.childsEquipo(pk);
+        long relaciones = mapper.childsEquipo(pk);
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
 
         return relaciones == 0;
@@ -94,13 +94,13 @@ public class EquipoPO implements BasePO<EquipoTO>
         return equipo;
     }
 
-    public boolean esTagEliminable(TagTO pk)
+    public boolean isTagDeleteable(TagTO pk)
     {
-        logger.info ("esTagEliminable[INI] pk: {}", pk);
+        logger.info ("isTagDeleteable[INI] pk: {}", pk);
         
-        int relaciones = mapper.childsTag(pk);
+        long relaciones = mapper.childsTag(pk);
         
-        logger.info ("esTagEliminable[FIN] relaciones: {}", relaciones);
+        logger.info ("isTagDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones > 0;
     }
 
@@ -149,36 +149,36 @@ public class EquipoPO implements BasePO<EquipoTO>
         return tags;
     }
     
-    public TagTO guardarTag(TagTO tag)
+    public TagTO saveTag(TagTO tag)
     {
-        logger.info("guardarTag[INI] tag: {}", tag);
+        logger.info("saveTag[INI] tag: {}", tag);
         
         if(tag.isIdBlank())
         {
             mapper.insertTag(tag);
-            logger.debug("guardarTag[001] después de insertar el tag: {}", tag);
+            logger.debug("saveTag[001] después de insertar el tag: {}", tag);
         } else
         {
             mapper.updateTag(tag);
-            logger.debug("guardarTag[001] después de actualizar el tag: {}", tag);            
+            logger.debug("saveTag[001] después de actualizar el tag: {}", tag);            
         }
 
-        logger.info("guardarTag[FIN] tag guardado con éxito: {}", tag);
+        logger.info("saveTag[FIN] tag guardado con éxito: {}", tag);
         return tag;
     }
 
-    public void eliminarTag(TagTO pk)
+    public void deleteTag(TagTO pk)
     {
-        logger.info ("eliminarTag[INI] tag: {}", pk);
+        logger.info ("deleteTag[INI] tag: {}", pk);
         mapper.deleteTag(pk);
-        logger.info ("eliminarTag[FIN] tag eliminado con éxito: {}", pk);
+        logger.info ("deleteTag[FIN] tag eliminado con éxito: {}", pk);
     }
 
-    public void eliminarTags(EquipoTO pk)
+    public void deleteTags(EquipoTO pk)
     {
-        logger.info ("eliminarTags[INI] tag: {}", pk);
+        logger.info ("deleteTags[INI] tag: {}", pk);
         mapper.deleteTags(pk);
-        logger.info ("eliminarTags[FIN] tags eliminados con éxito: {}", pk);
+        logger.info ("deleteTags[FIN] tags eliminados con éxito: {}", pk);
     }
 
     public List<EquipoTO> getList(UbicacionTO pkUbicacion, 

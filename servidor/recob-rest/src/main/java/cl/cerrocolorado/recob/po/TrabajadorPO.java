@@ -27,34 +27,34 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     @Autowired
     private RecobMap mapper;
 
-    private PersonaTO guardarPersona(PersonaTO persona)
+    private PersonaTO savePersona(PersonaTO persona)
     {
-        logger.info ("guardarPersona[INI] persona: {}", persona);
+        logger.info ("savePersona[INI] persona: {}", persona);
         
         PersonaTO otra = getPersona(persona);
         if( otra == null )
         {
             mapper.insertPersona(persona);
-            logger.debug("guardarPersona[001] después de insertar a la persona: {}", persona);
+            logger.debug("savePersona[001] después de insertar a la persona: {}", persona);
         }
         else
         {
             persona.setId(otra.getId());
             mapper.updatePersona(persona);
-            logger.debug("guardarPersona[002] después de actualizar a la persona: {}", persona);
+            logger.debug("savePersona[002] después de actualizar a la persona: {}", persona);
         }
         
-        logger.info ("guardarPersona[FIN] persona guardada con éxito: {}", persona);
+        logger.info ("savePersona[FIN] persona guardada con éxito: {}", persona);
         return persona;
     }
     
     @Override
     public TrabajadorTO save(TrabajadorTO trabajador)
     {
-        logger.info ("guardar[INI] trabajador: {}", trabajador);
+        logger.info ("save[INI] trabajador: {}", trabajador);
 
-        PersonaTO persona = guardarPersona(trabajador);
-        logger.debug("guardar[001] después de guardar a la persona: {}", persona);
+        PersonaTO persona = savePersona(trabajador);
+        logger.debug("save[001] después de guardar a la persona: {}", persona);
 
         // Validamos si ya existe la relación entre Persona y Empresa
         trabajador.setId(persona.getId());
@@ -62,24 +62,24 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         if(otro==null)
         {
             mapper.insertTrabajador(trabajador);
-            logger.info("guardar[002] después de insertar al trabajador: {}", trabajador);
+            logger.info("save[002] después de insertar al trabajador: {}", trabajador);
         } else
         {
             trabajador.setEmpresa(otro.getEmpresa());
             mapper.updateTrabajador(trabajador);
-            logger.info("guardar[003] después de actualizar al trabajador: {}", trabajador);            
+            logger.info("save[003] después de actualizar al trabajador: {}", trabajador);            
         }
 
-        logger.info ("guardar[FIN] trabajador guardado con éxito: {}", trabajador);
+        logger.info ("save[FIN] trabajador guardado con éxito: {}", trabajador);
         return trabajador;
     }
 
     @Override
     public void delete(TrabajadorTO pkTrabajador)
     {
-        logger.info ("eliminar[INI] trabajador: {}", pkTrabajador );
+        logger.info ("delete[INI] trabajador: {}", pkTrabajador );
         mapper.deleteTrabajador(pkTrabajador);
-        logger.info ("eliminar[FIN] despues de eliminar el registro: {}", pkTrabajador );
+        logger.info ("delete[FIN] despues de eliminar el registro: {}", pkTrabajador );
     }
 
     @Override
@@ -183,9 +183,8 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
     public boolean isDeleteable(TrabajadorTO pk)
     {
         logger.info ("isDeleteable[INI] pkTrabajador: {}", pk);
-        int relaciones = mapper.childsTrabajador(pk);
+        long relaciones = mapper.childsTrabajador(pk);
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
-
         return relaciones == 0;
     }
 }

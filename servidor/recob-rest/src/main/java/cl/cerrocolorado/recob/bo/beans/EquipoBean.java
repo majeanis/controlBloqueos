@@ -133,7 +133,7 @@ public class EquipoBean implements EquipoBO
         // Revisamos si es posible eliminar los TAGs
         for( TagTO tag: equipo.getTags())
         {
-            if( !equipoPO.esTagEliminable(tag) )
+            if( !equipoPO.isTagDeleteable(tag) )
             {
                 rtdo.addError(this.getClass(), "TAG %s tiene registros asociados", tag.getCodigo());
             }
@@ -145,7 +145,7 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        equipoPO.eliminarTags(equipo);
+        equipoPO.deleteTags(equipo);
         equipoPO.delete(equipo);
         
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
@@ -211,7 +211,7 @@ public class EquipoBean implements EquipoBO
     		return Respuesta.of(rtdo);
     	}
 
-    	equipoPO.guardarTag(tag);
+    	equipoPO.saveTag(tag);
         logger.debug("save[001] después de guardar el TAG: {}", tag);
 
         rtdo.addMensaje(this.getClass(), "TAG guardado con éxito");
@@ -256,14 +256,14 @@ public class EquipoBean implements EquipoBO
             return Respuesta.of(rtdo);
         }
         
-        if( equipoPO.esTagEliminable(tag))
+        if( equipoPO.isTagDeleteable(tag))
         {
             rtdo.addError(this.getClass(), "TAG tiene registros asociados");
             logger.info("eliminarTag[FIN] tag no es eliminable: {}", tag );
             return Respuesta.of(rtdo);
         }
 
-        equipoPO.eliminarTag(tag);
+        equipoPO.deleteTag(tag);
         rtdo.addMensaje(this.getClass(), "Registro eliminado con éxito");
         
         logger.info ("eliminarTag[FIN] registro eliminado con éxito: {}", tag);        

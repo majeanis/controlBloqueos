@@ -29,19 +29,19 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     @Override
     public CajaBloqueoTO save(CajaBloqueoTO caja)
     {
-        logger.info ("guardar[INI] caja: {}", caja);
+        logger.info ("save[INI] caja: {}", caja);
 
         if( caja.isIdBlank() )
         {
             mapper.insertCajaBloqueo( caja );    
-            logger.debug("guardar[001] después de insertar la caja: {}", caja);
+            logger.debug("save[001] después de insertar la caja: {}", caja);
         } else
         {
             mapper.updateCajaBloqueo( caja );
-            logger.debug("guardar[002] después de actualizar la caja: {}", caja);
+            logger.debug("save[002] después de actualizar la caja: {}", caja);
         }
         
-        logger.info ("guardar[FIN] caja guardada con éxito: {}", caja);
+        logger.info ("save[FIN] caja guardada con éxito: {}", caja);
         return caja;
     }
 
@@ -98,7 +98,7 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
     {
         logger.info ("isDeleteable[INI] pkCaja: {}", pk);
         
-        int relaciones = mapper.childsCajaBloqueo(pk);
+        long relaciones = mapper.childsCajaBloqueo(pk);
         
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;

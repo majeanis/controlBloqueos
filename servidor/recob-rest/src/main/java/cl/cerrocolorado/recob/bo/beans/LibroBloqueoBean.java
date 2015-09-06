@@ -133,7 +133,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
 
         if( esNuevo )
         {
-            libro.setNumero(libroBloqueoPO.obtenerNumeroLibro());
+            libro.setNumero(libroBloqueoPO.getNumeroLibro());
             logger.debug("save[003] después de obtener un nuevo número de libro: {}", libro.getNumero() );
         }
 
@@ -180,7 +180,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        LibroBloqueoInfoTO libro = libroBloqueoPO.obtenerLibro(pk);
+        LibroBloqueoInfoTO libro = libroBloqueoPO.getLibro(pk);
         if(libro==null)
         {
             rtdo.addError(this.getClass(), "No existe Libro con N° %d", pk.getNumero());
@@ -203,7 +203,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<LibroBloqueoTO> lista = libroBloqueoPO.obtenerList(pk, Optional.of(Boolean.TRUE), fechaLibro, Optional.empty());
+        List<LibroBloqueoTO> lista = libroBloqueoPO.getList(pk, Optional.of(Boolean.TRUE), fechaLibro, Optional.empty());
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getAbiertos[FIN] registros retornados: {}", lista.size());
@@ -224,7 +224,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<LibroBloqueoTO> lista = libroBloqueoPO.obtenerList(pk, Optional.of(Boolean.FALSE), Optional.empty(), fechaCierre);
+        List<LibroBloqueoTO> lista = libroBloqueoPO.getList(pk, Optional.of(Boolean.FALSE), Optional.empty(), fechaCierre);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getCerrados[FIN] registros retornados: {}", lista.size());
@@ -244,7 +244,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
+        TagLibroTO tag = libroBloqueoPO.getTag(pk);
         if(tag==null)
         {
             rtdo.addError(this.getClass(), "No existe TAG con código %s", pk.getTag().getCodigo());
@@ -268,7 +268,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<TagLibroTO> lista = libroBloqueoPO.obtenerTags(pk, energiaCero);
+        List<TagLibroTO> lista = libroBloqueoPO.getTags(pk, energiaCero);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getTags[FIN] registros encontrados: {}", lista.size());
@@ -289,7 +289,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        TagLibroTO tag = libroBloqueoPO.obtenerTag(pk);
+        TagLibroTO tag = libroBloqueoPO.getTag(pk);
         if(tag==null)
         {
             rtdo.addError(this.getClass(), "No existe TAG: %s", pk.getTag().getCodigo());
@@ -297,7 +297,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.eliminarTag(tag);
+        libroBloqueoPO.deleteTag(tag);
         rtdo.addMensaje(this.getClass(), "TAG eliminado con éxito");
         
         logger.info ("eliminarTag[FIN] pk: {}", pk);
@@ -317,7 +317,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<EnergiaLibroTO> lista = libroBloqueoPO.obtenerEnergias(pk);
+        List<EnergiaLibroTO> lista = libroBloqueoPO.getEnergias(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getEnergias[FIN] registros encontrados: {}", lista.size());
@@ -345,7 +345,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        EnergiaLibroTO energia = libroBloqueoPO.obtenerEnergia(pk);
+        EnergiaLibroTO energia = libroBloqueoPO.getEnergia(pk);
         if(energia==null)
         {
             rtdo.addError(this.getClass(), "No existe Energia: %s", pk.getNombre() );
@@ -353,7 +353,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.eliminarEnergia(energia);
+        libroBloqueoPO.deleteEnergia(energia);
         rtdo.addMensaje(this.getClass(), "Registro de la energía eliminado con éxito" );
 
         logger.info("eliminarEnergia[FIN] registro eliminado con éxito: {}", rtdo);
@@ -373,7 +373,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<DotacionLibroTO> lista = libroBloqueoPO.obtenerDotaciones(pk);
+        List<DotacionLibroTO> lista = libroBloqueoPO.getDotaciones(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getDotacion[FIN] registros encontrados: {}", lista.size());
@@ -394,7 +394,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        DotacionLibroTO dotacion = libroBloqueoPO.obtenerDotacion(pk);
+        DotacionLibroTO dotacion = libroBloqueoPO.getDotacion(pk);
         if(dotacion==null)
         {
             rtdo.addError(this.getClass(), "No existe registro de dotacion: %s", pk.getTrabajador().getRut().toText() );
@@ -402,7 +402,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.eliminarDotacion(dotacion);
+        libroBloqueoPO.deleteDotacion(dotacion);
         rtdo.addMensaje(this.getClass(), "Registro de dotación eliminado con éxito" );
 
         logger.info("eliminarDotacion[FIN] registro eliminado con éxito: {}", rtdo);
@@ -422,7 +422,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        List<RespLibroTO> lista = libroBloqueoPO.obtenerResponsables(pk);
+        List<RespLibroTO> lista = libroBloqueoPO.getResponsables(pk);
         rtdo.addMensaje(new RegistrosQueryInfo(this.getClass(), lista.size()));
 
         logger.info("getResponsables[FIN] registros encontrados: {}", lista.size());
@@ -472,7 +472,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             rtdo.addError(this.getClass(), "Debe informar el atributo Energía Cero");
         }
         
-        TagLibroTO otro = libroBloqueoPO.obtenerTag(tag);
+        TagLibroTO otro = libroBloqueoPO.getTag(tag);
         if(esNuevo)
         {
             if(otro!=null)
@@ -498,7 +498,7 @@ public class LibroBloqueoBean implements LibroBloqueoBO
             return Respuesta.of(rtdo);
         }
         
-        libroBloqueoPO.guardarTag(tag);
+        libroBloqueoPO.saveTag(tag);
         rtdo.addMensaje(this.getClass(), "Registro guardado con éxito");
 
         logger.info("guardarTag[INI] registro guardado con éxito: {}", tag);

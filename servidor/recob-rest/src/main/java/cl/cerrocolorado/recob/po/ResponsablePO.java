@@ -25,19 +25,19 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     @Override
     public ResponsableTO save(ResponsableTO datos)
     {
-        logger.info ("guardar[INI] datos: {}", datos);
+        logger.info ("save[INI] datos: {}", datos);
         
         if(datos.isIdBlank())
         {
             mapper.insertResponsable(datos);
-            logger.debug("guardar[001] después de insertar al responsable: {}", datos);            
+            logger.debug("save[001] después de insertar al responsable: {}", datos);            
         } else
         {
             mapper.updateResponsable(datos);
-            logger.debug("guardar[002] después de actualizar al responsable: {}", datos);
+            logger.debug("save[002] después de actualizar al responsable: {}", datos);
         }
         
-        logger.info ("guardar[FIN] responsable guardado con éxito: {}", datos);
+        logger.info ("save[FIN] responsable guardado con éxito: {}", datos);
         return datos;
     }
 
@@ -53,9 +53,8 @@ public class ResponsablePO implements BasePO<ResponsableTO>
     public boolean isDeleteable(ResponsableTO pk)
     {
         logger.info ("isDeleteable[INI] pk: {}", pk);
-        int i = mapper.childsResponsable(pk);
+        long i = mapper.childsResponsable(pk);
         logger.info ("isDeleteable[FIN] registros hijos: {}", i);
-
         return i == 0;
     }
 

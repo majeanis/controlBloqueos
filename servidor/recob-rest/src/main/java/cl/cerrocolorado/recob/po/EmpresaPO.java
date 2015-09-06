@@ -28,18 +28,18 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     @Override
     public EmpresaTO save(EmpresaTO empresa)
     {
-        logger.info ("guardar[INI] empresa: {}", empresa);
+        logger.info ("save[INI] empresa: {}", empresa);
         if(empresa.isIdBlank())
         {
             mapper.insertEmpresa( empresa );            
-            logger.debug("guardar[001] después de insertar la empresa: {}", empresa);
+            logger.debug("save[001] después de insertar la empresa: {}", empresa);
         } else
         {
             mapper.updateEmpresa( empresa );
-            logger.debug("guardar[002] después de actualizar la empresa: {}", empresa);
+            logger.debug("save[002] después de actualizar la empresa: {}", empresa);
         }
 
-        logger.info ("guardar[FIN] empresa guardad con éxito: {}", empresa);
+        logger.info ("save[FIN] empresa guardad con éxito: {}", empresa);
         return empresa;
     }
 
@@ -55,7 +55,7 @@ public class EmpresaPO implements BasePO<EmpresaTO>
     public boolean isDeleteable(EmpresaTO pk)
     {
         logger.info ("isDeleteable[INI] pkEmpresa: {}", pk);
-        int relaciones = mapper.childsEmpresa(pk);
+        long relaciones = mapper.childsEmpresa(pk);
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
     }

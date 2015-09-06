@@ -31,19 +31,19 @@ public class CandadoPO implements BasePO<CandadoTO>
     @Override
     public CandadoTO save(CandadoTO candado)
     {
-        logger.info ("guardar[INI] candado: {}", candado);
+        logger.info ("save[INI] candado: {}", candado);
 
         if(candado.isIdBlank())
         {
             mapper.insertCandado( candado );    
-            logger.debug("guardar[001] después de insertar el candado: {}", candado);
+            logger.debug("save[001] después de insertar el candado: {}", candado);
         } else
         {
             mapper.updateCandado( candado );
-            logger.debug("guardar[002] después de actualizar el candado: {}", candado);
+            logger.debug("save[002] después de actualizar el candado: {}", candado);
         }
 
-        logger.info ("guardar[FIN] candado guardado con éxito: {}", candado);
+        logger.info ("save[FIN] candado guardado con éxito: {}", candado);
         return candado;
     }
 
@@ -60,7 +60,7 @@ public class CandadoPO implements BasePO<CandadoTO>
     {
         logger.info ("isDeleteable[INI] pkCandado: {}", pk);
         
-        int relaciones = mapper.childsCandado(pk);
+        long relaciones = mapper.childsCandado(pk);
         
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
