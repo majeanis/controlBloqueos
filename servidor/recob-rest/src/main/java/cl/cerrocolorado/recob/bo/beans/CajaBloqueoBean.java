@@ -13,6 +13,7 @@ import cl.cerrocolorado.recob.utils.Utils;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         {
             rtdo.addError( this.getClass(), "Debe informar N° de la Caja" );
         }
-        if( caja.getNombre() == null )
+        if( StringUtils.isBlank(caja.getNombre()) )
         {
             rtdo.addError( this.getClass(), "Debe informar nombre de la Caja" );
         }
