@@ -11,21 +11,10 @@ public class CajaBloqueoTO extends EntidadTO
 {
 	private static final long serialVersionUID = 1L;
 
-    private Rut rut;
     private Integer numero;
     private String nombre;
     private Boolean vigente;
     private UbicacionTO ubicacion;
-
-    public Rut getRut()
-    {
-        return rut;
-    }
-
-    public void setRut(Rut rut)
-    {
-        this.rut = rut;
-    }
 
     public String getNombre()
     {
