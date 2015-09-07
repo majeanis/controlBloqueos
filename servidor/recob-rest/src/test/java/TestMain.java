@@ -22,11 +22,12 @@ public class TestMain
 {
    public static void main(String[] args) throws IOException
     {
-        String j2 = "{\"rut\":\"13005188-K\",\"id\":0,\"numero\":3,\"nombre\":\"CAJA N° 3\",\"vigente\":true}";
+        String j2 = "{\"id\":0,\"numero\":3,\"nombre\":\"CAJA N° 3\",\"vigente\":true}";
         ObjectMapper mapper = new ObjectMapper();
         CajaBloqueoTO c = mapper.readValue(j2, CajaBloqueoTO.class);
         
-        System.out.println( c.getClass().isAssignableFrom(ObjetoTO.class) );
-        System.out.println( ObjetoTO.class.isAssignableFrom(c.getClass()) );
+        System.out.println( c );
+        System.out.println( c.clone() );
+        System.out.println( c == c.clone() );
     }
 }

@@ -12,6 +12,7 @@ import cl.cerrocolorado.recob.utils.ResultadoProceso;
 import cl.cerrocolorado.recob.utils.Utils;
 import cl.cerrocolorado.recob.utils.mensajes.RegistrosQueryInfo;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -81,15 +82,22 @@ public class CajaBloqueoBean implements CajaBloqueoBO
         logger.debug("save[001] es un nuevo registro?: {}", caja.isIdBlank() );
 
         CajaBloqueoTO otra = cajaPO.get( caja );
-        if( caja.isIdBlank() )
-        {
-            if(otra != null)
-            {
-                rtdo.addError(this.getClass(), "Ya existe Caja con el N° %d", caja.getNumero());
-            }
-        } else if( otra == null )
+        logger.debug("save[002] antes de validar la llave de negocio: otra {} - caja {}", otra, caja);
+        
+        // si no se encontró una caja y se está actualizando una caja
+        if(otra == null && !caja.isIdBlank() )
         {
             rtdo.addError(this.getClass(), "No existe Caja con el N° %d", caja.getNumero());
+        }
+        // si se encontró una caja y se está creando una nueva caja
+        else if(otra != null && caja.isIdBlank())
+        {
+            rtdo.addError(this.getClass(), "Ya existe Caja con el N° %d", caja.getNumero());
+        }
+        // si se encontró una caja y no es la misma que se está actualizando
+        else if(otra != null && !Objects.equals(otra.getId(), caja.getId()))
+        {
+            rtdo.addError(this.getClass(), "Ya existe Caja con el N° %d", caja.getNumero());            
         }
 
         logger.debug("save[002] resultado validaciones: {}", rtdo);

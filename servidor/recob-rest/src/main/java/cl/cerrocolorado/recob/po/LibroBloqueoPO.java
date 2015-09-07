@@ -67,20 +67,13 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
     }
-    
-    @Override
-    public LibroBloqueoTO get(LibroBloqueoTO pk)
+
+    private LibroBloqueoTO get(Map<String,Object> parms)
     {
-        logger.info ("get[INI] pk: {}", pk );
-        
-        Map<String, Object> parms = new HashMap<>();
-        parms.put( "libro", pk );
-        parms.put( "ubicacion", pk.getUbicacion());
-        
-        logger.debug("get[001] parametros: {}", parms);
+        logger.info ("get[INI] parametros: {}", parms);
         
         List<LibroBloqueoTO> lista = mapper.selectLibros( parms );
-        logger.debug("get[002] despues de ejecutar el select: {}", lista.size() );
+        logger.debug("get[001] despues de ejecutar el select: {}", lista.size() );
         
         if(lista.isEmpty())
         {
@@ -90,6 +83,35 @@ public class LibroBloqueoPO implements BasePO<LibroBloqueoTO>
         
         logger.info ("get[FIN] registro encontrado: {}", lista.get(0) );
         return lista.get(0);
+    }
+    
+    @Override
+    public LibroBloqueoTO get(LibroBloqueoTO pk)
+    {
+        logger.info ("get[INI] pk: {}", pk );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", pk.getUbicacion());
+        parms.put( "caja", pk.getCaja() );
+        parms.put( "numero", pk.getNumero() );
+        
+        LibroBloqueoTO l = get( parms );
+        logger.info ("get[FIN] registro encontrado: {}", l);
+        return l;
+    }
+
+    @Override
+    public LibroBloqueoTO getById(LibroBloqueoTO id)
+    {
+        logger.info ("get[INI] id: {}", id );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", id.getUbicacion());
+        parms.put( "id", id.getId() );
+        
+        LibroBloqueoTO l = get( parms );
+        logger.info ("get[FIN] registro encontrado: {}", l);
+        return l;
     }
     
     public LibroBloqueoInfoTO getLibro(LibroBloqueoTO pk)

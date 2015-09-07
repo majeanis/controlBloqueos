@@ -59,27 +59,48 @@ public class EmpresaPO implements BasePO<EmpresaTO>
         logger.info ("isDeleteable[FIN] relaciones: {}", relaciones);
         return relaciones == 0;
     }
-    
-    @Override
-    public EmpresaTO get(EmpresaTO pkEmpresa )
+
+    private EmpresaTO get(Map<String,Object> parms)
     {
-        logger.info ("get[INI] pkEmpresa: {}", pkEmpresa );
+        logger.info ("get[INI] parmsa: {}", parms );
         
-        Map<String, Object> params = new HashMap<>();
-        params.put( "empresa", pkEmpresa );
-        logger.debug ("get[001] parametros: {}", params);
-        
-        List<EmpresaTO> lista = mapper.selectEmpresas( params );
-        logger.debug ("get[002] despues de ejecutar el select: {}", lista.size() );
+        List<EmpresaTO> lista = mapper.selectEmpresas( parms );
+        logger.debug("get[001] despues de ejecutar el select: {}", lista.size() );
         
         if(lista.isEmpty())
         {
-            logger.info ("get[FIN] no se encontró registro del candado: {}", params );
+            logger.info ("get[FIN] no se encontró registro del candado: {}", parms );
             return null;
         }
         
         logger.info ("get[FIN] registro encontrado: {}", lista.get(0) );
         return lista.get(0);
+    }
+
+    @Override
+    public EmpresaTO get(EmpresaTO pk )
+    {
+        logger.info ("get[INI] pk: {}", pk );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "rut", pk.getRut() );
+        
+        EmpresaTO e = get(parms);
+        logger.info ("get[FIN] registro encontrado: {}", e );
+        return e;
+    }
+
+    @Override
+    public EmpresaTO getById(EmpresaTO id )
+    {
+        logger.info ("get[INI] id: {}", id );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "id", id.getId() );
+        
+        EmpresaTO e = get(parms);
+        logger.info ("get[FIN] registro encontrado: {}", e );
+        return e;
     }
     
     public List<EmpresaTO> getList(Optional<Boolean> vigencia)

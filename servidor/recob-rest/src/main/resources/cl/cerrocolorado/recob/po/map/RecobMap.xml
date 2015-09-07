@@ -207,16 +207,14 @@
            on (b.ubic_id = d.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="caja!=null and caja.id != null" >
-                and a.cabl_id = #{caja.id}
+            <when test="id!=null" >
+                and a.cabl_id = #{id}
             </when>
-            <when test="caja!=null and caja.numero != null" >
-                and a.cabl_nume = #{caja.numero}
-            </when>
-            <when test="caja!=null" >
-                and a.cabl_id is null
+            <when test="numero!=null" >
+                and a.cabl_nume = #{numero}
             </when>
         </choose>
+
         <if test="vigencia != null" >
             and a.cabl_vige = #{vigencia}
         </if>
@@ -290,20 +288,17 @@
            on (d.ubic_id = e.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="candado!=null and candado.id!=null" >
-                and a.cand_id = #{candado.id}
+            <when test="id!=null" >
+                and a.cand_id = #{id}
             </when>
-            <when test="candado!=null and candado.numero!=null" >
-                and a.cand_nume  = #{candado.numero}
+            <when test="numero!=null" >
+                and a.cand_nume = #{numero}
             </when>
             <when test="serie!=null" >
                 and a.cand_seri = #{serie}
             </when>
             <when test="persona!=null and persona.rut!=null" >
                 and c.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
-            </when>
-            <when test="candado!=null" >
-                and a.cand_id is null
             </when>
         </choose>
         <if test="vigencia != null" >
@@ -350,19 +345,7 @@
               ,a.pers_rut
               ,a.pers_nomb
         from   rcb_pers a
-        <where>
-            <choose>
-                <when test = "persona != null and persona.id != null" >
-                    a.pers_id  = #{persona.id}
-                </when>
-                <when test = "persona != null and persona.rut != null" >
-                    a.pers_rut = #{persona.rut,typeHandler=RutTypeHandler}
-                </when>
-                <when test = "persona != null" >
-                    a.pers_id is null
-                </when>
-            </choose>
-        </where>
+        where  a.pers_rut = #{rut,typeHandler=RutTypeHandler}
         order by a.pers_rut
     </select>
 
@@ -398,15 +381,12 @@
            on (a.empr_id = c.empr_id)
         <where>
         	<choose>
-	            <when test = "trabajador!=null and trabajador.id!=null" >
-	                b.pers_id = #{trabajador.id}
+	            <when test = "id!=null" >
+	                b.pers_id = #{id}
 	            </when>
-	            <when test = "trabajador!=null and trabajador.rut!=null" >
-	                b.pers_rut = #{trabajador.rut,typeHandler=RutTypeHandler}
+	            <when test = "rut!=null" >
+	                b.pers_rut = #{rut,typeHandler=RutTypeHandler}
 	            </when>
-                <when test = "trabajador!=null" >
-                    b.pers_id is null
-                </when>
         	</choose>
         	<choose>
 	            <when test = "empresa!=null and empresa.id!=null" >
@@ -468,14 +448,11 @@
         from   rcb_empr a
         <where>
             <choose>
-                <when test="empresa != null and empresa.id != null" >
-                    a.empr_id = #{empresa.id}
+                <when test="id != null" >
+                    a.empr_id = #{id}
                 </when>
-                <when test="empresa != null and empresa.rut != null" >
-                    a.empr_rut = #{empresa.rut,typeHandler=RutTypeHandler}
-                </when>
-                <when test="empresa!=null" >
-                    a.empr_id is null
+                <when test="rut != null" >
+                    a.empr_rut = #{rut,typeHandler=RutTypeHandler}
                 </when>
             </choose>
             <if test="vigencia != null" >
@@ -525,14 +502,11 @@
            on (a.ubic_id = b.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="equipo!=null and equipo.id != null" >
-                a.eqpo_id = #{equipo.id}
+            <when test="id != null" >
+                a.eqpo_id = #{id}
             </when>
-            <when test="equipo!=null and equipo.codigo != null" >
-                a.eqpo_codi = #{equipo.codigo}
-            </when>
-            <when test="equipo!=null" >
-                a.eqpo_id is null
+            <when test="codigo != null" >
+                a.eqpo_codi = #{codigo}
             </when>
         </choose>            
         <if test="vigencia != null" >
@@ -694,14 +668,11 @@
            on (a.ubic_id = e.ubic_id)
         where  a.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="persona != null and persona.id!=null">
-                b.pers_id = #{trabajador.id}
+            <when test="id!=null">
+                b.resp_id = #{id}
             </when>
             <when test="persona != null and persona.rut!=null">
                 b.pers_rut = #{trabajador.rut}
-            </when>
-            <when test="persona != null" >
-                b.pers_id is null
             </when>
         </choose>
         <choose>
@@ -799,14 +770,11 @@
            on (c.estc_id = d.estc_id)
         where  c.ubic_id = #{ubicacion.id}
         <choose>
-            <when test="libro != null and libro.id!=null" >
-                a.lcbl_id   = #{libro.id}                
+            <when test="id!=null" >
+                a.lcbl_id   = #{id}                
             </when>
-            <when test="libro != null and libro.numero!=null" >
-                a.lcbl_nume = #{libro.numero}                
-            </when>
-            <when test="libro != null" >
-                a.lcbl_id is null
+            <when test="numero!=null" >
+                a.lcbl_nume = #{numero}                
             </when>
         </choose>
         <choose>

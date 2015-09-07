@@ -63,16 +63,10 @@ public class EquipoPO implements BasePO<EquipoTO>
         return relaciones == 0;
     }
 
-    @Override
-    public EquipoTagsTO get(EquipoTO pk)
+    private EquipoTagsTO get(Map<String,Object> parms)
     {
-        logger.info("get[INI] pk: {}", pk);
+        logger.info ("get[INI] parms: {}", parms);
 
-        Map<String,Object> parms = new HashMap<>();
-        parms.put("ubicacion", pk.getUbicacion());
-        parms.put("equipo"   , pk);
-        logger.debug("get[001] parámetros del select: {}", parms);
-        
         List<EquipoTO> lista = mapper.selectEquipos(parms);
         logger.debug("get[001] después de ejecutare el select: {}", lista.size() );
         
@@ -93,7 +87,35 @@ public class EquipoPO implements BasePO<EquipoTO>
         logger.info("get[FIN] registro encontrado: {}", equipo);
         return equipo;
     }
+    
+    @Override
+    public EquipoTagsTO get(EquipoTO pk)
+    {
+        logger.info("get[INI] pk: {}", pk);
 
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("ubicacion", pk.getUbicacion());
+        parms.put("codigo"   , pk.getCodigo());
+
+        EquipoTagsTO e = get(parms);
+        logger.info("get[FIN] registro encontrado: {}", e);
+        return e;
+    }
+
+    @Override
+    public EquipoTagsTO getById(EquipoTO id)
+    {
+        logger.info("getById[INI] id: {}", id);
+
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("ubicacion", id.getUbicacion());
+        parms.put("id"       , id.getId());
+
+        EquipoTagsTO e = get(parms);
+        logger.info("get[FIN] registro encontrado: {}", e);
+        return e;
+    }
+    
     public boolean isTagDeleteable(TagTO pk)
     {
         logger.info ("isTagDeleteable[INI] pk: {}", pk);

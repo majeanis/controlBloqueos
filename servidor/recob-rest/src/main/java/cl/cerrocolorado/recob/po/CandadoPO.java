@@ -66,18 +66,11 @@ public class CandadoPO implements BasePO<CandadoTO>
         return relaciones == 0;
     }
 
-    @Override
-    public CandadoTO get(CandadoTO pkCandado )
+    private CandadoTO get(Map<String, Object> parms )
     {
-        logger.info ("get[INI] pkCandado: {}", pkCandado );
-        
-        Map<String, Object> parms = new HashMap<>();
-        parms.put( "ubicacion", pkCandado.getUbicacion() );
-        parms.put( "candado", pkCandado );
-        logger.debug ("get[001] parametros: {}", parms);
+        logger.info ("get[INI] parms: {}", parms );
         
         List<CandadoTO> candados = mapper.selectCandados( parms );
-        logger.debug ("get[002] despues de ejecutar el select: {}", candados.size() );
         
         if(candados.isEmpty())
         {
@@ -89,27 +82,45 @@ public class CandadoPO implements BasePO<CandadoTO>
         return candados.get(0);
     }
     
-    public CandadoTO getBySerie(CandadoTO pkCandado)
+    @Override
+    public CandadoTO get(CandadoTO pk )
     {
-        logger.info ("getBySerie[INI] pkCandado: {}", pkCandado );
+        logger.info ("get[INI] pk: {}", pk );
         
         Map<String, Object> parms = new HashMap<>();
-        parms.put( "candado", new CandadoTO());
-        parms.put( "ubicacion", pkCandado.getUbicacion() );
-        parms.put( "serie", pkCandado.getSerie() );
-        logger.debug ("getBySerie[001] parametros: {}", parms);
+        parms.put( "ubicacion", pk.getUbicacion() );
+        parms.put( "numero", pk.getNumero() );
+        
+        CandadoTO c = get(parms);
+        logger.info ( "get[FIN] registro encontrado: {}", c);
+        return c;
+    }
 
-        List<CandadoTO> candados = mapper.selectCandados( parms );
-        logger.debug ("getBySerie[002] despues de ejecutar el select: {}", candados.size() );
+    @Override
+    public CandadoTO getById(CandadoTO id)
+    {
+        logger.info ("getById[INI] id: {}", id );
         
-        if(candados.isEmpty())
-        {
-            logger.info ("getBySerie[FIN] no se encontró registro del candado: {}", parms );
-            return null;
-        }
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", id.getUbicacion() );
+        parms.put( "id", id.getId() );
         
-        logger.info ("getBySerie[FIN] candado encontrado: {}", candados.get(0) );
-        return candados.get(0);
+        CandadoTO c = get(parms);
+        logger.info ( "getById[FIN] registro encontrado: {}", c);
+        return c;
+    }
+    
+    public CandadoTO getBySerie(CandadoTO pk)
+    {
+        logger.info ("getBySerie[INI] pk: {}", pk );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", pk.getUbicacion() );
+        parms.put( "serie", pk.getSerie() );
+        
+        CandadoTO c = get(parms);
+        logger.info ( "getBySerie[FIN] registro encontrado: {}", c);
+        return c;
     }
     
     public List<CandadoTO> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)

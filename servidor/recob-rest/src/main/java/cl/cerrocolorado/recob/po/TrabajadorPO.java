@@ -82,29 +82,50 @@ public class TrabajadorPO implements BasePO<TrabajadorTO>
         logger.info ("delete[FIN] despues de eliminar el registro: {}", pkTrabajador );
     }
 
-    @Override
-    public TrabajadorTO get(TrabajadorTO pkTrabajador )
+    private TrabajadorTO get(Map<String, Object> parms )
     {
-        logger.info ("get[INI] pkTrabajador: {}", pkTrabajador );
+        logger.info ("get[INI] parms: {}", parms );
 
-        Map<String, Object> params = new HashMap<>();
-        params.put( "trabajador", pkTrabajador );
-        params.put( "empresa", pkTrabajador.getEmpresa() );
-        logger.debug ("get[001] parametros: {}", params);
-        
-        List<TrabajadorTO> lista = mapper.selectTrabajadores( params );
-        logger.debug ("get[002] despues de ejecutar el select: {}", lista.size() );
+        List<TrabajadorTO> lista = mapper.selectTrabajadores( parms );
+        logger.debug("get[002] despues de ejecutar el select: {}", lista.size() );
         
         if(lista.isEmpty())
         {
-            logger.info ("get[FIN] no se encontró registro: {}", params );
+            logger.info ("get[FIN] no se encontró registro: {}", parms );
             return null;
         }
-        
+
         logger.info ("get[FIN] registo encontrado: {}", lista.get(0) );
         return lista.get(0);
     }
     
+    @Override
+    public TrabajadorTO get(TrabajadorTO pk )
+    {
+        logger.info ("get[INI] pk: {}", pk );
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "empresa", pk.getEmpresa() );
+        parms.put( "rut", pk.getRut() );
+        
+        TrabajadorTO t = get(parms);
+        logger.info ("get[FIN] registo encontrado: {}", t );
+        return t;
+    }
+
+    @Override
+    public TrabajadorTO getById(TrabajadorTO id)
+    {
+        logger.info ("getById[INI] id: {}", id );
+
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "id", id.getId() );
+        
+        TrabajadorTO t = get(parms);
+        logger.info ("getById[FIN] registo encontrado: {}", t );
+        return t;
+    }
+
     public List<TrabajadorTO> getList(EmpresaTO pkEmpresa, 
                                       Optional<Boolean> vigencia)
     {

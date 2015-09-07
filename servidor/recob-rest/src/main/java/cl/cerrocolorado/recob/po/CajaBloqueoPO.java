@@ -53,22 +53,16 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
         logger.info ("delete[FIN] despues de eliminar a la caja: {}", pkCaja );
     }
 
-    @Override
-    public CajaBloqueoTO get(CajaBloqueoTO pkCaja)
+    private CajaBloqueoTO get(Map<String, Object> parms)
     {
-        logger.info ("get[INI] pkCaja: {}", pkCaja );
+        logger.info ("get[INI] parms: {}", parms );
         
-        Map<String, Object> params = new HashMap<>();
-        params.put( "ubicacion", pkCaja.getUbicacion() );
-        params.put( "caja", pkCaja );
-        logger.debug("get[001] parametros: {}", params);
-        
-        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( params );
-        logger.debug("get[002] despues de ejecutar el select: {}", cajas.size() );
+        List<CajaBloqueoTO> cajas = mapper.selectCajasBloqueos( parms );
+        logger.debug("get[001] despues de ejecutar el select: {}", cajas.size() );
         
         if(cajas.isEmpty())
         {
-            logger.info ("get[FIN] no se encontró registro de la caja: {}", params );
+            logger.info ("get[FIN] no se encontró registro de la caja: {}", parms );
             return null;
         }
         
@@ -76,6 +70,34 @@ public class CajaBloqueoPO implements BasePO<CajaBloqueoTO>
         return cajas.get(0);
     }
     
+    @Override
+    public CajaBloqueoTO get(CajaBloqueoTO pk)
+    {
+        logger.info ("get[INI] pk: {}", pk );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", pk.getUbicacion() );
+        parms.put( "numero", pk.getNumero() );
+        
+        CajaBloqueoTO c = get( parms );
+        logger.info ("get[FIN] registro encontrado: {}", c);
+        return c;
+    }
+
+    @Override
+    public CajaBloqueoTO getById(CajaBloqueoTO id)
+    {
+        logger.info ("getById[INI] id: {}", id );
+        
+        Map<String, Object> parms = new HashMap<>();
+        parms.put( "ubicacion", id.getUbicacion() );
+        parms.put( "id", id.getId() );
+        
+        CajaBloqueoTO c = get( parms );
+        logger.info ("getById[FIN] registro encontrado: {}", c);
+        return c;
+    }
+
     public List<CajaBloqueoTO> getList(UbicacionTO pkUbicacion, Optional<Boolean> vigencia)
     {
         logger.info ("getList[INI] pkUbicacion: {}", pkUbicacion);

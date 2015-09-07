@@ -58,20 +58,12 @@ public class ResponsablePO implements BasePO<ResponsableTO>
         return i == 0;
     }
 
-    @Override
-    public ResponsableTO get(ResponsableTO pk)
+    private ResponsableTO get(Map<String,Object> parms)
     {
-        logger.info ("get[INI] pkResponsable: {}", pk);
-        
-        Map<String,Object> parms = new HashMap<>();
-        parms.put("ubicacion", pk.getUbicacion());
-        parms.put("persona", pk.getPersona());
-        parms.put("empresa", pk.getEmpresa());
-        parms.put("fechaIngreso", pk.getFechaIngreso());
-        logger.debug("get[001] parametros de búsqueda: {}", parms);
+        logger.info ("get[INI] parms: {}", parms);
         
         List<ResponsableTO> lista = mapper.selectResponsables(parms);
-        logger.debug("get[002] después de hacer el select: {}", lista.size());
+        logger.debug("get[001] después de hacer el select: {}", lista.size());
 
         if(lista.isEmpty())
         {
@@ -83,6 +75,39 @@ public class ResponsablePO implements BasePO<ResponsableTO>
         return lista.get(0);
     }
 
+    @Override
+    public ResponsableTO get(ResponsableTO pk)
+    {
+        logger.info ("get[INI] pk: {}", pk);
+        
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("ubicacion", pk.getUbicacion());
+        parms.put("persona", pk.getPersona());
+        parms.put("empresa", pk.getEmpresa());
+        parms.put("fechaIngreso", pk.getFechaIngreso());
+        logger.debug("get[001] parametros de búsqueda: {}", parms);
+        
+        ResponsableTO r = get(parms);
+        
+        logger.info("get[FIN] registro encontrado: {}", r);
+        return r;
+    }
+
+    @Override
+    public ResponsableTO getById(ResponsableTO id)
+    {
+        logger.info ("get[INI] id: {}", id);
+        
+        Map<String,Object> parms = new HashMap<>();
+        parms.put("ubicacion", id.getUbicacion());
+        parms.put("id", id.getId());
+        
+        ResponsableTO r = get(parms);
+        
+        logger.info("get[FIN] registro encontrado: {}", r);
+        return r;
+    }
+    
     public ResponsableTO getVigente(UbicacionTO pk)
     {
         logger.info ("getVigente[INI] pkResponsable: {}", pk);
