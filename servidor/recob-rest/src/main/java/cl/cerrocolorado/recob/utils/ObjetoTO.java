@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-public interface ObjetoTO extends Serializable, Comparable<ObjetoTO>
+public interface ObjetoTO extends Serializable, Comparable<ObjetoTO>, Cloneable
 {
     @Override
     public String toString();

@@ -15,7 +15,7 @@ public abstract class EntidadTO extends BaseTO
     
     public void setId(Long id)
     {
-        this.id = (id == 0) ? null: id;
+        this.id = (id!=null && id == 0) ? null: id;
     }
 
     /**
