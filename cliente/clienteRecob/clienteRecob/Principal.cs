@@ -24,14 +24,15 @@ namespace Recob.Cliente
             ////MessageBox.Show(r.ToString());
 
             //CajaBloqueoTO caja = new CajaBloqueoTO();
+            //caja.numero = 3;
+            //caja.vigente = true;
+            //caja.nombre = "CAJA N° 3";
+            //RespGenerica<CajaBloqueoTO> r2 = Modelo.guardarCaja(caja);
 
             //RespGenerica<CajaBloqueoTO> d = Modelo.eliminarCaja(4);
             //RespGenerica<CajaBloqueoTO> c = Modelo.getCaja(4);
             //RespGenerica<List<CajaBloqueoTO>> l = Modelo.getCajas();
 
-            //caja.numero = 4;
-            //caja.vigente = true;
-            //caja.nombre = "CAJA N° 4";
 
             //RespGenerica<CajaBloqueoTO> r2 = Modelo.guardarCaja(caja);
             //if(r2.encabezado.codigo == 1)

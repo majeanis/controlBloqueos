@@ -23,7 +23,7 @@ namespace Recob.Cliente
         public static RespGenerica<CajaBloqueoTO> guardarCaja(CajaBloqueoTO caja)
         {
             String data = JsonUtils.toJson(caja);
-            RespGenerica<CajaBloqueoTO> r = ClienteRest.doPUT<CajaBloqueoTO>(token, urlCajas, "caja=" + data);
+            RespGenerica<CajaBloqueoTO> r = ClienteRest.doPUT<CajaBloqueoTO>(token, urlCajas, data);
             return r;
         }
 

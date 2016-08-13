@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import cl.cerrocolorado.recob.bo.utils.FactoryBO;
-import cl.cerrocolorado.recob.to.EmpresaTO;
+import cl.cerrocolorado.recob.to.entidades.CajaBloqueoTO;
+import cl.cerrocolorado.recob.to.entidades.EmpresaTO;
 import cl.cerrocolorado.recob.utils.JsonUtils;
 import cl.cerrocolorado.recob.utils.Rut;
-import static cl.cerrocolorado.recob.utils.ToStringUtils.toString;
+import cl.cerrocolorado.recob.utils.ToStringUtils;
 import cl.cerrocolorado.recob.utils.ValidUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,8 +80,12 @@ public class TestRecob
 
         for (int i = 0; i < valores.length; i++)
         {
-            String values = valores[i].toString();  String.valueOf(valores[i]);
-            textoFormateado = textoFormateado.replace("#{" + (i + 1) + "}", values);
+            String valor = "";
+            if( valores[i] != null)
+            {
+                valor = String.valueOf(valores[i]);
+            }
+            textoFormateado = textoFormateado.replace("#{" + (i + 1) + "}", valor);
         }
 
         /*
@@ -94,8 +100,13 @@ public class TestRecob
         return textoFormateado;
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
+        String j2 = "{\"rut\":\"13005188-K\",\"id\":0,\"numero\":3,\"nombre\":\"CAJA N° 3\",\"vigente\":true}";
+        ObjectMapper mapper = new ObjectMapper();
+        CajaBloqueoTO c = mapper.readValue(j2, CajaBloqueoTO.class);
+        System.out.println( c );
+        
 //        testRest();
 //      
 //      CajaBloqueoTO caja = new CajaBloqueoTO();

@@ -32,7 +32,7 @@ namespace Recob.Cliente.Rest
         public static RespGenerica<T> doPUT<T>(String token, String url, String data)
         {
             WebClient syncClient = getWebClient(token);
-            syncClient.Headers["Content-type"] = "application/x-www-form-urlencoded";
+            syncClient.Headers["Content-type"] = "application/json";
             var jsonResp = syncClient.UploadString(url, "PUT", data);
             return JsonUtils.fromJson<RespGenerica<T>>(jsonResp);
         }

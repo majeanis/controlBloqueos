@@ -8,8 +8,9 @@ namespace Recob.Cliente.Rest
 {
     public class RespHead
     {
-        public DateTime fecha { get; set; }
-        public int codigo { get; set; }
+        public string fecha { get; set; }
         public string severidad { get; set; }
+        public RespMensaje[] mensajes { get; set; }
+        public bool exitoso { get; set; }
     }
 }

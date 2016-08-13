@@ -9,9 +9,7 @@ namespace Recob.Cliente.Rest
 {
     class RespGenerica<T>
     {
-        public RespHead encabezado { get; set; }
-        public RespMensaje[] mensajes { get; set; }
-
-        public T contenido { get; set; }
+        public RespHead head { get; set; }
+        public T        body { get; set; }
     }
 }

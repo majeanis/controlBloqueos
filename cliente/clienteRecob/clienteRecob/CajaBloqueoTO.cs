@@ -9,6 +9,7 @@ namespace Recob.Cliente.TO
 {
     public class CajaBloqueoTO : BaseTO
     {
+        public long id { get; set; }
         public int numero { get; set; }
         public string nombre { get; set; }
         public bool vigente { get; set; }
@@ -19,8 +20,7 @@ namespace Recob.Cliente.TO
             CajaBloqueoTO caja = new CajaBloqueoTO();
             caja.estado = EstadoRegistro.Nuevo;
             caja.vigente = true;
-            caja.ubicacion = new UbicacionTO();
-            caja.ubicacion.token = Properties.Token;
+            caja.ubicacion = Properties.Ubicacion;
 
             return caja;
         }

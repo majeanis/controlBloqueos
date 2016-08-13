@@ -1,8 +1,10 @@
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\clienteRecob.formPrincipal.resources
+H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\Recob.Cliente.FrmConfCajasBloqueo.resources
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\clienteRecob.csproj.GenerateResource.Cache
+H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\bin\Debug\App.config
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\bin\Debug\clienteRecob.exe.config
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\bin\Debug\clienteRecob.exe
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\bin\Debug\clienteRecob.pdb
-H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\bin\Debug\Newtonsoft.Json.dll
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\clienteRecob.exe
 H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\clienteRecob.pdb
+H:\controlBloqueos.dev\cliente\clienteRecob\clienteRecob\obj\Debug\clienteRecob.csprojResolveAssemblyReference.cache
