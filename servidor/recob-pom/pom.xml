@@ -255,5 +255,6 @@
     <modules>
     	<module>../recob-ear</module>
     	<module>../recob-rest</module>
+    	<module>../recob-web</module>
     </modules>
 </project>
